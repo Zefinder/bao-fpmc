@@ -1,0 +1,3 @@
+[submodule "bao-hypervisor/ci"]
+	path = bao-hypervisor/ci
+	url = git@github.com:bao-project/bao-ci.git
