@@ -72,3 +72,7 @@ make PLATFORM=qemu-aarch64-virt CONFIG=test_dual IMAGES="test/baremetal.bin test
 ```
 
 No further user installation is needed, the script automatically clones the required repositories for the targetted platform. To clean everything, use `make clean`
+
+## Side notes for running on true targets
+
+If you want to use a true target and not QEMU, you will probably have a SD card to boot. This SD card must be cleared, all partitions removed and formatted. If you use the `make` command, you will be asked if you want to do it before putting Bao on it (it's so kind!). However, Ubuntu will not automatically mount the newly created partitions, to manually mount it, here is the command `sudo mkdosfs -F32 [DEVICE_NAME]`. This can be used to erase all partitions again and restart from the very beginning. 

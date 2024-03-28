@@ -1,4 +1,54 @@
 #!/bin/bash
+set -e
+
+# Functions
+function write_red() {
+    printf "\033[0;31m%s\033[0m\n" "${1}"
+}
+
+function write_green() {
+    printf "\033[0;32m%s\033[0m\n" "${1}"
+}
+
+function user_interaction_message {
+    printf "\n\n"
+    echo "-------------------------------------"
+    echo "------ USER INTERACTION NEEDED ------"
+    echo "-------------------------------------"
+    printf "\n\n"
+}
+
+function prepare_sd {
+    local device_name=${1}
+
+    # Unmount partition
+    umount "$device_name"?*
+
+    # Delete partitions
+    write_red "Delete all partitions, so do:"
+    echo "d to delete (until nothing is left) - w to write and exit"
+    sudo fdisk "$device_name"
+
+    echo ""
+    write_red "Now we recreate the partitions, press in order:"
+    echo "o to create a new DOS partition table"
+    echo "n to create a new partition"
+    echo "p for new primary partition"
+    echo "press return for default partition number"
+    echo "16384 for first sector"
+    echo "press return for last sector"
+    write_red "If it asks for removing signature, type y (for yes)"
+    echo "a to make partition bootable"
+    echo "t to change partition type"
+    echo "c to set partition type to W95 FAT32"
+    echo "w to write and exit" 
+    sudo fdisk "$device_name"
+}
+
+function format_sd {
+    local partition=${1}
+    sudo mkfs.fat "$partition" -n boot
+}
 
 # Directories
 EXEC_DIRECTORY=$(realpath .)
@@ -98,7 +148,6 @@ do
     cp "$IMAGES_DIRECTORY/$image" "$BAO_WRKDIR_IMGS"
 done
 
-
 # Copy config for Bao build
 mkdir -p "$BAO_WRKDIR_IMGS"/config
 cp -L "$BAO_CONFIG_DIRECTORY"/"$config_value"/"$PLATFORM".c\
@@ -114,18 +163,23 @@ make -C $BAO_DIRECTORY\
 # Copy Bao image to working directory
 cp "$BAO_DIRECTORY/bin/$architecture_value/$config_value/bao.bin" "$BAO_WRKDIR_IMGS/bao.bin"
 
+# Ready for next step! Platform dependant
+UBOOT_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/u-boot"
+TRUST_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/arm-trusted-firmware"
+RPI_FIRM_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/rpi-firmware"
+
 # Qemu aarch64
 if [[ "$architecture_value" == "qemu-aarch64-virt" ]]
 then
-    # Verify if directory exist (or create and git clone)
-    QEMU_ESSENTIALS="$BUILD_ESSENTIALS_DIRECTORY/$architecture_value"
-    UBOOT_DIRECTORY="$QEMU_ESSENTIALS/u-boot"
-    TRUST_DIRECTORY="$QEMU_ESSENTIALS/arm-trusted-firmware"
-    if [[ ! -d "$QEMU_ESSENTIALS" ]]
+    # Verify if directories exist (or git clone)
+    if [[ ! -d "$UBOOT_DIRECTORY" ]]
     then
         # Cloning U-boot
         git clone --depth 1 https://github.com/u-boot/u-boot.git "$UBOOT_DIRECTORY"
+    fi 
 
+    if [[ ! -d "$TRUST_DIRECTORY" ]]
+    then
         # Cloning ARM trusted firmware
         git clone --depth 1 https://github.com/bao-project/arm-trusted-firmware.git "$TRUST_DIRECTORY"
     fi
@@ -155,10 +209,128 @@ then
     -device virtio-net-device,netdev=net0\
     -netdev user,id=net0,net=192.168.42.0/24,hostfwd=tcp:127.0.0.1:5555-:22\
     -device virtio-serial-device -chardev pty,id=serial3 -device virtconsole,chardev=serial3
-fi
 
-# if [[ "$architecture_value" == "qemu-riscv64-virt" ]] || [[ "$architecture_value" == "qemu-aarch64-virt" ]]
-# then
-#     # make PLATFORM="$architecture_value" DEMO="$demo_value" run -C ../bao-demos/
-#     make run -C ../bao-demos/ 
-# fi
+# Raspberry Pi 4
+elif [[ "$architecture_value" == "rpi4" ]]
+then
+    # Verify if directories exist (or git clone)
+    if [[ ! -d "$RPI_FIRM_DIRECTORY" ]]
+    then
+        # Cloning U-boot
+        git clone --depth 1 https://github.com/raspberrypi/firmware.git "$RPI_FIRM_DIRECTORY"
+    fi 
+
+    if [[ ! -d "$UBOOT_DIRECTORY" ]]
+    then
+        # Cloning U-boot
+        git clone --depth 1 https://github.com/u-boot/u-boot.git "$UBOOT_DIRECTORY"
+    fi 
+
+    if [[ ! -d "$TRUST_DIRECTORY" ]]
+    then
+        # Cloning ARM trusted firmware
+        git clone --depth 1 https://github.com/bao-project/arm-trusted-firmware.git "$TRUST_DIRECTORY"
+    fi
+
+    # Build U-boot
+    make rpi_4_defconfig -C "$UBOOT_DIRECTORY"
+    make -C "$UBOOT_DIRECTORY"
+    # Copy bin!
+    cp "$UBOOT_DIRECTORY/u-boot.bin" "$BAO_WRKDIR_PLAT"
+
+    # Build Arm trusted firmware
+    make -C "$TRUST_DIRECTORY" PLAT=rpi4
+    # Copy bin!
+    cp "$TRUST_DIRECTORY/build/rpi4/release/bl31.bin" "$BAO_WRKDIR_PLAT"
+
+    # Checkpoint: SD card
+    user_interaction_message
+    write_green "Press a key when the SD card is pluged-in"
+    read -n 1 -s -r
+
+    # Warn the user
+    echo "Note that all partitions must be deleted to install Bao and your OS."
+    echo "If you haven't done it, you can still do it."
+    write_red "Be sure to save everything that is on the card before continuing..."
+
+    # Ask for mount file
+    write_green "What is the SD card path? (e.g. /dev/sda when using an USB adapter)"
+    read -r device_name
+
+    # Ask if user wants to delete all partitions
+    echo "To continue, there must be one empty partition (everything formatted)"
+    write_green "Do you want to erase all partitions? (no if already done) [y/N]"
+    echo "Note that the partition(s) must be mounted"
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    # If yes we remove
+    if [[ "$confirmation" == "y" ]]
+    then
+        prepare_sd "$device_name"
+    fi
+
+    # Ask for formating
+    write_green "Do you want to format? [Y/n]"
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    # If empty or yes we format
+    if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
+    then
+        write_green "What is the new partition name? (e.g. /dev/sda1 when using an USB adapter)"
+        read -r partition_name
+
+        # Check if partition mounted
+        if df | grep -q "$partition_name"
+        then 
+            umount "$partition_name"
+        fi
+
+        format_sd "$partition_name"
+    fi
+
+    # Checkpoint to see if the SD card is remounted
+    echo "It can sometimes not automatically mount the SD card, you will probably need to remove and reinsert it..."
+    write_green "Press a key when it'll be mounted"
+    read -n 1 -s -r
+
+    # Asking for mounting point
+    write_green "Enter the mounting point of the SD card (if /media/$USER/boot leave empty)"
+    read -r sd_mounting_point
+
+    if [ -z "$sd_mounting_point" ]
+    then
+        sd_mounting_point="/media/$USER/boot"
+    fi
+
+    write_red "Starting copy to SD card..."
+    # Copy important files
+    write_red "Copying rpi boot files..."
+    cp -rf "$RPI_FIRM_DIRECTORY/boot/"* "$sd_mounting_point"
+
+    write_red "Copying bl31.bin..."
+    cp "$BAO_WRKDIR_PLAT/bl31.bin" "$sd_mounting_point"
+
+    write_red "Copying u-boot.bin..."
+    cp "$BAO_WRKDIR_PLAT/u-boot.bin" "$sd_mounting_point"
+
+    write_red "Copying bao.bin..."
+    cp "$BAO_WRKDIR_IMGS/bao.bin" "$sd_mounting_point"
+
+    write_red "Writing config file..."
+    # TODO include rpi config txt?
+    # Add config.txt
+    { echo "enable_uart=1"; echo "arm_64bit=1"; echo "enable_gic=1"; echo "armstub=bl31.bin"; echo "kernel=u-boot.bin"; } > "$sd_mounting_point/config.txt"
+    write_red "Done!"
+
+    # Unmount
+    write_red "Unmounting..."
+    umount "$sd_mounting_point"
+
+    write_red "The SD card is ready to use!"
+fi
