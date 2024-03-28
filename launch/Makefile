@@ -1,18 +1,20 @@
-PLATFORM ?= "qemu-aarch64-virt"
+PLATFORM=
 CONFIG=
 IMAGES=
-DEMO ?= "baremetal"
+DEMO_PLATFORM ?= "qemu-aarch64-virt"
+DEMO_CONFIG ?= "baremetal"
 
 all:
 	./launch-bao.sh $(PLATFORM) $(CONFIG) $(IMAGES)
 
 demo:
-	./bao-demo.sh $(PLATFORM) $(DEMO)
+	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)
 
 clean:
-	@rm -rf ./wrkdir
-# Add clean for all other repo?
+	make clean -C ../bao-hypervisor
+	rm -rf ../build-essentials/$(PLATFORM)
+	rm -rf ./wrkdir
 
 clean-demo:
-	make clean -C ../bao-demos PLATFORM=$(PLATFORM) DEMO=$(DEMO)
-	make distclean -C ../bao-demos PLATFORM=$(PLATFORM) DEMO=$(DEMO)
+	make clean -C ../bao-demos PLATFORM=$(DEMO_PLATFORM) DEMO=$(DEMO_CONFIG)
+	make distclean -C ../bao-demos PLATFORM=$(DEMO_PLATFORM) DEMO=$(DEMO_CONFIG)

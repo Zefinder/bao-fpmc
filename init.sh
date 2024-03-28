@@ -24,3 +24,21 @@ then
     mkdir images
 fi
 
+# Installing Qemu if user wants
+dpkg -s qemu-system >> /dev/null
+if [[ $? == 1 ]]
+then
+    echo "It seems that you don't have Qemu installed on your system. Qemu is quite useful for debuging before launching on a true target."
+    echo "Do you want to install Qemu? [Y/n]"
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    # If empty or y
+    if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
+    then
+        echo "Installing Qemu..."
+        sudo apt install qemu-system
+    fi
+fi
