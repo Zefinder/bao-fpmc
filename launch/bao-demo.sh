@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Toolchains
-TOOLCHAIN_DIRECTORY="/home/jakub/Desktop/work/toolchains/"
+EXEC_DIRECTORY=$(realpath .)
+TOOLCHAIN_DIRECTORY="${EXEC_DIRECTORY}/../toolchains/"
 AARCH64_NONE_TOOLCHAIN="arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf/bin/aarch64-none-elf-"
 AARCH32_EABI_TOOLCHAIN="arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-"
 RISCV64_TOOLCHAIN="riscv64-unknown-elf-toolchain-10.2.0-2020.12.8-x86_64-linux-ubuntu14/bin/riscv64-unknown-elf-"

@@ -19,6 +19,73 @@ function user_interaction_message {
 }
 
 function prepare_sd {
+    user_interaction_message
+    write_green "Press a key when the SD card is pluged-in"
+    read -n 1 -s -r
+
+    # Warn the user
+    echo "Note that all partitions must be deleted to install Bao and your OS."
+    echo "If you haven't done it, you can still do it."
+    write_red "Be sure to save everything that is on the card before continuing..."
+
+    # Ask for mount file
+    write_green "What is the SD card path? (e.g. /dev/sda when using an USB adapter)"
+    write_red "Please, select the right device, if you delete your disk it's not my problem you have been warned"
+    read -r device_name
+
+    # Ask if user wants to delete all partitions
+    echo "To continue, there must be one empty partition (everything formatted)"
+    write_green "Do you want to erase all partitions? (no if already done) [y/N]"
+    echo "Note that the partition(s) must be mounted"
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    # If yes we remove
+    if [[ "$confirmation" == "y" ]]
+    then
+        erase_partitions_sd "$device_name"
+    fi
+
+    # Ask for formating
+    write_green "Do you want to format? [Y/n]"
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    # If empty or yes we format
+    if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
+    then
+        write_green "What is the new partition name? (e.g. /dev/sda1 when using an USB adapter)"
+        read -r partition_name
+
+        # Check if partition mounted
+        if df | grep -q "$partition_name"
+        then 
+            umount "$partition_name"
+        fi
+
+        format_sd "$partition_name"
+    fi
+
+    # Checkpoint to see if the SD card is remounted
+    echo "It can sometimes not automatically mount the SD card, you will probably need to remove and reinsert it..."
+    write_green "Press a key when it'll be mounted"
+    read -n 1 -s -r
+
+    # Asking for mounting point
+    write_green "Enter the mounting point of the SD card (if /media/$USER/boot leave empty)"
+    read -r sd_mounting_point
+
+    if [ -z "$sd_mounting_point" ]
+    then
+        sd_mounting_point="/media/$USER/boot"
+    fi
+}
+
+function erase_partitions_sd {
     local device_name=${1}
 
     # Unmount partition
@@ -134,12 +201,10 @@ export ARCH=$ARCH_SELECTED
 # Create useful Bao directories
 BAO_WRKDIR=$EXEC_DIRECTORY/wrkdir
 BAO_WRKDIR_SRC=$BAO_WRKDIR/srcs
-BAO_WRKDIR_BIN=$BAO_WRKDIR/bin
 BAO_WRKDIR_PLAT=$BAO_WRKDIR/imgs/$PLATFORM
 BAO_WRKDIR_IMGS=$BAO_WRKDIR_PLAT/$config_value
 mkdir -p "$BAO_WRKDIR"
 mkdir -p "$BAO_WRKDIR_SRC"
-mkdir -p "$BAO_WRKDIR_BIN"
 mkdir -p "$BAO_WRKDIR_IMGS"
 
 # Copy images
@@ -167,6 +232,7 @@ cp "$BAO_DIRECTORY/bin/$architecture_value/$config_value/bao.bin" "$BAO_WRKDIR_I
 UBOOT_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/u-boot"
 TRUST_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/arm-trusted-firmware"
 RPI_FIRM_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/rpi-firmware"
+XILINX_FIRM_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/zcu_firmware"
 
 # Qemu aarch64
 if [[ "$architecture_value" == "qemu-aarch64-virt" ]]
@@ -216,7 +282,7 @@ then
     # Verify if directories exist (or git clone)
     if [[ ! -d "$RPI_FIRM_DIRECTORY" ]]
     then
-        # Cloning U-boot
+        # Cloning Raspberry firmware
         git clone --depth 1 https://github.com/raspberrypi/firmware.git "$RPI_FIRM_DIRECTORY"
     fi 
 
@@ -243,71 +309,10 @@ then
     # Copy bin!
     cp "$TRUST_DIRECTORY/build/rpi4/release/bl31.bin" "$BAO_WRKDIR_PLAT"
 
-    # Checkpoint: SD card
-    user_interaction_message
-    write_green "Press a key when the SD card is pluged-in"
-    read -n 1 -s -r
+    # Checkpoint: Prepare SD card
+    prepare_sd
 
-    # Warn the user
-    echo "Note that all partitions must be deleted to install Bao and your OS."
-    echo "If you haven't done it, you can still do it."
-    write_red "Be sure to save everything that is on the card before continuing..."
-
-    # Ask for mount file
-    write_green "What is the SD card path? (e.g. /dev/sda when using an USB adapter)"
-    read -r device_name
-
-    # Ask if user wants to delete all partitions
-    echo "To continue, there must be one empty partition (everything formatted)"
-    write_green "Do you want to erase all partitions? (no if already done) [y/N]"
-    echo "Note that the partition(s) must be mounted"
-    read -r confirmation
-
-    # To lower case
-    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
-
-    # If yes we remove
-    if [[ "$confirmation" == "y" ]]
-    then
-        prepare_sd "$device_name"
-    fi
-
-    # Ask for formating
-    write_green "Do you want to format? [Y/n]"
-    read -r confirmation
-
-    # To lower case
-    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
-
-    # If empty or yes we format
-    if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
-    then
-        write_green "What is the new partition name? (e.g. /dev/sda1 when using an USB adapter)"
-        read -r partition_name
-
-        # Check if partition mounted
-        if df | grep -q "$partition_name"
-        then 
-            umount "$partition_name"
-        fi
-
-        format_sd "$partition_name"
-    fi
-
-    # Checkpoint to see if the SD card is remounted
-    echo "It can sometimes not automatically mount the SD card, you will probably need to remove and reinsert it..."
-    write_green "Press a key when it'll be mounted"
-    read -n 1 -s -r
-
-    # Asking for mounting point
-    write_green "Enter the mounting point of the SD card (if /media/$USER/boot leave empty)"
-    read -r sd_mounting_point
-
-    if [ -z "$sd_mounting_point" ]
-    then
-        sd_mounting_point="/media/$USER/boot"
-    fi
-
+    # Finished preparation, begin copy
     write_red "Starting copy to SD card..."
     # Copy important files
     write_red "Copying rpi boot files..."
@@ -332,5 +337,49 @@ then
     write_red "Unmounting..."
     umount "$sd_mounting_point"
 
-    write_red "The SD card is ready to use!"
+    write_green "The SD card is ready to use!"
+
+# Xilinx ZCU102/4 (TODO Please verify that it works...)
+elif [[ "$architecture_value" == "zcu102" || "$architecture_value" == "zcu104" ]]
+then
+    # Verify if directories exist (or git clone)
+    if [[ ! -d "$XILINX_FIRM_DIRECTORY" ]]
+    then
+        # Cloning Xilinx firmware
+        git clone --depth 1 https://github.com/Xilinx/soc-prebuilt-firmware.git "$XILINX_FIRM_DIRECTORY"
+    fi
+
+    if [[ ! -d "$UBOOT_DIRECTORY" ]]
+    then
+        # Cloning U-boot
+        git clone --depth 1 https://github.com/u-boot/u-boot.git "$UBOOT_DIRECTORY"
+    fi
+
+    # In a subshell go to the Xilinx firmware directory and generate the boot binary file 
+    (cd "$XILINX_FIRM_DIRECTORY/$PLATFORM-zynqmp" && bootgen -arch zynqmp -image bootgen.bif -w -o "$BAO_WRKDIR_PLAT/BOOT.BIN")
+
+    # Build U-boot (TODO Ask address?)
+    mkimage -n bao_uboot -A arm64 -O linux -C none -T kernel -a 0x200000 -e 0x200000 -d "$BAO_WRKDIR_IMGS/bao.bin" "$BAO_WRKDIR_IMGS/bao.img"
+
+    # Checkpoint: Prepare SD Card
+    prepare_sd
+
+    # Copying files to SD Card
+    write_red "Starting copy to SD card..."
+    write_red "Copying boot.bin"
+    cp "$BAO_WRKDIR_PLAT/BOOT.BIN" "$sd_mounting_point"
+
+    write_red "Copying bao.img"
+    cp "$BAO_WRKDIR_IMGS/bao.img" "$sd_mounting_point"
+
+    write_red "Unmounting..."
+    umount "$sd_mounting_point"
+
+    # Setup board, the board needs to boot from SD-Card
+    write_red "The board must be configured to boot from the SD card"
+    echo "To do so, the boot mode SW6 pins [4:1] must be 'off off off on' and the PS_mode[3:0] at 1110"
+    write_green "Press a key when you are ready to continue"
+    read -n 1 -s -r
+
+    write_green "The SD card is ready to use!"
 fi
