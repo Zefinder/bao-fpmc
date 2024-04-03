@@ -358,7 +358,7 @@ then
     # In a subshell go to the Xilinx firmware directory and generate the boot binary file 
     (cd "$XILINX_FIRM_DIRECTORY/$PLATFORM-zynqmp" && bootgen -arch zynqmp -image bootgen.bif -w -o "$BAO_WRKDIR_PLAT/BOOT.BIN")
 
-    # Build U-boot (TODO Ask address?)
+    # Build U-boot (TODO Ask address, needs to match the config one)
     mkimage -n bao_uboot -A arm64 -O linux -C none -T kernel -a 0x200000 -e 0x200000 -d "$BAO_WRKDIR_IMGS/bao.bin" "$BAO_WRKDIR_IMGS/bao.img"
 
     # Checkpoint: Prepare SD Card

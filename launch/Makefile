@@ -18,3 +18,6 @@ clean:
 clean-demo:
 	make clean -C ../bao-demos PLATFORM=$(DEMO_PLATFORM) DEMO=$(DEMO_CONFIG)
 	make distclean -C ../bao-demos PLATFORM=$(DEMO_PLATFORM) DEMO=$(DEMO_CONFIG)
+
+build-image:
+	./build-freertos.sh $(PLATFORM)

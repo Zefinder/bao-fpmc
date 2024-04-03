@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# Getting needed repositories for all installations (basically Bao)
+# Getting needed repositories for all installations (basically modified Bao)
 if [ ! -d "bao-hypervisor" ]
 then
-    git clone https://github.com/bao-project/bao-hypervisor.git
-    rm -d bao-hypervisor/ci
-    git submodule add -f git@github.com:bao-project/bao-ci.git bao-hypervisor/ci
+    git clone --recurse-submodules https://github.com/Zefinder/bao-hypervisor
 fi 
 
 if [ ! -d "bao-demos" ]
