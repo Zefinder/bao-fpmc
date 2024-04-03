@@ -4,6 +4,11 @@
 - [Bao](https://github.com/bao-project/bao-hypervisor "Bao lightweight static partitioning hypervisor on GitHub"): All files inside folders `bao-hypervisor`, `bao-demos` and `images/test` are licenced according to the specified license (See `README.md` and `LICENCE` for more information)
 
 ## How to setup
+It is recommended to clone this repository with all its submodules, using:
+```
+git clone --recurse-submodules https://github.com/Zefinder/bao-fpmc.git
+```
+
 The script `init.sh` will clone Bao repositories (the hypervisor and the demo) and create the directories used by the scripts in the `launch` folder. However, note that the `toolchains` folder is created but is empty. This is because you need to download it (or them) manually... Just untar the toolchain in the `toolchains` folder and everything should work. According to Bao's documentation, the needed toolchains are:
 - For Armv8 (Aarch64) targets, use the **aarch64-none-elf-** toolchain ([Arm Developper](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads))
 - For Armv7 and Armv8 (Aarch32) targets, use the **arm-none-eabi-** toolchain ([Arm Developper](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads))
@@ -73,6 +78,16 @@ make PLATFORM=qemu-aarch64-virt CONFIG=test_dual IMAGES="test/baremetal.bin test
 
 No further user installation is needed, the script automatically clones the required repositories for the targetted platform. To clean everything, use `make clean`
 
-## Side notes for running on true targets
+## How do I use the FreeRTOS included in this repository
+If you forgot to use the `--recurse-submodules` when cloning the repository, you will have some problems when building the FreeRTOS image, as it is using the Bao's baremetal guest and the FreeRTOS repository as submodules. You can simply do
+```
+git submodule update --init --recursive
+```
 
+To build the image, just use the `build-image` rule of the makefile in the `launch` folder. It requires the targetted platform to work, the image will be copied in `images/build`. You can use both `build-image` and `all` to build and launch bao's compilation: 
+```
+make build-image all PLATFORM=qemu-aarch64-virt CONFIG=test_freertos IMAGES="build/freertos_hyp.bin"
+```
+
+## Side notes for running on true targets
 If you want to use a true target and not QEMU, you will probably have a SD card to boot. This SD card must be cleared, all partitions removed and formatted. If you use the `make` command, you will be asked if you want to do it before putting Bao on it (it's so kind!). However, Ubuntu will not automatically mount the newly created partitions, to manually mount it, here is the command `sudo mkdosfs -F32 [DEVICE_NAME]`. This can be used to erase all partitions again and restart from the very beginning. 
