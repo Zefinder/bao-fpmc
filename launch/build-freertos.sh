@@ -8,6 +8,7 @@ AARCH64_NONE_TOOLCHAIN="arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf/bin/
 AARCH32_EABI_TOOLCHAIN="arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-"
 RISCV64_TOOLCHAIN="riscv64-unknown-elf-toolchain-10.2.0-2020.12.8-x86_64-linux-ubuntu14/bin/riscv64-unknown-elf-"
 
+FREERTOS_DIRECTORY="../freertos-bao-fpmc/"
 IMAGE_BUILD_DIRECTORY="../images/build"
 
 # Supported architectures
@@ -48,7 +49,7 @@ export PLATFORM=$architecture_value
 export ARCH=$ARCH_SELECTED
 
 # Build freertos (TODO Change)
-make -C ../freertos-over-bao STD_ADDR_SPACE=y
+make -C "$FREERTOS_DIRECTORY" STD_ADDR_SPACE=y
 
 # Create build dir if it doesn't exist
 if [ ! -d $IMAGE_BUILD_DIRECTORY ]
@@ -57,4 +58,4 @@ then
 fi
 
 # Copy image
-cp "../freertos-over-bao/build/$PLATFORM/freertos.bin" "$IMAGE_BUILD_DIRECTORY/freertos_hyp.bin"
+cp "$FREERTOS_DIRECTORY/build/$PLATFORM/freertos.bin" "$IMAGE_BUILD_DIRECTORY/freertos_hyp.bin"
