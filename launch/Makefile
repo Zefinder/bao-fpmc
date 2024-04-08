@@ -1,11 +1,10 @@
 PLATFORM=
 CONFIG=
-IMAGES=
 DEMO_PLATFORM ?= "qemu-aarch64-virt"
 DEMO_CONFIG ?= "baremetal"
 
 all:
-	./launch-bao.sh $(PLATFORM) $(CONFIG) $(IMAGES)
+	./launch-bao.sh $(PLATFORM) $(CONFIG)
 
 demo:
 	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)

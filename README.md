@@ -59,21 +59,20 @@ Here is an example of what you can get before launching Bao:
         └── linux.bin
 ```
 
-To write the config file, you can refer to the ones in the `bao-demos/demos` folder or by watching [this presentation](https://www.youtube.com/watch?v=6c8_MG-OHYo) from 24:00 to understand what are each components used for. They will probably also release some documentation so make sure to check that out. The path to the `images` folder from the config file is `../images`. This is because bao makefile uses it and so the working directory is `bao-hypervisor`. 
+To write the config file, you can refer to the ones in the `bao-demos/demos` folder or by watching [this presentation](https://www.youtube.com/watch?v=6c8_MG-OHYo) from 24:00 to understand what are each components used for. They will probably also release some documentation so make sure to check that out. The path to the `images` folder from the config file is `../images` and will retrieve the images automatically there. There is no need to copy them in another folder! Bao's compilation will include them automatically from the configuration file. 
 
-Now you are ready to launch the script using the makefile! There are 3 required arguments: 
+Now you are ready to launch the script using the makefile! There are 2 required arguments: 
 - PLATFORM: the execution platform
-- CONFIG: the config name
-- IMAGES: the path to images from the `images` folder. This must be double quoted and paths must be space-separated
+- CONFIG: the configuration name
 
 There are two configurations and two images for testing. The images are taken from the [Bao demo repository](https://github.com/bao-project/bao-demos). To launch the first configuration (`baremetal`), type
 ```
-make PLATFORM=qemu-aarch64-virt CONFIG=baremetal IMAGES="test/baremetal.bin"
+make PLATFORM=qemu-aarch64-virt CONFIG=baremetal
 ```
 
 To launch the second configuration, type
 ```
-make PLATFORM=qemu-aarch64-virt CONFIG=test_dual IMAGES="test/baremetal.bin test/freertos.bin"
+make PLATFORM=qemu-aarch64-virt CONFIG=test_dual
 ```
 
 No further user installation is needed, the script automatically clones the required repositories for the targetted platform. To clean everything, use `make clean`
@@ -91,3 +90,6 @@ make build-image all PLATFORM=qemu-aarch64-virt CONFIG=test_freertos IMAGES="bui
 
 ## Side notes for running on true targets
 If you want to use a true target and not QEMU, you will probably have a SD card to boot. This SD card must be cleared, all partitions removed and formatted. If you use the `make` command, you will be asked if you want to do it before putting Bao on it (it's so kind!). However, Ubuntu will not automatically mount the newly created partitions, to manually mount it, here is the command `sudo mkdosfs -F32 [DEVICE_NAME]`. This can be used to erase all partitions again and restart from the very beginning. 
+
+## There is a Linux configuration but not linux binary
+If you want to use the Linux image, please compile it yourself using the guide on [Bao demo](https://github.com/bao-project/bao-demos)'s repository. The image is not long to build with 24 CPUs

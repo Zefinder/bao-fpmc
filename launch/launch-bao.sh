@@ -161,13 +161,6 @@ then
     exit 2
 fi
 
-# Verifying images
-if [ -z "${3}" ]
-then
-    echo "No image set..."
-    exit 1
-fi
-
 IFS=', ' read -r -a system_images <<< "${3}"
 for image in "${system_images[@]}"
 do
