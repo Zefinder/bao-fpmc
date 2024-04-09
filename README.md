@@ -4,6 +4,9 @@
 - [Bao](https://github.com/bao-project/bao-hypervisor "Bao lightweight static partitioning hypervisor on GitHub"): All files inside folders `bao-hypervisor`, `bao-demos` and `images/test` are licensed according to the specified license (See `README.md` and `LICENCE` for more information). Credit for the Fixed Priority Memory Centric scheduler implementation go to [Gero Schwäricke](https://github.com/gschwaer)
 - [FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel "'Classic' FreeRTOS distribution (but here only Kernel)"): All files inside the folder `freertos-bao-fpmc/freertos` are licensed according to the specified license (See `LICENSE.md` for more information)
 
+## Prerequisites
+We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO))
+
 ## How to setup
 It is recommended to clone this repository with all its submodules, using:
 ```
@@ -86,7 +89,7 @@ git submodule update --init --recursive
 
 To build the image, just use the `build-image` rule of the makefile in the `launch` folder. It requires the targetted platform to work, the image will be copied in `images/build`. You can use both `build-image` and `all` to build and launch bao's compilation: 
 ```
-make build-image all PLATFORM=qemu-aarch64-virt CONFIG=test_freertos IMAGES="build/freertos_hyp.bin"
+make build-image all PLATFORM=qemu-aarch64-virt CONFIG=test_freertos
 ```
 
 ## Side notes for running on true targets
@@ -94,3 +97,44 @@ If you want to use a true target and not QEMU, you will probably have a SD card 
 
 ## There is a Linux configuration but not linux binary
 If you want to use the Linux image, please compile it yourself using the guide on [Bao demo](https://github.com/bao-project/bao-demos)'s repository. The image is not long to build with 24 CPUs
+
+# Appendices 
+
+## Appendix I - Entry points
+Entry points are not the same for all platforms and for all OSes. For a manual configuration, it is always good to know them to boot. Note that if you have multiple times the same OS, the entry point will be the same! The given `.entry` and `.base_addr` are VM addresses and not physical addresses. Also, for all platforms **EXCEPT** zcu's, the entry point is also the base memory address. For zcu's, the entry point address is the base region address + `0x200000` (`.entry = .regions->.base + 0x200000`). 
+
+The following figure compiles the different entry points in [Bao demo](https://github.com/bao-project/bao-demos)'s repository.
+
+
+|                   | baremetal  | freertos   | linux      | zephyr       |
+| ----------------- | ---------- | ---------- | ---------- | ------------ |
+| zcu102 and zcu104 | 0x20000000 | 0x0        | 0x00200000 |              |
+| imx8qm            | 0x80200000 | 0x0        | 0x80200000 |              |
+| tx2               | 0xa0000000 | 0x0        | 0x90000000 |              |
+| rpi4              | 0x200000   | 0x0        | 0x20000000 |              |
+| qemu-aarch64-virt | 0x50000000 | 0x0        | 0x60000000 |              |
+| fvp-a-aarch64     | 0x90000000 | 0x0        | 0xa0000000 | 0x90000000   |
+| fvp-a-aarch32     | 0x90000000 | 0x0        | 0xa0000000 | 0x20000000   |
+| fvp-r-aarch64     | 0x10000000 | 0x10000000 | 0x20000000 | 0x24000000\* |
+| fvp-r-aarch32     | 0x10000000 | 0x10000000 | 0x20000000 | 0x24000000   |
+| qemu-riscv64-virt | 0x80200000 | 0x0        | 0x90200000 |              |
+
+\* For this configuration, the region base address will be `0x20000000`.
+
+## Appendix II - GIC register addresses
+It is mandatory to enter the GIC register addresses for all aarch platforms. These values for baremetal are given in [Bao demo](https://github.com/bao-project/bao-demos)'s repository and the following figure compiles them. If a register address is not mandatory, there will be a blank space. For every other target OS, the address will probably be in a config file.
+
+
+| baremetal target  |    GICD    |    GICR    |    GICC    |
+| :---------------- | :--------: | :--------: | :--------: |
+| zcu102 and zcu104 | 0xF9010000 |            | 0xF9020000 |
+| imx8qm            | 0xF9010000 | 0xF9020000 |            |
+| tx2               | 0x03881000 |            | 0x03882000 |
+| rpi4              | 0xff841000 |            | 0xff842000 |
+| qemu-aarch64-virt | 0x08000000 | 0x080A0000 |            |
+| fvp-a-aarch64     | 0x2F000000 | 0x2F100000 |            |
+| fvp-a-aarch32     | 0x2F000000 | 0x2F100000 |            |
+| fvp-r-aarch64     | 0xAF000000 | 0xAF100000 |            |
+| fvp-r-aarch32     | 0xAF000000 | 0xAF100000 |            |
+
+Note that these addresses may or may not differ for another OS, but you really need to look at the config file!
