@@ -29,9 +29,14 @@ function prepare_sd {
     write_red "Be sure to save everything that is on the card before continuing..."
 
     # Ask for mount file
-    write_green "What is the SD card path? (e.g. /dev/sda when using an USB adapter)"
+    write_green "What is the SD card path? (e.g. /dev/sda when using an USB adapter (leave empty in that case))"
     write_red "Please, select the right device, if you delete your disk it's not my problem you have been warned"
     read -r device_name
+
+    if [ -z "$device_name" ]
+    then
+        device_name="/dev/sda"
+    fi
 
     # Ask if user wants to delete all partitions
     echo "To continue, there must be one empty partition (everything formatted)"
@@ -58,8 +63,12 @@ function prepare_sd {
     # If empty or yes we format
     if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
     then
-        write_green "What is the new partition name? (e.g. /dev/sda1 when using an USB adapter)"
+        write_green "What is the new partition name? (e.g. /dev/sda1 when using an USB adapter (leave empty in that case))"
         read -r partition_name
+        if [ -z "$partition_name" ]
+        then
+            partition_name="/dev/sda1"
+        fi
 
         # Check if partition mounted
         if df | grep -q "$partition_name"

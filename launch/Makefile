@@ -6,6 +6,9 @@ DEMO_CONFIG ?= "baremetal"
 all:
 	./launch-bao.sh $(PLATFORM) $(CONFIG)
 
+build-image:
+	./build-freertos.sh $(PLATFORM)
+
 demo:
 	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)
 
@@ -18,5 +21,5 @@ clean-demo:
 	make clean -C ../bao-demos PLATFORM=$(DEMO_PLATFORM) DEMO=$(DEMO_CONFIG)
 	make distclean -C ../bao-demos PLATFORM=$(DEMO_PLATFORM) DEMO=$(DEMO_CONFIG)
 
-build-image:
-	./build-freertos.sh $(PLATFORM)
+clean-image:
+	rm -rf ../freertos-bao-fpmc/build
