@@ -1,7 +1,6 @@
 #include <config.h>
 
-// This config will launch both OS but only FreeRTOS has access to the UART, so only him can write down
-// Baremetal is still a thing since we tell the CPU where the entry point is (0x50000000)
+// This config will launch both OS but only FreeRTOS has access to the UART RX, so only him can read
 
 VM_IMAGE(baremetal_image, XSTR(../images/test/baremetal.bin));
 VM_IMAGE(freertos_image, XSTR(../images/test/freertos.bin));
@@ -12,7 +11,7 @@ struct config config = {
     
     .vmlist_size = 2,
     .vmlist = {
-        { 
+        {     
             .image = {
                 .base_addr = 0x50000000,
                 .load_addr = VM_IMAGE_OFFSET(baremetal_image),
@@ -32,8 +31,16 @@ struct config config = {
                     }
                 },
 
-                .dev_num = 1,
+                .dev_num = 2,
                 .devs =  (struct vm_dev_region[]) {
+                    {   
+                        /* PL011 */
+                        .pa = 0x9000000,
+                        .va = 0x9000000,
+                        .size = 0x10000,
+                        // .interrupt_num = 1,
+                        // .interrupts = (irqid_t[]) {33}                        
+                    },
                     {   
                         /* Arch timer interrupt */
                         .interrupt_num = 1,
