@@ -7,7 +7,7 @@ all:
 	./launch-bao.sh $(PLATFORM) $(CONFIG)
 
 build-image:
-	./build-freertos.sh $(PLATFORM)
+	./build-images.sh $(PLATFORM)
 
 demo:
 	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)
@@ -23,3 +23,5 @@ clean-demo:
 
 clean-image:
 	rm -rf ../freertos-bao-fpmc/build
+	rm -rf ../baremetal-bao-fpmc/build
+	rm -rf ../images/build/*
