@@ -1,3 +1,6 @@
 [submodule "freertos-bao-fpmc"]
 	path = freertos-bao-fpmc
 	url = https://github.com/Zefinder/freertos-bao-fpmc
+[submodule "baremetal-bao-fpmc"]
+	path = baremetal-bao-fpmc
+	url = https://github.com/Zefinder/baremetal-bao-fpmc.git
