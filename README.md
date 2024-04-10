@@ -101,7 +101,7 @@ If you want to use the Linux image, please compile it yourself using the guide o
 # Appendices 
 
 ## Appendix I - Entry points
-Entry points are not the same for all platforms and for all OSes. For a manual configuration, it is always good to know them to boot. Note that if you have multiple times the same OS, the entry point will be the same! The given `.entry` and `.base_addr` are VM addresses and not physical addresses. Also, for all platforms **EXCEPT** zcu's, the entry point is also the base memory address. For zcu's, the entry point address is the base region address + `0x200000` (`.entry = .regions->.base + 0x200000`). 
+Entry points are not the same for all platforms and for all OSes. For a manual configuration, it is always good to know them to boot. Note that if you have multiple times the same OS, the entry point will be the same! The given `.entry` and `.base_addr` are VM addresses and not physical addresses. Also, for all platforms **EXCEPT** zcu's, the entry point is also the base memory address. For Linux on a zcu (102 or 104), the entry point address is `0x200000` for some reason... 
 
 The following figure compiles the different entry points in [Bao demo](https://github.com/bao-project/bao-demos)'s repository.
 
@@ -111,8 +111,8 @@ The following figure compiles the different entry points in [Bao demo](https://g
 | zcu102 and zcu104 | 0x20000000 | 0x0        | 0x00200000 |              |
 | imx8qm            | 0x80200000 | 0x0        | 0x80200000 |              |
 | tx2               | 0xa0000000 | 0x0        | 0x90000000 |              |
-| rpi4              | 0x200000   | 0x0        | 0x20000000 |              |
-| qemu-aarch64-virt | 0x50000000 | 0x0        | 0x60000000 |              |
+| rpi4              | 0x200000   | 0x0        | 0x20000000 | 0x80000000   |
+| qemu-aarch64-virt | 0x50000000 | 0x0        | 0x60000000 | 0x80000000   |
 | fvp-a-aarch64     | 0x90000000 | 0x0        | 0xa0000000 | 0x90000000   |
 | fvp-a-aarch32     | 0x90000000 | 0x0        | 0xa0000000 | 0x20000000   |
 | fvp-r-aarch64     | 0x10000000 | 0x10000000 | 0x20000000 | 0x24000000\* |
