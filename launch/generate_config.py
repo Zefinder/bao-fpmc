@@ -110,7 +110,7 @@ image_information = {
             },
             'gic': {
                 'gicd': 0x08000000,
-                'gicc': 0x080A0000
+                'gicr': 0x080A0000
             }
         },
         'freertos': {
@@ -123,7 +123,7 @@ image_information = {
             },
             'gic': {
                 'gicd': 0xf9010000,
-                'gicc': 0xf9020000
+                'gicr': 0xf9020000
             }
         },
         'linux': {
@@ -136,7 +136,7 @@ image_information = {
             },
             'gic': {
                 'gicd': 0x08000000,
-                'gicc': 0x080A0000
+                'gicr': 0x080A0000
             }
         },
         'zephyr': {
@@ -149,7 +149,7 @@ image_information = {
             },
             'gic': {
                 'gicd': 0x08000000,
-                'gicc': 0x080A0000
+                'gicr': 0x080A0000
             }
         }
     }
@@ -160,52 +160,50 @@ config_file_structure = '''#include <config.h>
 
 // List of used images
 {images:s}
+
 // Configuration struct
 struct config config = {{
     
     CONFIG_HEADER
     
-{body:s}}}
+{shared_memory:s}
+{vm_config:s}}};
 '''
-
 shared_memory_structure = '''    // Shared memory for IPC
     .shmemlist_size = {shmemlist_size:s},
     .shmemlist = (struct shmem[]) {{
 {shmemlist_template:s}    }},
 '''
-
 vm_list_structure = '''    // VM configuration
     .vmlist_size = {vmlist_size:d},
     .vmlist = {{
 {vm_config:s}    }},
 '''
-
+vm_element_structure = '''        {{
+{image_description:s}
+{entry_point:s}
+{platform_description:s}        }},
+'''
 platform_structure = '''            // Platform description
             .platform = {{
                 // CPU number
                 .cpu_num = {cpu_number:s},
                 
 {region_description:s}
-
 {ipc_description:s}
-
 {device_description:s}
-
 {architecture_description:s}            }}
 '''
-
 region_structure = '''                // Memory description
                 .region_num = {region_num:d},
                 .regions = (struct vm_mem_region[]) {{
 {region_template:s}                }},
 '''
-
 ipc_structure = '''                // IPC description
                 .ipc_num = {ipc_number:d},
                 .ipcs = (struct ipc[]) {{
 {ipc_template:s}                }},
 '''
-
 device_structure = '''                // Device description
                 .dev_num = {dev_num:d},
                 .devs = (struct vm_dev_region[]) {{
@@ -213,7 +211,7 @@ device_structure = '''                // Device description
 '''
 
 # Template declarations
-image_declaration_template = 'VM_IMAGE({vm_name:s}, XSTR({vm_path:s})),'
+image_declaration_template = 'VM_IMAGE({vm_name:s}, XSTR({vm_path:s}));'
 shared_memory_template = '[{index:d}] = {{.size = 0x{size:08x}}},'
 image_template = '''            // Image description
             .image = {{
@@ -253,9 +251,18 @@ device_template_intr = '''                    {{
                     }},
 '''
 timer_template = '''                    {{
+                        /* Arch timer interrupt */
                         .interrupt_num = 1,
                         .interrupts = (irqid_t[]) {{{timer_interrupt:d}}}
                     }}
+'''
+architecture_template = '''                // Architecture description
+                .arch = {{
+                    .gic = {{
+                        .{gic1:s}_addr = 0x{gic1_addr:08x},
+                        .{gic2:s}_addr = 0x{gic2_addr:08x}
+                    }}
+                }}
 '''
 
 ipc_interrupt_number = 52
@@ -284,6 +291,19 @@ def shememlist_definition() -> list[int]:
             shmem_sizes.append(shmem_size)
             
     return shmem_sizes
+
+
+def generate_shared_memory(shmem_sizes: list[int]) -> str:
+    shared_memories = ''
+    
+    if len(shmem_sizes) == 0:
+        completed_shared_memory = '    // No shared memory\n'
+    else:
+        for shmem_index in range(0, len(shmem_sizes)):
+            shared_memories = shared_memory_template.format(index=shmem_index, size=shmem_sizes[shmem_index]) + '\n'
+        
+        completed_shared_memory = shared_memory_structure.format(shmemlist_size=len(shmem_sizes), shmemlist_template=shared_memories)
+    return completed_shared_memory
 
 
 def generate_image_config(base_address: int, image_name: str) -> str:
@@ -433,7 +453,7 @@ def declare_devices(device_number: int, os_information: dict[str, Any]) -> str:
         # Ask for size of device
         size_str = input(f'What is the size of device n°{device_index}? (type in hexadecimal without 0x) (by default 10000)\n')
         try:
-            size = max(int(size_str), 0)
+            size = max(int(size_str, 16), 0)
         except:
             size = 0x10000
         
@@ -451,9 +471,17 @@ def declare_devices(device_number: int, os_information: dict[str, Any]) -> str:
     confirmation = input('Do you want the arch timer? [Y/n]\n')
     if confirmation.lower() != 'n':
         devices += timer_template.format(timer_interrupt=timer_interrupt_number)
+        device_number += 1
     
     completed_device = device_structure.format(dev_num=device_number, device_template=devices)
     return completed_device
+
+
+def generate_architecture_config(gic_registers: dict[str, int]) -> str:
+    gic1 = list(gic_registers.keys())[0]
+    gic2 = list(gic_registers.keys())[1]
+    completed_architecture = architecture_template.format(gic1=gic1, gic1_addr=gic_registers[gic1], gic2=gic2, gic2_addr=gic_registers[gic2])
+    return completed_architecture
 
 
 def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int]) -> dict[int, dict[str, str]]:
@@ -503,7 +531,7 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
             if not os.path.exists(os.path.join(image_folder, image_path)):
                 image_path = ''
                 print('Image path do not exist, try again')
-        image['image_path'] = image_path
+        image['image_path'] = os.path.join(image_folder, image_path)
         
         # Ask how many CPUs we want for this image
         max_cpu = cpu_number - used_cpu
@@ -527,23 +555,29 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
         # Increment used cpus and image index
         used_cpu += image_cpu
         image_index += 1
-        
+                
     print('It is now time to ask information for each OS image')
     for image_index in list(declared_images.keys()):
+        image_config = {}
+        
         image = declared_images[image_index]
         entry_point = platform_information[image['configuration']]['entry']
         
         print(f'For the image n°{image_index:d} named {image["image_name"]:s}...')
         
+        # Set image name and path in config
+        image_config['image_name'] = image["image_name"]
+        image_config['image_path'] = image["image_path"]
+        
         # Set the number of CPU of the image
-        declared_config['cpu_number'] = image['cpu_number']
+        image_config['cpu_number'] = image['cpu_number']
         
         # Generate image string
         completed_image = generate_image_config(base_address=entry_point, image_name=image["image_name"])
-        declared_config['image'] = completed_image
+        image_config['image'] = completed_image
         
         # Set entry point string
-        declared_config['entry'] = entry_point_template.format(address=entry_point)
+        image_config['entry'] = entry_point_template.format(address=entry_point)
         
         # Ask for region number
         region_number_str = input('How many region number do you want? (by default 1)\n')
@@ -553,7 +587,7 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
             region_number = 1
         
         completed_region = declare_regions(entry_point=entry_point, platform_name=platform_name, region_number=region_number)
-        declared_config['regions'] = completed_region
+        image_config['regions'] = completed_region
         
         # Ask for IPC (if any shared memory)
         if len(shmem_sizes) > 0: 
@@ -565,10 +599,10 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
             
             if ipc_number != 0:
                 completed_ipc = declare_ipc(ipc_number=ipc_number, shmem_sizes=shmem_sizes, os_information=platform_information[image['configuration']])
-                declared_config['ipc'] = completed_ipc
+                image_config['ipc'] = completed_ipc
 
-        if 'ipc' not in declared_config:
-            declared_config['ipc'] = '                // No IPC'
+        if 'ipc' not in image_config:
+            image_config['ipc'] = '                // No IPC\n'
         
         # Ask for devices (do not count the arch timer)
         device_number_str = input('How many devices do you want? (DO NOT INCLUDE THE ARCH TIMER) (by default 1)\n')
@@ -578,12 +612,44 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
             device_number = 1
         
         completed_device = declare_devices(device_number=device_number, os_information=platform_information[image['configuration']])
-        declared_config['devices'] = completed_device
-    
-    print(declared_config['image'], declared_config['entry'], platform_structure.format(cpu_number=declared_config['cpu_number'], region_description=declared_config['regions'], ipc_description=declared_config['ipc'], device_description=declared_config['devices'], architecture_description='                // Architecture not done yet'), sep='\n')
+        image_config['devices'] = completed_device
         
+        # Generate architecture
+        completed_architectre = generate_architecture_config(gic_registers=platform_information[image['configuration']]['gic'])
+        image_config['architecture'] = completed_architectre
+        
+        # Add image config to declared config
+        declared_config[image_index] = image_config
+            
     return declared_config
 
+
+def generate_image_declaration(generation_config: dict[int, dict[str, str]]) -> str:
+    completed_image_declaration = ''
+    for image_index in generation_config:
+        completed_image_declaration += image_declaration_template.format(vm_name=generation_config[image_index]['image_name'], vm_path=generation_config[image_index]['image_path']) + '\n'
+    
+    return completed_image_declaration
+
+
+def generate_configuration(competed_image_declaration: str, completed_shared_memory: str, generation_config: dict[int, dict[str, str]]) -> str:
+    vm_config = ''
+    for image_configuration in generation_config.values():
+        platform_description = platform_structure.format(cpu_number=image_configuration['cpu_number'],
+                                                         region_description=image_configuration['regions'],
+                                                         ipc_description=image_configuration['ipc'],
+                                                         device_description=image_configuration['devices'],
+                                                         architecture_description=image_configuration['architecture'])
+        
+        vm_config += vm_element_structure.format(image_description=image_configuration['image'],
+                                    entry_point=image_configuration['entry'],
+                                    platform_description=platform_description)
+    
+    vm_list = vm_list_structure.format(vmlist_size=len(generation_config), vm_config=vm_config)
+    completed_configuration = config_file_structure.format(images=competed_image_declaration,
+                                                           shared_memory=completed_shared_memory,
+                                                           vm_config=vm_list)
+    return completed_configuration
 
 def main():
     # Welcome guest
@@ -593,12 +659,13 @@ def main():
     platform_name = ''
     while not platform_name: 
         platform_name = input('Please enter the name of the platform you want to use (leave empty if you want to see suggestions):\n')
+        # TODO Add transformation from zcu to zcu102 and 104
         if platform_name not in image_information:
             # Reset platform name
             platform_name = ''
             
             # Show all platforms
-            print(f'Valid platforms are {list(image_information.keys()):s}. More can be added in the future...')
+            print(f'Valid platforms are {", ".join(list(image_information.keys())):s}. More can be added in the future...')
 
     # Ask for config name
     config_name = ''
@@ -634,11 +701,27 @@ def main():
     # Ask everything about shared memory
     shmem_sizes = shememlist_definition()
     
+    # Generate shared memory config
+    completed_shared_memory = generate_shared_memory(shmem_sizes=shmem_sizes)
+    
     # Ask everything about OSes
-    declared_images = image_declaration(cpu_number=cpu_number, platform_name=platform_name, shmem_sizes=shmem_sizes)
+    generation_config = image_declaration(cpu_number=cpu_number, platform_name=platform_name, shmem_sizes=shmem_sizes)
     
-    
-    # print(config_file_structure.format(images='', body=vm_list_structure.format(vmlist_size=1, image_structure=image_structure.format())))
+    # Generate image declaration
+    competed_image_declaration = generate_image_declaration(generation_config=generation_config)
 
+    # Generate configuration string
+    completed_configuration = generate_configuration(competed_image_declaration=competed_image_declaration, completed_shared_memory=completed_shared_memory, generation_config=generation_config)
+    
+    # Create and write the configuration file (overriding mode)
+    configuration_file = open(config_file_path, 'w')
+    
+    # Write configuration
+    configuration_file.write(completed_configuration)
+    
+    # Close file and thank user
+    configuration_file.close()
+    print('Configuration file generated, please verify it and do not hesitate to add things to it, this is just a base configuration')
+    
 if __name__ == '__main__':
     main()

@@ -81,7 +81,7 @@ make PLATFORM=qemu-aarch64-virt CONFIG=test_dual
 
 No further user installation is needed, the script automatically clones the required repositories for the targetted platform. To clean everything, use `make clean`
 
-## How do I use the FreeRTOS included in this repository
+## How do I use the FreeRTOS (and baremetal) included in this repository
 If you forgot to use the `--recurse-submodules` when cloning the repository, you will have some problems when building the FreeRTOS image, as it is using the Bao's baremetal guest and the FreeRTOS repository as submodules. You can simply do
 ```
 git submodule update --init --recursive
@@ -90,6 +90,32 @@ git submodule update --init --recursive
 To build the image, just use the `build-image` rule of the makefile in the `launch` folder. It requires the targetted platform to work, the image will be copied in `images/build`. You can use both `build-image` and `all` to build and launch bao's compilation: 
 ```
 make build-image all PLATFORM=qemu-aarch64-virt CONFIG=test_freertos
+```
+
+Of course you can also create your own configuration and play with them
+
+## How do I create a configuration file
+If you've seen the configuration files that are in the `config` folder, you are probably wondering where to start and what to modify (and this is a legitimate question). First of all, I recommend you to go watch Bao's demonstration on youtube (link in [Bao](https://github.com/bao-project/bao-hypervisor)'s repository) to understand what is what and why are they useful to Bao.
+
+If you want to **manually create** your configuration file, you can use configurations that alredy exist in the repository and configurations that are in `demos/[configuration]/configs` of Bao's demo repository and them modify them. You can also use the Appendices that are at the end of this README to know what is the entry point and what are the GIC registers' addresses. These values can be changed depending on the OS and depending on the OS configuration (for example, a baremetal target can begin at `0x300000` because you've modified the linker file to start there). The values I used are the one for Bao's guests from Bao's demo repository, that means that if you fork their guest OS without changing the starting point, you will have no problems (I hope...). 
+
+If you **don't want** to do that, this is understandable, this is why there is a file in the `launch` folder that allows configuration generation: `generate_config.py`. Just launch it and you will be asked for a few things: 
+- Targetted platform (for now only qemu-aarch64-virt, rpi4, zcu102 and zcu104)
+- Configuration name
+- Total CPU number of the platform (by default 4 but we never know)
+- The number of shared memory you want and their size
+- The OS you want to put
+  - For that OS how many cores
+  - The image path
+  - The number of regions, location in virtual memory and size
+  - The number of IPC and which shared memory to use
+  - The number of devices, their addresses (physical and virtual), size and interruptions
+
+The generation is done for the guests OSes in Bao's demo repository. There is no GUI, it's ugly but it does the job. You can change the structure file at any time, feel free to add things that you need (like place_phys for some OSes)
+
+To launch it, go in the `launch` folder and type 
+```
+python3 generate_config.py
 ```
 
 ## Side notes for running on true targets
