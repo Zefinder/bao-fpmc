@@ -651,21 +651,36 @@ def generate_configuration(competed_image_declaration: str, completed_shared_mem
                                                            vm_config=vm_list)
     return completed_configuration
 
+
 def main():
     # Welcome guest
     print("Welcome to the Bao's configuration generator")
     
     # Ask for platform name
     platform_name = ''
+    config_platform_name = ''
     while not platform_name: 
-        platform_name = input('Please enter the name of the platform you want to use (leave empty if you want to see suggestions):\n')
-        # TODO Add transformation from zcu to zcu102 and 104
-        if platform_name not in image_information:
+        config_platform_name = input('Please enter the name of the platform you want to use (leave empty if you want to see suggestions):\n')
+              
+        if config_platform_name.lower() not in image_information:
             # Reset platform name
             platform_name = ''
             
             # Show all platforms
-            print(f'Valid platforms are {", ".join(list(image_information.keys())):s}. More can be added in the future...')
+            print(f'Valid platforms are {", ".join(list(image_information.keys())):s}. ZCU can be both 102 or 104. More platforms can be added in the future...')
+        else:
+            if config_platform_name.lower() == 'zcu':
+                zcu_number = 0
+                while zcu_number != 102 or zcu_number != 104:
+                    zcu_number_str = input('Which ZCU do you want to use? (102 or 104)\n')
+                    try:
+                        zcu_number = int(zcu_number_str)
+                    except:
+                        zcu_number = 0
+                
+                platform_name = config_platform_name + str(zcu_number)
+            else: 
+                platform_name = config_platform_name
 
     # Ask for config name
     config_name = ''
@@ -705,7 +720,7 @@ def main():
     completed_shared_memory = generate_shared_memory(shmem_sizes=shmem_sizes)
     
     # Ask everything about OSes
-    generation_config = image_declaration(cpu_number=cpu_number, platform_name=platform_name, shmem_sizes=shmem_sizes)
+    generation_config = image_declaration(cpu_number=cpu_number, platform_name=config_platform_name, shmem_sizes=shmem_sizes)
     
     # Generate image declaration
     competed_image_declaration = generate_image_declaration(generation_config=generation_config)
