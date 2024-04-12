@@ -485,7 +485,7 @@ def generate_architecture_config(gic_registers: dict[str, int]) -> str:
 
 
 def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int]) -> dict[int, dict[str, str]]:
-    image_folder = os.path.join(os.getcwd(), '..', 'images')
+    image_folder = os.path.join('..', 'images')
     
     declared_config = {}
     declared_images = {}
