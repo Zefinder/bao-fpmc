@@ -329,7 +329,11 @@ then
     write_red "Copying bao.bin..."
     cp "$BAO_WRKDIR_IMGS/bao.bin" "$sd_mounting_point"
 
-    write_red "Writing config file..."
+    # TODO remove after tests
+    write_red "Copying u-boot environment file..."
+    cp "$EXEC_DIRECTORY/uboot-env/uboot.env" "$sd_mounting_point"
+
+    write_red "Writing rpi config file..."
     # TODO include rpi config txt?
     # Add config.txt
     { echo "enable_uart=1"; echo "arm_64bit=1"; echo "enable_gic=1"; echo "armstub=bl31.bin"; echo "kernel=u-boot.bin"; } > "$sd_mounting_point/config.txt"

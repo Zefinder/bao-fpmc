@@ -170,7 +170,7 @@ struct config config = {{
 {vm_config:s}}};
 '''
 shared_memory_structure = '''    // Shared memory for IPC
-    .shmemlist_size = {shmemlist_size:s},
+    .shmemlist_size = {shmemlist_size:d},
     .shmemlist = (struct shmem[]) {{
 {shmemlist_template:s}    }},
 '''
@@ -212,7 +212,7 @@ device_structure = '''                // Device description
 
 # Template declarations
 image_declaration_template = 'VM_IMAGE({vm_name:s}, XSTR({vm_path:s}));'
-shared_memory_template = '[{index:d}] = {{.size = 0x{size:08x}}},'
+shared_memory_template = '        [{index:d}] = {{.size = 0x{size:08x}}},'
 image_template = '''            // Image description
             .image = {{
                 .base_addr = 0x{base_addr:08x},
