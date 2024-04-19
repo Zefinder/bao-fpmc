@@ -132,6 +132,19 @@ To launch it, go in the `launch` folder and type
 python3 generate_config.py
 ```
 
+## Running benchmarks on FreeRTOS 
+There is a benchmark unit for FreeRTOS `benchmark.h` that you can use to measure the time of some function. The results given by this benchmark unit is in python format and throughout the tests, the unit will print things. If you want to use the data with python, I highly recommend you to use either not printing or printing as a comment for example `# wow!`. The min and max are also shown as well as the integer average. As no floating points can be used, you will have to compute the average by yourself, but using python is not a problem: 
+```py
+average = sum(elapsed_time_array) / len(elapsed_time_array)
+```
+
+## How do I generate log files ?
+Log files are generated for true targets only (you can easily log to a file using QEMU if you really want to not run it on a true target). When you run the make command of the `launch` folder on a true target (for example rpi4), at the end of the formatting, you will be asked if you want to run the minicom command. If you say yes, it will try to open minicom with the following versioning file format `[config name]-[date]-[test number].log`. The script will assume that the target is located in /dev/ttyUSB0. 
+
+**REMARK**: if you say yes, it will **directly** try to open minicom! Also to exit minicom, press Ctrl+A-x
+
+If you want to extract the python code from the log file, you can use the python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the python file already exists, it won't be replaced. Note that this folder with all the python files is in the `.gitignore`. 
+
 ## Side notes for running on true targets
 If you want to use a true target and not QEMU, you will probably have a SD card to boot. This SD card must be cleared, all partitions removed and formatted. If you use the `make` command, you will be asked if you want to do it before putting Bao on it (it's so kind!). However, Ubuntu will not automatically mount the newly created partitions, to manually mount it, here is the command `sudo mkdosfs -F32 [DEVICE_NAME]`. This can be used to erase all partitions again and restart from the very beginning. 
 
