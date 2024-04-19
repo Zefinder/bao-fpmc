@@ -12,6 +12,9 @@ build-image:
 demo:
 	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)
 
+minicom:
+	./launch-minicom.sh $(CONFIG)
+
 clean:
 	make clean -C ../bao-hypervisor
 	rm -rf ../build-essentials/$(PLATFORM)

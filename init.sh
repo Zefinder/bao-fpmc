@@ -40,3 +40,22 @@ then
         sudo apt install qemu-system
     fi
 fi
+
+# Installing minicom if user wants
+dpkg -s minicom >> /dev/null
+if [[ $? == 1 ]]
+then
+    echo "It seems that you don't have minicom installed on your system. Minicom  is useful to create console for devices having no display."
+    echo "Do you want to install minicom? [Y/n]"
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    # If empty or y
+    if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
+    then
+        echo "Installing minicom..."
+        sudo apt install minicom
+    fi
+fi

@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# Directories
+EXEC_DIRECTORY=$(realpath .)
+BAO_DIRECTORY="../bao-hypervisor/"
+BAO_CONFIG_DIRECTORY="../config/"
+BUILD_ESSENTIALS_DIRECTORY="../build-essentials/"
+IMAGES_DIRECTORY="../images"
+
 # Functions
 function write_red() {
     printf "\033[0;31m%s\033[0m\n" "${1}"
@@ -126,12 +133,24 @@ function format_sd {
     sudo mkfs.fat "$partition" -n boot
 }
 
-# Directories
-EXEC_DIRECTORY=$(realpath .)
-BAO_DIRECTORY="../bao-hypervisor/"
-BAO_CONFIG_DIRECTORY="../config/"
-BUILD_ESSENTIALS_DIRECTORY="../build-essentials/"
-IMAGES_DIRECTORY="../images"
+function run_minicom {
+    local config_name=${1}
+
+    write_green "Do you want to run minicom now? [Y/n]"
+    write_red "Be careful, if you type yes the command will be typed now!"
+
+    read -r confirmation
+
+    # To lower case
+    confirmation="$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')"
+
+    if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
+    then
+        make minicom CONFIG="$config_name"
+    fi
+}
+
+
 
 # Toolchains
 TOOLCHAIN_DIRECTORY="${EXEC_DIRECTORY}/../toolchains/"
@@ -345,6 +364,9 @@ then
 
     write_green "The SD card is ready to use!"
 
+    # Run minicom if user wants it
+    run_minicom "$config_value"
+
 # Xilinx ZCU102/4 (TODO Please verify that it works...)
 elif [[ "$architecture_value" == "zcu102" || "$architecture_value" == "zcu104" ]]
 then
@@ -388,4 +410,7 @@ then
     read -n 1 -s -r
 
     write_green "The SD card is ready to use!"
+
+    # Run minicom if user wants it
+    run_minicom "$config_value"
 fi

@@ -108,6 +108,8 @@ Of course, you can build the image and run the launcher in the same command. Usi
 make clean-image build-image all PLATFORM=qemu-aarch64-virt SELECTED_MAIN=execution-fpsched CONFIG=bench_solo_legacy
 ```
 
+For baremetal, it is basically the same thing but the function is called `task()`, the makefile variable are `task_c_srcs` and `task_s_srcs`. Note that SELECTED_MAIN is also the selector for the baremetal task function.
+
 ## How do I create a configuration file
 If you've seen the configuration files that are in the `config` folder, you are probably wondering where to start and what to modify (and this is a legitimate question). First of all, I recommend you to go watch Bao's demonstration on youtube (link in [Bao](https://github.com/bao-project/bao-hypervisor)'s repository) to understand what is what and why are they useful to Bao.
 
@@ -143,7 +145,12 @@ Log files are generated for true targets only (you can easily log to a file usin
 
 **REMARK**: if you say yes, it will **directly** try to open minicom! Also to exit minicom, press Ctrl+A-x
 
-If you want to extract the python code from the log file, you can use the python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the python file already exists, it won't be replaced. Note that this folder with all the python files is in the `.gitignore`. 
+You can also use the `minicom` rule of the makefile of the `launch` folder, you will only need to enter the configuration name. For example:
+```
+make minicom CONFIG=bench-solo-legacy
+```
+
+If you want to extract the python code from the log file, you can use the python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the python file already exists, it won't be replaced. Note that this folder with all the python files is in the `.gitignore`. (TODO)
 
 ## Side notes for running on true targets
 If you want to use a true target and not QEMU, you will probably have a SD card to boot. This SD card must be cleared, all partitions removed and formatted. If you use the `make` command, you will be asked if you want to do it before putting Bao on it (it's so kind!). However, Ubuntu will not automatically mount the newly created partitions, to manually mount it, here is the command `sudo mkdosfs -F32 [DEVICE_NAME]`. This can be used to erase all partitions again and restart from the very beginning. 
