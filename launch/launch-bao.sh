@@ -189,16 +189,6 @@ then
     exit 2
 fi
 
-IFS=', ' read -r -a system_images <<< "${3}"
-for image in "${system_images[@]}"
-do
-    if [ ! -f "$IMAGES_DIRECTORY/$image" ]
-    then
-        echo "Image $image does not exist"
-        exit 2
-    fi
-done
-
 selected_main=${3}
 
 # Choosing toolchain
@@ -229,12 +219,6 @@ BAO_WRKDIR_IMGS=$BAO_WRKDIR_PLAT/$config_value
 mkdir -p "$BAO_WRKDIR"
 mkdir -p "$BAO_WRKDIR_SRC"
 mkdir -p "$BAO_WRKDIR_IMGS"
-
-# Copy images
-for image in "${system_images[@]}"
-do
-    cp "$IMAGES_DIRECTORY/$image" "$BAO_WRKDIR_IMGS"
-done
 
 # Copy config for Bao build
 mkdir -p "$BAO_WRKDIR_IMGS"/config
