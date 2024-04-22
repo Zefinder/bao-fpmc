@@ -6,7 +6,6 @@ EXEC_DIRECTORY=$(realpath .)
 BAO_DIRECTORY="../bao-hypervisor/"
 BAO_CONFIG_DIRECTORY="../config/"
 BUILD_ESSENTIALS_DIRECTORY="../build-essentials/"
-IMAGES_DIRECTORY="../images"
 
 # Functions
 function write_red() {
