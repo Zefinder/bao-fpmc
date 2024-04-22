@@ -134,6 +134,7 @@ function format_sd {
 
 function run_minicom {
     local config_name=${1}
+    local selected_main=${2}
 
     write_green "Do you want to run minicom now? [Y/n]"
     write_red "Be careful, if you type yes the command will be typed now!"
@@ -145,7 +146,7 @@ function run_minicom {
 
     if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
     then
-        make minicom CONFIG="$config_name" SELECTED_MAIN=""
+        make minicom CONFIG="$config_name" SELECTED_MAIN="$selected_main"
     fi
 }
 
