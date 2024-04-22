@@ -180,6 +180,7 @@ vm_list_structure = '''    // VM configuration
 {vm_config:s}    }},
 '''
 vm_element_structure = '''        {{
+{colors:s}
 {image_description:s}
 {entry_point:s}
 {platform_description:s}        }},
@@ -213,6 +214,9 @@ device_structure = '''                // Device description
 # Template declarations
 image_declaration_template = 'VM_IMAGE({vm_name:s}, XSTR({vm_path:s}));'
 shared_memory_template = '        [{index:d}] = {{.size = 0x{size:08x}}},'
+color_template = '''            // Colors used
+            .colors = {colors_bitmap:s},
+'''
 image_template = '''            // Image description
             .image = {{
                 .base_addr = 0x{base_addr:08x},
@@ -492,8 +496,19 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
 
     platform_information = image_information[platform_name]
     used_cpu = 0
+    used_colors = 0
     image_name = ''
     image_index = 0
+    
+    # Ask if you want to use colors
+    max_colors = 16
+    use_colors = -1
+    while use_colors == -1:
+        confirmation = input('Do you want to use colors? [y/n]\n')
+        if confirmation.lower() == 'y':
+            use_colors = 1
+        elif confirmation.lower() == 'n':
+            use_colors = 0
     
     # Ask if you want to add an image
     while (used_cpu == 0 or image_name) and used_cpu < cpu_number:
@@ -549,6 +564,34 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
         # Put CPU number in dict
         image['cpu_number'] = f'{image_cpu:d}'
         
+        # If we use colors, ask how many we want to use (out of 16)
+        if use_colors == 1: 
+            color_number = -1
+            while color_number == -1:
+                remaining_colors = max_colors - used_colors
+                # If no colors left, well this is a problem, just exit...
+                if (remaining_colors == 0):
+                    print('There are no colors left... Please be better next time... Exit configuration...')
+                    exit(3)
+                
+                color_number_str = input(f'How many colors do you want for this image? (max {remaining_colors:d})\n')
+                try:
+                    color_number = int(color_number_str)
+                    
+                    # If number asked is 0 or below, ask again!
+                    if color_number <= 0:
+                        print('Number of colors can only be greater than 0!')
+                        color_number = -1
+                except:
+                    print('Value not supported, retry...')
+            
+            # Add to image the bitmap of color
+            color_number_str = (2**color_number - 1) << used_colors
+            image['colors'] = f'0b{color_number_str:016b}'
+            
+            # Don't forget to increment
+            used_colors += color_number
+                
         # Add image to declared images
         declared_images[image_index] = image
         
@@ -564,6 +607,12 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
         entry_point = platform_information[image['configuration']]['entry']
         
         print(f'For the image n°{image_index:d} named {image["image_name"]:s}...')
+        
+        # Set colors
+        if use_colors == 1:
+            image_config['colors'] = color_template.format(colors_bitmap=image['colors'])
+        else:
+            image_config['colors'] = '            // No color used\n'
         
         # Set image name and path in config
         image_config['image_name'] = image["image_name"]
@@ -641,7 +690,8 @@ def generate_configuration(competed_image_declaration: str, completed_shared_mem
                                                          device_description=image_configuration['devices'],
                                                          architecture_description=image_configuration['architecture'])
         
-        vm_config += vm_element_structure.format(image_description=image_configuration['image'],
+        vm_config += vm_element_structure.format(colors=image_configuration['colors'],
+                                    image_description=image_configuration['image'],
                                     entry_point=image_configuration['entry'],
                                     platform_description=platform_description)
     

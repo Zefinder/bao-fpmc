@@ -17,8 +17,8 @@ struct config config = {
     .vmlist_size = 3,
     .vmlist = {
         {
-            // Cache coloring colors
-            .colors = 0x1,
+            // Colors used
+            .colors = 0b0000000000000001,
 
             // Image description
             .image = {
@@ -71,8 +71,8 @@ struct config config = {
             }
         },
         {
-            // Cache coloring colors
-            .colors = 0x2,
+            // Colors used
+            .colors = 0b0000000000000010,
 
             // Image description
             .image = {
@@ -125,8 +125,8 @@ struct config config = {
             }
         },
         {
-            // Cache coloring colors
-            .colors = 0x4,
+            // Colors used
+            .colors = 0b0000000000000100,
 
             // Image description
             .image = {
