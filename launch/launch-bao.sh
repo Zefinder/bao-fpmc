@@ -146,7 +146,7 @@ function run_minicom {
 
     if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
     then
-        make minicom CONFIG="$config_name"
+        make minicom CONFIG="$config_name" SELECTED_MAIN=""
     fi
 }
 
@@ -198,6 +198,8 @@ do
         exit 2
     fi
 done
+
+selected_main=${3}
 
 # Choosing toolchain
 TOOLCHAIN=${TOOLCHAIN_DIRECTORY}
@@ -365,7 +367,7 @@ then
     write_green "The SD card is ready to use!"
 
     # Run minicom if user wants it
-    run_minicom "$config_value"
+    run_minicom "$config_value" "$selected_main"
 
 # Xilinx ZCU102/4 (TODO Please verify that it works...)
 elif [[ "$architecture_value" == "zcu102" || "$architecture_value" == "zcu104" ]]
@@ -412,5 +414,5 @@ then
     write_green "The SD card is ready to use!"
 
     # Run minicom if user wants it
-    run_minicom "$config_value"
+    run_minicom "$config_value" "$selected_main"
 fi

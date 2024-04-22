@@ -1,10 +1,11 @@
 PLATFORM=
 CONFIG=
+SELECTED_MAIN=
 DEMO_PLATFORM ?= "qemu-aarch64-virt"
 DEMO_CONFIG ?= "baremetal"
 
 all:
-	./launch-bao.sh $(PLATFORM) $(CONFIG)
+	./launch-bao.sh $(PLATFORM) $(CONFIG) $(SELECTED_MAIN)
 
 build-image:
 	./build-images.sh $(PLATFORM)
@@ -13,7 +14,7 @@ demo:
 	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)
 
 minicom:
-	./launch-minicom.sh $(CONFIG)
+	./launch-minicom.sh $(CONFIG) $(SELECTED_MAIN)
 
 clean:
 	make clean -C ../bao-hypervisor

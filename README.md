@@ -141,13 +141,13 @@ average = sum(elapsed_time_array) / len(elapsed_time_array)
 ```
 
 ## How do I generate log files ?
-Log files are generated for true targets only (you can easily log to a file using QEMU if you really want to not run it on a true target). When you run the make command of the `launch` folder on a true target (for example rpi4), at the end of the formatting, you will be asked if you want to run the minicom command. If you say yes, it will try to open minicom with the following versioning file format `[config name]-[date]-[test number].log`. The script will assume that the target is located in /dev/ttyUSB0. 
+Log files are generated for true targets only (you can easily log to a file using QEMU if you really want to not run it on a true target). When you run the make `all` rule of the `launch` folder on a true target (for example rpi4), at the end of the formatting, you will be asked if you want to run the minicom command. If you say yes, it will try to open minicom with the following versioning file format `[config name]-[selected main]-[date]-[test number].log`. The script will assume that the target is located in /dev/ttyUSB0. The SELECTED_MAIN is not mandatory but allows more details in the log's name
 
 **REMARK**: if you say yes, it will **directly** try to open minicom! Also to exit minicom, press Ctrl+A-x
 
-You can also use the `minicom` rule of the makefile of the `launch` folder, you will only need to enter the configuration name. For example:
+You can also use the `minicom` rule of the makefile of the `launch` folder, you will only need to enter the configuration name and optionally the selected main. For example:
 ```
-make minicom CONFIG=bench-solo-legacy
+make minicom CONFIG=bench-solo-legacy SELECTED_MAIN=execution-fpsched
 ```
 
 If you want to extract the python code from the log file, you can use the python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the python file already exists, it won't be replaced. Note that this folder with all the python files is in the `.gitignore`. (TODO)
