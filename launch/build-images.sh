@@ -18,6 +18,9 @@ ARCHITECTURES=("zcu102" "zcu104" "imx8qm" "tx2" "rpi4" "qemu-aarch64-virt" "fvp-
 # Input arguments and exact regex
 architecture_value=${1}
 architecture_regex="\<${architecture_value}\>"
+build_value=${2}
+build_freertos=0
+build_baremetal=0
 
 # Getting architecture
 if [[ ! ${ARCHITECTURES[*]} =~ $architecture_regex ]]
@@ -44,6 +47,22 @@ else
     ARCH_SELECTED=aarch64
 fi
 
+# Looking which image to build
+if [[ "$build_value" == "both" ]]
+then
+    build_freertos=1
+    build_baremetal=1
+elif [[ "$build_value" == "freertos" ]]
+then 
+    build_freertos=1
+elif [[ "$build_value" == "baremetal" ]]
+then
+    build_baremetal=1
+else
+    echo "Build value incorrect, valid values: baremetal, freertos, both..."
+    exit 1
+fi
+
 # Create build dir if it doesn't exist
 if [ ! -d $IMAGE_BUILD_DIRECTORY ]
 then
@@ -56,11 +75,15 @@ export PLATFORM=$architecture_value
 export ARCH=$ARCH_SELECTED
 
 # Build freertos
-make -C "$FREERTOS_DIRECTORY" STD_ADDR_SPACE=y
+if [[ $build_freertos == 1 ]]
+then
+    make -C "$FREERTOS_DIRECTORY" STD_ADDR_SPACE=y
+    cp "$FREERTOS_DIRECTORY/build/$PLATFORM/freertos.bin" "$IMAGE_BUILD_DIRECTORY/freertos_hyp.bin"
+fi 
 
 # Build baremetal
-make -C "$BAREMETAL_DIRECTORY"
-
-# Copy images
-cp "$FREERTOS_DIRECTORY/build/$PLATFORM/freertos.bin" "$IMAGE_BUILD_DIRECTORY/freertos_hyp.bin"
-cp "$BAREMETAL_DIRECTORY/build/$PLATFORM/baremetal.bin" "$IMAGE_BUILD_DIRECTORY/baremetal_hyp.bin"
+if [[ $build_baremetal == 1 ]]
+then
+    make -C "$BAREMETAL_DIRECTORY"
+    cp "$BAREMETAL_DIRECTORY/build/$PLATFORM/baremetal.bin" "$IMAGE_BUILD_DIRECTORY/baremetal_hyp.bin"
+fi

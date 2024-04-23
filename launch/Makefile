@@ -1,6 +1,7 @@
 PLATFORM=
 CONFIG=
 SELECTED_MAIN=
+BUILD ?= "both"
 DEMO_PLATFORM ?= "qemu-aarch64-virt"
 DEMO_CONFIG ?= "baremetal"
 
@@ -8,7 +9,7 @@ all:
 	./launch-bao.sh $(PLATFORM) $(CONFIG) $(SELECTED_MAIN)
 
 build-image:
-	./build-images.sh $(PLATFORM)
+	./build-images.sh $(PLATFORM) $(BUILD)
 
 demo:
 	./bao-demo.sh $(DEMO_PLATFORM) $(DEMO_CONFIG)

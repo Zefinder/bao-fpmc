@@ -87,15 +87,16 @@ If you forgot to use the `--recurse-submodules` when cloning the repository, you
 git submodule update --init --recursive
 ```
 
-To build the image, just use the `build-image` rule of the makefile in the `launch` folder. There are two mandatory arguments:
+To build the image, just use the `build-image` rule of the makefile in the `launch` folder. There are three mandatory arguments:
 - PLATFORM, the target platform to compile for
 - SELECTED_MAIN, the main application you want to use
+- BUILD, which os to build (take the values baremetal, freertos or both)
 
 It sounded like a good idea to not have one big `main.c` with `#ifndef` and `#if` preprocessor instructions to compile or not some parts of the main function, some tasks, etc... making the file and the project unreadable. The `freertos-bao-fpmc` repository is now divided in 4 parts: **architecture specific**, **baremetal**, **FreeRTOS kernel** and **main applications**. Each main application has a folder with **at least** one `source.mk` and a `.c` file with a `main_app()` function defined. The `source.mk` file must define `spec_c_srs` (and `spec_s_srcs` if any) with all the `.c` (respectively `.S`) files to compile **and must contain the file where the main_app() function is**!
 
-If you want to build for qemu aarch64 with the main application `execution-fpsched`, you will type:
+If you want to build for qemu aarch64 with the main application `execution-fpsched` for FreeRTOS, you will type:
 ```
-make build-image PLATFORM=qemu-aarch64-virt SELECTED_MAIN=execution-fpsched
+make build-image PLATFORM=qemu-aarch64-virt SELECTED_MAIN=execution-fpsched BUILD=freertos
 ```
 
 To clean the images, use:
@@ -105,7 +106,7 @@ make clean-image
 
 Of course, you can build the image and run the launcher in the same command. Using the latter example with configuration `bench_solo_legacy`, you would type:
 ```
-make clean-image build-image all PLATFORM=qemu-aarch64-virt SELECTED_MAIN=execution-fpsched CONFIG=bench_solo_legacy
+make clean-image build-image all PLATFORM=qemu-aarch64-virt SELECTED_MAIN=execution-fpsched CONFIG=bench_solo_legacy BUILD=freertos
 ```
 
 For baremetal, it is basically the same thing but the function is called `task()`, the makefile variable are `task_c_srcs` and `task_s_srcs`. Note that SELECTED_MAIN is also the selector for the baremetal task function.
