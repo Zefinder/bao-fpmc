@@ -1,3 +1,6 @@
+[submodule "bao-hypervisor"]
+	path = bao-hypervisor
+	url = https://github.com/Zefinder/bao-hypervisor.git
 [submodule "freertos-bao-fpmc"]
 	path = freertos-bao-fpmc
 	url = https://github.com/Zefinder/freertos-bao-fpmc
