@@ -3,19 +3,27 @@ import os
 
 # Constants
 python_extracts = os.path.join(os.getcwd(), 'extract')
-
+benchmarks_start_string = '# Benchmark start'
+benchmarks_end_string = '# Benchmark end'
 
 def extract(log_to_extract: list[str]) -> None:
-    for log_file in log_to_extract:        
+    for log_file in log_to_extract:
+        print('Extracting', log_file, '...')
+        
         # Open file
         file = open(log_file, 'r')
         extract_file = open(os.path.join(python_extracts, log_file[:-3] + 'py'), 'w')
         
-        # Read line and write if begins with elapsed_time_array until 'Tests finished!'
+        # Extracts until the benchmark's end string or 'Tests finished!' (backward compatibility)
         line = file.readline()
         write_enabled = False
-        while 'Tests finished!' not in line:
-            if not write_enabled and line.startswith('elapsed_time_array = ['):
+        while benchmarks_end_string not in line and 'Tests finished!' not in line:
+            # If end of file, break
+            if len(line) == 0:
+                break
+            
+            # If yet not write and either benchmark start or array declaration (backward compatibility), we can write
+            if not write_enabled and (benchmarks_start_string in line or 'elapsed_time_array' in line) :
                 write_enabled = True
             
             if write_enabled:
@@ -23,8 +31,9 @@ def extract(log_to_extract: list[str]) -> None:
     
             line = file.readline()
         
-        # Add float mean computation
-        extract_file.write('average = sum(elapsed_time_array) / len(elapsed_time_array)\n')
+        # Add float mean computation if write enabled
+        if write_enabled:
+            extract_file.write('average = sum(elapsed_time_array) / len(elapsed_time_array)\n')
             
         # Close files 
         file.close()
