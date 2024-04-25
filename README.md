@@ -5,7 +5,16 @@
 - [FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel "'Classic' FreeRTOS distribution (but here only Kernel)"): All files inside the folder `freertos-bao-fpmc/freertos` are licensed according to the specified license (See `LICENSE.md` for more information)
 
 ## Prerequisites
+
 We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO))
+
+```
+sudo apt install build-essential bison flex git libssl-dev ninja-build \
+    u-boot-tools pandoc libslirp-dev pkg-config libglib2.0-dev libpixman-1-dev \
+    gettext-base curl xterm cmake python3-pip xilinx-bootgen
+
+pip3 install pykwalify packaging pyelftools
+```
 
 ## How to setup
 It is recommended to clone this repository with all its submodules, using:
