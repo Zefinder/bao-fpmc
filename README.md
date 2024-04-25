@@ -6,8 +6,9 @@
 
 ## Prerequisites
 
-We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO))
+We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO)).
 
+Use the following command to install the required dependencies:
 ```
 sudo apt install build-essential bison flex git libssl-dev ninja-build \
     u-boot-tools pandoc libslirp-dev pkg-config libglib2.0-dev libpixman-1-dev \
