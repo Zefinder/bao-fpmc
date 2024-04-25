@@ -181,6 +181,7 @@ vm_list_structure = '''    // VM configuration
 '''
 vm_element_structure = '''        {{
 {colors:s}
+{cpu_affinity:s}
 {image_description:s}
 {entry_point:s}
 {platform_description:s}        }},
@@ -216,6 +217,9 @@ image_declaration_template = 'VM_IMAGE({vm_name:s}, XSTR({vm_path:s}));'
 shared_memory_template = '        [{index:d}] = {{.size = 0x{size:08x}}},'
 color_template = '''            // Colors used
             .colors = {colors_bitmap:s},
+'''
+cpu_affinity_template = '''            // CPU affinity
+            .cpu_affinity = {cpu_bitmap:s},
 '''
 image_template = '''            // Image description
             .image = {{
@@ -564,6 +568,30 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
         # Put CPU number in dict
         image['cpu_number'] = f'{image_cpu:d}'
         
+        # Ask if the image have some CPU affinity
+        confirmation = input('Do you want to set a core affinity for this image? [y/N]\n')
+        if confirmation.lower() == 'y':
+            # For each allocated CPU we ask for its affinity
+            cpu_affinity = 0
+            for cpu in range(0, image_cpu):
+                core = -1
+                while core < 0:
+                    core_str = input(f'Which core do you want to use for CPU n°{cpu:d}?\n')
+                    try:
+                        core = int(core_str)
+                        
+                        if core >= cpu_number:
+                            print("You asked for a core that isn't even on your platform...")
+                            core = -1
+                    except:
+                        core = -1
+                
+                # Add to cpu affinity as a bit map
+                cpu_affinity |= 1 << core
+            
+            # Add it to the image
+            image['cpu_affinity'] = f'0b{{cpu_affinity:0{cpu_number:d}b}}'.format(cpu_affinity=cpu_affinity)
+        
         # If we use colors, ask how many we want to use (out of 16)
         if use_colors == 1: 
             color_number = -1
@@ -613,6 +641,12 @@ def image_declaration(cpu_number: int, platform_name: str, shmem_sizes: list[int
             image_config['colors'] = color_template.format(colors_bitmap=image['colors'])
         else:
             image_config['colors'] = '            // No color used\n'
+        
+        # Set CPU affinity
+        if 'cpu_affinity' in image:
+            image_config['cpu_affinity'] = cpu_affinity_template.format(cpu_bitmap=image['cpu_affinity'])
+        else:
+            image_config['cpu_affinity'] = '            // No CPU affinity\n'
         
         # Set image name and path in config
         image_config['image_name'] = image["image_name"]
@@ -691,6 +725,7 @@ def generate_configuration(competed_image_declaration: str, completed_shared_mem
                                                          architecture_description=image_configuration['architecture'])
         
         vm_config += vm_element_structure.format(colors=image_configuration['colors'],
+                                    cpu_affinity=image_configuration['cpu_affinity'],
                                     image_description=image_configuration['image'],
                                     entry_point=image_configuration['entry'],
                                     platform_description=platform_description)
