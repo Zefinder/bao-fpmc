@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Updating the package list
+sudo apt update
+
+# Installing the required packages
+sudo apt install -y build-essential bison flex git libssl-dev ninja-build \
+    u-boot-tools pandoc libslirp-dev pkg-config libglib2.0-dev libpixman-1-dev \
+    gettext-base curl xterm cmake python3-pip xilinx-bootgen
+
+# Installing Python packages with pip3
+pip3 install pykwalify packaging pyelftools
+
+echo "Installation complete."
+
 if [ ! -d "bao-demos" ]
 then
     git clone https://github.com/bao-project/bao-demos.git
@@ -37,8 +50,6 @@ if ! dpkg -s make &>/dev/null; then
         sudo apt install make
     fi
 fi
-
-
 
 
 # Installing Qemu if user wants
