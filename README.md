@@ -5,7 +5,8 @@
 - [FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel "'Classic' FreeRTOS distribution (but here only Kernel)"): All files inside the folder `freertos-bao-fpmc/freertos` are licensed according to the specified license (See `LICENSE.md` for more information)
 
 ## Prerequisites
-We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO))
+
+We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO)).
 
 ## How to setup
 It is recommended to clone this repository with all its submodules, using:
