@@ -17,6 +17,7 @@ def extract(log_to_extract: list[str]) -> None:
         # Extracts until the benchmark's end string or 'Tests finished!' (backward compatibility)
         line = file.readline()
         write_enabled = False
+        has_elapsed_time_array = False
         while benchmarks_end_string not in line and 'Tests finished!' not in line:
             # If end of file, break
             if len(line) == 0:
@@ -28,11 +29,15 @@ def extract(log_to_extract: list[str]) -> None:
             
             if write_enabled:
                 extract_file.write(line)
+                
+                # Test if elapsed_time_array exists
+                if not has_elapsed_time_array and 'elapsed_time_array =' in line:
+                    has_elapsed_time_array = True
     
             line = file.readline()
         
-        # Add float mean computation if write enabled
-        if write_enabled:
+        # Add float mean computation if write enabled and if elapsed_time_array exists
+        if write_enabled and has_elapsed_time_array:
             extract_file.write('average = sum(elapsed_time_array) / len(elapsed_time_array)\n')
             
         # Close files 

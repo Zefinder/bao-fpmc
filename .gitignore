@@ -6,3 +6,4 @@
 /images/linux
 /images/build
 /test-logs/extract
+__pycache__
