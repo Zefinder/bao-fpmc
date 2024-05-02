@@ -44,9 +44,6 @@ def generate_colormesh(title: str, x: list[int], y: list[int], z:list[list[int]]
     # Create mesh
     c = plt.pcolormesh(x, y, z)
     plt.colorbar(c)
-    
-    # Plot
-    plt.show()
 
 
 def generate_wcet_colormesh(varnames: dict[str,Any]) -> None:
@@ -97,6 +94,63 @@ def generate_avg_colormesh(varnames: dict[str,Any]) -> None:
     # Set plot title and generate plot
     title = 'Average execution time for prefetching\nwith a 300Hz task and a variable task'
     generate_colormesh(title=title, x=x, y=y, z=z)
+    
+    
+def generate_diff_colormesh(varnames: dict[str,Any]) -> None:
+    # Get values for X axis
+    min_freq_ticks = systick_freq // min_freq
+    max_freq_ticks = systick_freq // max_freq
+    x = [systick_freq // tick for tick in range(min_freq_ticks, max_freq_ticks - 1, -1)]
+
+    # Get values for Y axis
+    y = [*range(min_data_size, max_data_size + 1, data_size_increment)]
+
+    # Get all max values and put them into an array
+    z = []
+    for data_size in y:
+        values_freq = []
+        for freq in x:
+            elapsed_time_array_varname = elapsed_time_array_varname_template.format(freq=freq, data_size=data_size)
+            max_varname = max_varname_template.format(freq=freq, data_size=data_size)
+            
+            elapsed_time_array = varnames[elapsed_time_array_varname]
+            average = sum(elapsed_time_array) / len(elapsed_time_array)
+            max = varnames[max_varname]
+            
+            values_freq.append(max - average)
+        
+        z.append(values_freq)
+
+    # Set plot title and generate plot
+    title = 'Difference between worst and average execution time for prefetching\nwith a 300Hz task and a variable task'
+    generate_colormesh(title=title, x=x, y=y, z=z)
+    
+    
+def generate_std_colormesh(varnames: dict[str,Any]) -> None:
+    # Get values for X axis
+    min_freq_ticks = systick_freq // min_freq
+    max_freq_ticks = systick_freq // max_freq
+    x = [systick_freq // tick for tick in range(min_freq_ticks, max_freq_ticks - 1, -1)]
+
+    # Get values for Y axis
+    y = [*range(min_data_size, max_data_size + 1, data_size_increment)]
+
+    # Get all max values and put them into an array
+    z = []
+    for data_size in y:
+        values_freq = []
+        for freq in x:
+            elapsed_time_array_varname = elapsed_time_array_varname_template.format(freq=freq, data_size=data_size)
+            elapsed_time_array = varnames[elapsed_time_array_varname]
+            std = np.std(elapsed_time_array)
+            
+            values_freq.append(std)
+        
+        z.append(values_freq)
+
+    # Set plot title and generate plot
+    title = 'Standard variation of execution time\nwith a 300Hz task and a variable task'
+    generate_colormesh(title=title, x=x, y=y, z=z)
 
 
 def main():
@@ -110,10 +164,23 @@ def main():
     varnames = get_module_variables(extracted_log)
 
     # Generate worst case colormesh
+    plt.figure('WCET')
     generate_wcet_colormesh(varnames=varnames)
     
     # Generate average colormesh
+    plt.figure('AVG')
     generate_avg_colormesh(varnames=varnames)
+    
+    # Generate worst - average colormesh
+    plt.figure('WCET - AVG')
+    generate_diff_colormesh(varnames=varnames)
+    
+    # Generate standard deviation colormesh
+    plt.figure('Standard deviation')
+    generate_std_colormesh(varnames=varnames)
+    
+    # Plot
+    plt.show()
 
 if __name__ == '__main__':
     main()
