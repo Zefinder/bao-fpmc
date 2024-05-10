@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix at the end (TODO)).
+We assume that the host is on a Linux distribution with sudo access. If you are not, please do or install manually everything that needs to be installed (See Appendix III).
 
 ## How to setup
 It is recommended to clone this repository with all its submodules, using:
@@ -112,6 +112,16 @@ make clean-image build-image all PLATFORM=qemu-aarch64-virt SELECTED_MAIN=execut
 
 For baremetal, it is basically the same thing but the function is called `task()`, the makefile variable are `task_c_srcs` and `task_s_srcs`. Note that SELECTED_MAIN is also the selector for the baremetal task function.
 
+### PREM tasks and IPI in FreeRTOS
+You might want to use PREM tasks to either test them or to implement some real time tasks. This implementation of PREM (using Bao) use hypercalls and IPI to know when to start and when to stop. It means that IPI handlers are implemented inside PREM. Enabling IPI handlers is disabled by default since you can't use them for anything else. If you want to use PREM you have 2 choices: 
+- Reimplement IPI to make PREM work (good luck I guess)
+- Use the default handlers, compiling with `DEFAULT_IPI=y` (any other value also works as long as it's not empty)
+
+Hence if you want to compile `test-prem` on Raspberry4, you will type 
+```
+make build-image PLATFORM=rpi4 SELECTED_MAIN=test-prem BUILD=freertos DEFAULT_IPI=y
+```
+
 ## How do I create a configuration file
 If you've seen the configuration files that are in the `config` folder, you are probably wondering where to start and what to modify (and this is a legitimate question). First of all, I recommend you to go watch Bao's demonstration on youtube (link in [Bao](https://github.com/bao-project/bao-hypervisor)'s repository) to understand what is what and why are they useful to Bao.
 
@@ -122,9 +132,12 @@ If you **don't want** to do that, this is understandable, this is why there is a
 - Configuration name
 - Total CPU number of the platform (by default 4 but we never know)
 - The number of shared memory you want and their size
+- If you want to use colors
 - The OS you want to put
   - For that OS how many cores
   - The image path
+  - The number of colors you want
+  - The preferred core to execute on
   - The number of regions, location in virtual memory and size
   - The number of IPC and which shared memory to use
   - The number of devices, their addresses (physical and virtual), size and interruptions
@@ -137,7 +150,7 @@ python3 generate_config.py
 ```
 
 ## Running benchmarks on FreeRTOS 
-There is a benchmark unit for FreeRTOS `benchmark.h` that you can use to measure the time of some function. The results given by this benchmark unit is in python format and throughout the tests, the unit will print things. If you want to use the data with python, I highly recommend you to use either not printing or printing as a comment for example `# wow!`. The min and max are also shown as well as the integer average. As no floating points can be used, you will have to compute the average by yourself, but using python is not a problem: 
+There is a benchmark unit for FreeRTOS `benchmark.h` that you can use to measure the time of some function. The results given by this benchmark unit is in Python format and throughout the tests, the unit will print things. If you want to use the data with Python, I highly recommend you to use either not printing or printing as a comment for example `# wow!`. The min and max are also shown as well as the integer average. As no floating points can be used, you will have to compute the average by yourself, but using Python is not a problem: 
 ```py
 average = sum(elapsed_time_array) / len(elapsed_time_array)
 ```
@@ -152,7 +165,9 @@ You can also use the `minicom` rule of the makefile of the `launch` folder, you 
 make minicom CONFIG=bench-solo-legacy SELECTED_MAIN=execution-fpsched
 ```
 
-If you want to extract the python code from the log file, you can use the python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the python file already exists, it won't be replaced. Note that this folder with all the python files is in the `.gitignore`.
+If you want to extract the Python code from the log file, you can use the Python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the Python file already exists, it won't be replaced. Note that this folder with all the Python files is in the `.gitignore`.
+
+You can also use these logs (to make graphs for instance) in the `analysis` directory. The file `analysis_utils.py` contains a function to exctract all variables from a file and returns them in a `dict`. **Note** that if you use already present analysis files, the log files they use can be compressed in a `.tar.gz` file (e.g. `bench_2tasks_legacy-execution-2tasks-24-04-24-1.tar.gz`). You will have to uncompress them to analyse them and generate the grapĥs
 
 ## Side notes for running on true targets
 If you want to use a true target and not QEMU, you will probably have a SD card to boot. This SD card must be cleared, all partitions removed and formatted. If you use the `make` command, you will be asked if you want to do it before putting Bao on it (it's so kind!). However, Ubuntu will not automatically mount the newly created partitions, to manually mount it, here is the command `sudo mkdosfs -F32 [DEVICE_NAME]`. This can be used to erase all partitions again and restart from the very beginning. 
@@ -200,3 +215,29 @@ It is mandatory to enter the GIC register addresses for all aarch platforms. The
 | fvp-r-aarch32     | 0xAF000000 | 0xAF100000 |            |
 
 Note that these addresses may or may not differ for another OS, but you really need to look at the config file!
+
+## Appendix III - Manually install image build dependencies
+In order to generate an image that can run on true platforms, you will need to install a few things that depend on the running platform. If you are here, it means that you don't have sudo rights or that you are one of these purists that **must** install things manually (computers might be dangerous). 
+
+The first step is to create a directory called `build-essentials` in this root directory (`bao-fpmc`). It's at this place that you will need to install the few firmwares you will need. The following figure will show what firmware are mandatory for which platform (checkbox checked = needed, empty = useless).
+
+| baremetal target  | ARM trusted firmware\* |      U-boot\*      |        SCFW        |        SECO        |  NXP's mkimage\*   |        FVP         |     OpenSBI\*      |
+| :---------------- | :--------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| zcu102 and zcu104 |                        | :white_check_mark: |                    |                    |                    |                    |                    |
+| imx8qm            |   :white_check_mark:   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |                    |
+| tx2               |   :white_check_mark:   |                    |                    |                    |                    |                    |                    |
+| rpi4              |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    |
+| qemu-aarch64-virt |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    |
+| fvp-a-aarch64     |   :white_check_mark:   | :white_check_mark: |                    |                    |                    | :white_check_mark: |                    |
+| fvp-a-aarch32     |   :white_check_mark:   | :white_check_mark: |                    |                    |                    | :white_check_mark: |                    |
+| fvp-r-aarch64     |                        |                    |                    |                    |                    | :white_check_mark: |                    |
+| fvp-r-aarch32     |                        |                    |                    |                    |                    | :white_check_mark: |                    |
+| qemu-riscv64-virt |                        |                    |                    |                    |                    |                    | :white_check_mark: |
+
+The firmware marked with \* are a git repository to clone (you can use the `--depth 1` to only clone the commit you need and not the whole history). 
+
+For `NXP i.MX8QM` (`imx8qm`), you will need SCFW from `https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/imx-sc-firmware-[version].bin` and SECO from `https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/imx-seco-[version].bin`. You will also need to install them (`chmod +x [file] ; ./[file]`). Also clone the NXP's mkimage from the **imx branch**!
+
+For `FVP-A` and `FVP-R`, you will need to download the binary you need and untar it (from `https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_RevC-2xAEMvA_[version]_Linux64.tgz` for `FVP-A` and from `https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_AEMv8R_[version]_Linux64.tgz` for `FVP-R`). 
+
+If you are unsure of something, you can always go to [Bao demo](https://github.com/bao-project/bao-demos)'s repository and check firmware versions. Exports and make are handled by the launch script
