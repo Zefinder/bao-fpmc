@@ -221,22 +221,24 @@ In order to generate an image that can run on true platforms, you will need to i
 
 The first step is to create a directory called `build-essentials` in this root directory (`bao-fpmc`). It's at this place that you will need to install the few firmwares you will need. The following figure will show what firmware are mandatory for which platform (checkbox checked = needed, empty = useless).
 
-| baremetal target  | ARM trusted firmware\* |      U-boot\*      |        SCFW        |        SECO        |  NXP's mkimage\*   |        FVP         |     OpenSBI\*      |
-| :---------------- | :--------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| zcu102 and zcu104 |                        | :white_check_mark: |                    |                    |                    |                    |                    |
-| imx8qm            |   :white_check_mark:   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |                    |
-| tx2               |   :white_check_mark:   |                    |                    |                    |                    |                    |                    |
-| rpi4              |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    |
-| qemu-aarch64-virt |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    |
-| fvp-a-aarch64     |   :white_check_mark:   | :white_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| fvp-a-aarch32     |   :white_check_mark:   | :white_check_mark: |                    |                    |                    | :white_check_mark: |                    |
-| fvp-r-aarch64     |                        |                    |                    |                    |                    | :white_check_mark: |                    |
-| fvp-r-aarch32     |                        |                    |                    |                    |                    | :white_check_mark: |                    |
-| qemu-riscv64-virt |                        |                    |                    |                    |                    |                    | :white_check_mark: |
+| baremetal target  | ARM trusted firmware\* |      U-boot\*      | Xilinx firmware\*  |        SCFW        |        SECO        |  NXP's mkimage\*   |        L4T         |        FVP         |     OpenSBI\*      |
+| :---------------- | :--------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| zcu102 and zcu104 |                        | :white_check_mark: | :white_check_mark: |                    |                    |                    |                    |                    |                    |
+| imx8qm            |   :white_check_mark:   | :white_check_mark: |                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |                    |                    |
+| tx2               |   :white_check_mark:   |                    |                    |                    |                    |                    | :white_check_mark: |                    |                    |
+| rpi4              |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    |                    |                    |
+| qemu-aarch64-virt |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    |                    |                    |
+| fvp-a-aarch64     |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    | :white_check_mark: |                    |
+| fvp-a-aarch32     |   :white_check_mark:   | :white_check_mark: |                    |                    |                    |                    |                    | :white_check_mark: |                    |
+| fvp-r-aarch64     |                        |                    |                    |                    |                    |                    |                    | :white_check_mark: |                    |
+| fvp-r-aarch32     |                        |                    |                    |                    |                    |                    |                    | :white_check_mark: |                    |
+| qemu-riscv64-virt |                        |                    |                    |                    |                    |                    |                    |                    | :white_check_mark: |
 
 The firmware marked with \* are a git repository to clone (you can use the `--depth 1` to only clone the commit you need and not the whole history). 
 
 For `NXP i.MX8QM` (`imx8qm`), you will need SCFW from `https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/imx-sc-firmware-[version].bin` and SECO from `https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/imx-seco-[version].bin`. You will also need to install them (`chmod +x [file] ; ./[file]`). Also clone the NXP's mkimage from the **imx branch**!
+
+For `Nvidia TX2`, you will need L4T 5.1 (or later) from ` https://developer.nvidia.com/embedded/l4t/r32_release_v5.1/r32_release_v5.1/t186/tegra186_linux_r32.5.1_aarch64.tbz2`
 
 For `FVP-A` and `FVP-R`, you will need to download the binary you need and untar it (from `https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_RevC-2xAEMvA_[version]_Linux64.tgz` for `FVP-A` and from `https://developer.arm.com/-/media/Files/downloads/ecosystem-models/FVP_Base_AEMv8R_[version]_Linux64.tgz` for `FVP-R`). 
 

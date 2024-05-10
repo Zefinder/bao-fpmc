@@ -240,6 +240,7 @@ UBOOT_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/u-boot"
 TRUST_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/arm-trusted-firmware"
 RPI_FIRM_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/rpi-firmware"
 XILINX_FIRM_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/zcu_firmware"
+NVIDIA_FIRM_DIRECTORY="$BUILD_ESSENTIALS_DIRECTORY/nvidia-tools"
 
 # Qemu aarch64
 if [[ "$architecture_value" == "qemu-aarch64-virt" ]]
@@ -399,4 +400,99 @@ then
 
     # Run minicom if user wants it
     run_minicom "$config_value" "$selected_main"
+
+# Nvidia TX2 (TODO Please verify that it works...)
+elif [[ "$architecture_value" == "tx2" ]]
+then
+    if [[ ! -d "$TRUST_DIRECTORY" ]]
+    then
+        # Cloning ARM trusted firmware
+        git clone --depth 1 https://github.com/bao-project/arm-trusted-firmware.git "$TRUST_DIRECTORY"
+    fi
+
+    if [[ ! -d "$NVIDIA_FIRM_DIRECTORY" ]]
+    then
+        mkdir -p $NVIDIA_FIRM_DIRECTORY
+
+        # Downloading L4T drivers
+        wget -P "$NVIDIA_FIRM_DIRECTORY"/ https://developer.nvidia.com/embedded/l4t/r32_release_v5.1/r32_release_v5.1/t186/tegra186_linux_r32.5.1_aarch64.tbz2 
+
+        # Untar 
+        tar xfvm "$NVIDIA_FIRM_DIRECTORY/tegra186_linux_r32.5.1_aarch64.tbz2" -C "$NVIDIA_FIRM_DIRECTORY"
+    fi
+
+    # Build Arm trusted firmware
+    make -C "$TRUST_DIRECTORY" PLAT=tegra TARGET_SOC=t186 bl31
+    # Copy bin!
+    cp "$TRUST_DIRECTORY/build/tegra/t186/release/bl31.bin" "$BAO_WRKDIR_PLAT"
+
+    # Verify that /usr/bin/python exists
+    python_link_existed=0
+    if [[ ! -f "/usr/bin/python" ]]
+    then
+        # Create a symbolic link from python2
+        write_red "/usr/bin/python does not exist, creation of symbolic link from usr/bin/python2"
+
+        sudo ln -fs /usr/bin/python2 /usr/bin/python
+
+        python_link_existed=1
+    fi
+
+    set +e
+    readlink -f /usr/bin/python | grep python2 >> /dev/null
+    if [[ $? == 1 ]]
+    then
+        set -e
+        write_red "/usr/bin/python exist but not linked to python2..."
+        write_red "Temporarly replacing it"
+
+        # Symbolic link not linked to python2, rename
+        sudo mv /usr/bin/python /usr/bin/python.tmp
+
+        # Create a symbolic link from python2
+        sudo ln -fs /usr/bin/python2 /usr/bin/python
+
+        python_link_existed=2
+    fi
+    set -e
+
+    # Create TrustedOS image for flashing
+    $NVIDIA_FIRM_DIRECTORY/Linux_for_Tegra/nv_tegra/tos-scripts/gen_tos_part_img.py --monitor "$BAO_WRKDIR_PLAT/bl31.bin" "$BAO_WRKDIR_PLAT/tos.img"
+    
+    if [[ $python_link_existed == 1 ]]
+    then
+        write_red "Deleting symbolic link"
+        sudo rm /usr/bin/python
+    
+    elif [[ $python_link_existed == 2 ]]
+    then
+        write_red "Reset symbolic link"
+        sudo rm /usr/bin/python
+        sudo mv /usr/bin/python.tmp /usr/bin/python
+    fi
+
+
+    # Time to flash!
+    user_interaction_message
+
+    write_red "You will now need to flash the OS to the TX2"
+    write_red "Shutdown completely and power it pressing both recovery button and power button"
+    write_red "Connect to the board using USB (J28 micro-USB)"
+    write_green "Press a key when everything is ready to flash"
+    read -n 1 -s -r
+
+    cd $NVIDIA_FIRM_DIRECTORY/Linux_for_Tegra
+    sudo ./flash.sh -k secure-os --image "$BAO_WRKDIR_PLAT/tos.img" --bup jetson-tx2 mmcblk0p1
+
+    # Prepare SD card
+    prepare_sd
+
+    # Copy Bao image
+    write_red "Copying bao.img"
+    cp "$BAO_WRKDIR_IMGS/bao.img" "$sd_mounting_point"
+
+    write_red "Unmounting..."
+    umount "$sd_mounting_point"
+
+    write_green "The SD card is ready to use!"
 fi
