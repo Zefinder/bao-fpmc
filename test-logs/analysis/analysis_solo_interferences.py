@@ -27,7 +27,7 @@ def generate_bar_diagram(solo_varnames: dict[str,Any], interference1_legacy_varn
     x = np.arange(len(execution))  # the label locations
     multiplier = 0
 
-    fig, ax = plt.subplots(layout='constrained')
+    fig, ax = plt.subplots(layout='constrained', figsize=(9, 8))
 
     for mode, value in execution_max.items():
         offset = width * multiplier
@@ -65,13 +65,12 @@ def main():
     interference3_legacy_varnames = get_module_variables(interference3_legacy_log)
 
     # Generate histogram
+    # plt.figure()
     generate_bar_diagram(solo_varnames=solo_varnames,
                          interference1_legacy_varnames=interference1_legacy_varnames,
                          interference2_legacy_varnames=interference2_legacy_varnames,
                          interference3_legacy_varnames=interference3_legacy_varnames)
-    
-    # Plot
-    plt.show()
+    plt.savefig('../graphs/comparison_legacy_fpsched.png')
 
 
 if __name__ == '__main__':

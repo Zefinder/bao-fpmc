@@ -15,7 +15,7 @@ struct config config = {
     // No shared memory
 
     // VM configuration
-    .vmlist_size = 3,
+    .vmlist_size = 4,
     .vmlist = {
         {
             // No color used

@@ -164,23 +164,25 @@ def main():
     varnames = get_module_variables(extracted_log)
 
     # Generate worst case colormesh
-    plt.figure('WCET')
+    plt.figure('WCET', figsize=(12, 8))
     generate_wcet_colormesh(varnames=varnames)
+    plt.savefig('../graphs/bench_2tasks_wcet.png')
     
     # Generate average colormesh
-    plt.figure('AVG')
+    plt.figure('AVG', figsize=(12, 8))
     generate_avg_colormesh(varnames=varnames)
+    plt.savefig('../graphs/bench_2tasks_avg.png')
     
     # Generate worst - average colormesh
-    plt.figure('WCET - AVG')
+    plt.figure('WCET - AVG', figsize=(12, 8))
     generate_diff_colormesh(varnames=varnames)
+    plt.savefig('../graphs/bench_2tasks_wcet-avg.png')
     
     # Generate standard deviation colormesh
-    plt.figure('Standard deviation')
+    plt.figure('Standard deviation', figsize=(12, 8))
     generate_std_colormesh(varnames=varnames)
+    plt.savefig('../graphs/bench_2tasks_stddev.png')
     
-    # Plot
-    plt.show()
-
+    
 if __name__ == '__main__':
     main()
