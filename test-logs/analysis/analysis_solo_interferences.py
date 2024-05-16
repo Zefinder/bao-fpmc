@@ -37,7 +37,7 @@ def generate_bar_diagram(solo_varnames: dict[str,Any], interference1_legacy_varn
     
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Prefetch time (in µs)')
-    ax.set_title('Prefetch time by number of interference, without and with scheduler')
+    ax.set_title('Prefetch time by number of interference, without and with scheduler\nprefetching 200kB')
     ax.set_xticks(x + 1.5 * width, execution)
     ax.legend(loc='upper left')
     ax.set_ylim(0, 400)
