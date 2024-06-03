@@ -1,7 +1,7 @@
 # Imports
 import sys
 import importlib 
-from analyse_utils import get_module_variables
+from analyse_utils import *
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import Any
@@ -12,9 +12,9 @@ min_data_size = 20
 max_data_size = 440
 data_size_increment = 20
 
-elapsed_time_array_varname_template = 'elapsed_time_array_{data_size:d}kB_{nop_number:d}nop'
-min_varname_template = 'min_{data_size:d}kB_{nop_number:d}nop'
-max_varname_template = 'max_{data_size:d}kB_{nop_number:d}nop'
+elapsed_time_array_varname_template = elapsed_time_array_varname_template_generator.format(template='{data_size:d}kB_{nop_number:d}nop')
+min_varname_template = min_varname_template_generator.format(template='{data_size:d}kB_{nop_number:d}nop')
+max_varname_template = max_varname_template_generator.format(template='{data_size:d}kB_{nop_number:d}nop')
 
 # Functions
 def get_best_min_nop_number(nop_log_varnames: dict[str,Any], data_size: int) -> np.intp:
@@ -363,6 +363,50 @@ def generate_avg_colormesh(no_interference_log_varname: dict[str,Any],
     generate_colormesh(title=title, x=x, y=y, z=z, cmap='terrain', vmax=550)
 
 
+def generate_max_curves(no_interference_log_varname: dict[str,Any],
+                        nop1_log_varnames: dict[str,Any],
+                        nop2_log_varnames: dict[str,Any],
+                        nop3_log_varnames: dict[str,Any],
+                        title: str) -> None:   
+    # Plot worst executions time against data size
+    # Generate X range 
+    x = [*range(min_data_size, max_data_size + 1, data_size_increment)]
+    
+    # Get y values
+    y_no_interference = [no_interference_log_varname[max_varname_template.format(data_size=data_size, nop_number=0)] for data_size in x]       
+    y_1interference = [nop1_log_varnames[max_varname_template.format(data_size=data_size, nop_number=0)] for data_size in x]
+    y_2interference = [nop2_log_varnames[max_varname_template.format(data_size=data_size, nop_number=0)] for data_size in x]
+    y_3interference = [nop3_log_varnames[max_varname_template.format(data_size=data_size, nop_number=0)] for data_size in x]
+    
+    # Set plot title
+    plt.title(title)
+    plt.xticks(x)
+    plt.plot(x, y_no_interference, label='No interference')
+    plt.plot(x, y_1interference, label='1 interference')
+    plt.plot(x, y_2interference, label='2 interferences')
+    plt.plot(x, y_3interference, label='3 interferences')
+    plt.legend()
+    
+    
+def generate_interference_base_ratio_curve(no_interference_log_varname: dict[str,Any],
+                                           nop_log_varnames: dict[str,Any],
+                                           title: str) -> None:   
+    # Plot worst executions time against data size
+    # Generate X range 
+    x = [*range(min_data_size, max_data_size + 1, data_size_increment)]
+    
+    # Get y values
+    y_ratio = []
+    for data_size in x:
+        ratio = nop_log_varnames[max_varname_template.format(data_size=data_size, nop_number=0)] / no_interference_log_varname[max_varname_template.format(data_size=data_size, nop_number=0)]
+        y_ratio.append(ratio)
+    
+    # Set plot title
+    plt.title(title)
+    plt.xticks(x)
+    plt.plot(x, y_ratio)
+    
+
 def main():
     # Setting path to root folder
     sys.path.append('../')
@@ -491,6 +535,21 @@ def main():
                                   nop3_log_varnames=nop3_log_varnames,
                                   title='Worst execution time improvement for all 3 interferences')
     plt.savefig('../graphs/bench_all_min_nop_impact.png')
+    
+    plt.figure('All 0NOP execution comparison', figsize=(12, 8))
+    generate_max_curves(no_interference_log_varname=no_interference_log_varname,
+                        nop1_log_varnames=nop1_log_varnames,
+                        nop2_log_varnames=nop2_log_varnames,
+                        nop3_log_varnames=nop3_log_varnames,
+                        title='All interferences comarison without NOP')
+    plt.savefig('../graphs/bench_all_worst_executions.png')
+    
+    plt.figure('Ratio 1 interference', figsize=(12, 8))
+    generate_interference_base_ratio_curve(no_interference_log_varname=no_interference_log_varname,
+                                           nop_log_varnames=nop1_log_varnames,
+                                           title='Worst execution time ratio between 1 interference and solo (no NOP)')
+    plt.savefig('../graphs/bench_ratio_wcet_1interference.png')
+    
         
 if __name__ == '__main__':
     main()

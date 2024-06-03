@@ -1,7 +1,7 @@
 # Imports
 import sys
 import importlib 
-from analyse_utils import get_module_variables
+from analyse_utils import *
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import Any
@@ -14,9 +14,9 @@ min_data_size = 40
 max_data_size = 440
 data_size_increment = 40
 
-elapsed_time_array_varname_template = 'elapsed_time_array_{freq:d}Hz_{data_size:d}kB'
-min_varname_template = 'min_{freq:d}Hz_{data_size:d}kB'
-max_varname_template = 'max_{freq:d}Hz_{data_size:d}kB'
+elapsed_time_array_varname_template = elapsed_time_array_varname_template_generator.format(template='{freq:d}Hz_{data_size:d}kB')
+min_varname_template = min_varname_template_generator.format(template='{freq:d}Hz_{data_size:d}kB')
+max_varname_template = max_varname_template_generator.format(template='{freq:d}Hz_{data_size:d}kB')
 
 # Functions
 def mesh_forward(x):
@@ -182,7 +182,7 @@ def main():
     plt.figure('Standard deviation', figsize=(12, 8))
     generate_std_colormesh(varnames=varnames)
     plt.savefig('../graphs/bench_2tasks_stddev.png')
-    
+
     
 if __name__ == '__main__':
     main()
