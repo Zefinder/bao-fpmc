@@ -18,7 +18,8 @@ struct config config = {
         {
             // No color used
 
-            // No CPU affinity
+            // CPU affinity
+            .cpu_affinity = 0b0001,
 
             // Image description
             .image = {
@@ -73,7 +74,8 @@ struct config config = {
         {
             // No color used
 
-            // No CPU affinity
+            // CPU affinity
+            .cpu_affinity = 0b0010,
 
             // Image description
             .image = {
