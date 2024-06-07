@@ -1,8 +1,8 @@
 # Fixed Priority Memory Centric scheduling over Bao
 
 ## Copyright Notice
-- [Bao](https://github.com/bao-project/bao-hypervisor "Bao lightweight static partitioning hypervisor on GitHub"): All files inside folders `bao-hypervisor`, `bao-demos` and `images/test` are licensed according to the specified license (See `README.md` and `LICENCE` for more information). Credits for the Fixed Priority Memory Centric scheduler implementation go to [Gero Schwäricke](https://github.com/gschwaer)
-- [FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel "'Classic' FreeRTOS distribution (but here only Kernel)"): All files inside the folder `freertos-bao-fpmc/freertos` are licensed according to the specified license (See `LICENSE.md` for more information)
+- [Bao](https://github.com/bao-project/bao-hypervisor "Bao lightweight static partitioning hypervisor on GitHub"): All files inside directorys `bao-hypervisor`, `bao-demos` and `images/test` are licensed according to the specified license (See `README.md` and `LICENCE` for more information). Credits for the Fixed Priority Memory Centric scheduler implementation go to [Gero Schwäricke](https://github.com/gschwaer)
+- [FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel "'Classic' FreeRTOS distribution (but here only Kernel)"): All files inside the directory `freertos-bao-fpmc/freertos` are licensed according to the specified license (See `LICENSE.md` for more information)
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ It is recommended to clone this repository with all its submodules, using:
 git clone --recurse-submodules https://github.com/Zefinder/bao-fpmc.git
 ```
 
-The script `init.sh` will clone Bao repositories (the hypervisor and the demo) and create the directories used by the scripts in the `launch` folder. However, note that the `toolchains` folder is created but is empty. This is because you need to download it (or them) manually... Just untar the toolchain in the `toolchains` folder and everything should work. According to Bao's documentation, the needed toolchains are:
+The script `init.sh` will clone the [Bao demo](https://github.com/bao-project/bao-demos)'s repository, create all mandatory directories used by the scripts in the `launch` directory, install all mandatory packages to compile everything manually and ask you if you want to install some packets to used in `launch` (`make`, `qemu` and `minicom`). Note that the `toolchains` directory is created but is empty. This is because you need to download it (or them) manually... Just untar the toolchain in the `toolchains` directory and everything should work. According to Bao's documentation, the needed toolchains are:
 - For Armv8 (Aarch64) targets, use the **aarch64-none-elf-** toolchain ([Arm Developper](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads))
 - For Armv7 and Armv8 (Aarch32) targets, use the **arm-none-eabi-** toolchain ([Arm Developper](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads))
 - For RISC-V targets, use the **riscv64-unknown-elf-** toolchain ([SiFive's Freedom Tools](https://github.com/sifive/freedom-tools/releases))
@@ -35,16 +35,16 @@ hey.bin: hey.elf
 ```
 
 ## How to test if the Bao demo repo works
-Nothing more simple, just use `make demo` in the `launch` folder. By default, the target platform is Qemu for `aarch64` and the chosen demo is `baremetal`. You can change the platform with the PLATFORM option, and the demo with the DEMO option. Using `qemu-aarch64-virt` or `qemu-riscv64-virt` will use qemu and will not require any target device. Note that the demo uses the toolchains, so it is a great way to see if the toolchain is correctly setup.
+Nothing more simple, just use `make demo` in the `launch` directory. By default, the target platform is Qemu for `aarch64` and the chosen demo is `baremetal`. You can change the platform with the PLATFORM option, and the demo with the DEMO option. Using `qemu-aarch64-virt` or `qemu-riscv64-virt` will use qemu and will not require any target device. Note that the demo uses the toolchains, so it is a great way to see if the toolchain is correctly setup.
 
 Besides using it as a toolchain check, you can also inspire you from their config files (`bao-demos/demos/[interesting config]/configs`). All possible configs are there, you don't need to install anything after running the `init.sh` script.
 
 You can clean all demo files using `make clean-demo`.
 
 ## How do I use Bao 
-First of all, you need to have one or more images in the `images` folder. As said earlier, they need to be in **binary format** (`.bin`)! Be sure to have them in that format and in the correct folder. 
+First of all, you need to have one or more images in the `images` directory. As said earlier, they need to be in **binary format** (`.bin`)! Be sure to have them in that format and in the correct directory. 
 
-You then need to write a Bao config file in the `config` folder. This config file must be named after the **platform name** and put inside another folder with the **configuration name**.
+You then need to write a Bao config file in the `config` directory. This config file must be named after the **platform name** and put inside another directory with the **configuration name**.
 
 Here is an example of what you can get before launching Bao:
 ```
@@ -64,7 +64,7 @@ Here is an example of what you can get before launching Bao:
         └── linux.bin
 ```
 
-To write the config file, you can refer to the ones in the `bao-demos/demos` folder or by watching [this presentation](https://www.youtube.com/watch?v=6c8_MG-OHYo) from 24:00 to understand what are each components used for. They will probably also release some documentation so make sure to check that out. The path to the `images` folder from the config file is `../images` and will retrieve the images automatically there. There is no need to copy them in another folder! Bao's compilation will include them automatically from the configuration file. 
+To write the config file, you can refer to the ones in the `bao-demos/demos` directory or by watching [this presentation](https://www.youtube.com/watch?v=6c8_MG-OHYo) from 24:00 to understand what are each components used for. They will probably also release some documentation so make sure to check that out. The path to the `images` directory from the config file is `../images` and will retrieve the images automatically there. There is no need to copy them in another directory! Bao's compilation will include them automatically from the configuration file. 
 
 Now you are ready to launch the script using the makefile! There are 2 required arguments: 
 - PLATFORM: the execution platform
@@ -88,12 +88,12 @@ If you forgot to use the `--recurse-submodules` when cloning the repository, you
 git submodule update --init --recursive
 ```
 
-To build the image, just use the `build-image` rule of the makefile in the `launch` folder. There are three mandatory arguments:
+To build the image, just use the `build-image` rule of the makefile in the `launch` directory. There are three mandatory arguments:
 - PLATFORM, the target platform to compile for
 - SELECTED_MAIN, the main application you want to use
 - BUILD, which os to build (take the values baremetal, freertos or both)
 
-It sounded like a good idea to not have one big `main.c` with `#ifndef` and `#if` preprocessor instructions to compile or not some parts of the main function, some tasks, etc... making the file and the project unreadable. The `freertos-bao-fpmc` repository is now divided in 4 parts: **architecture specific**, **baremetal**, **FreeRTOS kernel** and **main applications**. Each main application has a folder with **at least** one `source.mk` and a `.c` file with a `main_app()` function defined. The `source.mk` file must define `spec_c_srs` (and `spec_s_srcs` if any) with all the `.c` (respectively `.S`) files to compile **and must contain the file where the main_app() function is**!
+It sounded like a good idea to not have one big `main.c` with `#ifndef` and `#if` preprocessor instructions to compile or not some parts of the main function, some tasks, etc... making the file and the project unreadable. The `freertos-bao-fpmc` repository is now divided in 4 parts: **architecture specific**, **baremetal**, **FreeRTOS kernel** and **main applications**. Each main application has a directory with **at least** one `source.mk` and a `.c` file with a `main_app()` function defined. The `source.mk` file must define `spec_c_srs` (and `spec_s_srcs` if any) with all the `.c` (respectively `.S`) files to compile **and must contain the file where the main_app() function is**!
 
 If you want to build for qemu aarch64 with the main application `execution-fpsched` for FreeRTOS, you will type:
 ```
@@ -123,11 +123,11 @@ make build-image PLATFORM=rpi4 SELECTED_MAIN=test-prem BUILD=freertos DEFAULT_IP
 ```
 
 ## How do I create a configuration file
-If you've seen the configuration files that are in the `config` folder, you are probably wondering where to start and what to modify (and this is a legitimate question). First of all, I recommend you to go watch Bao's demonstration on youtube (link in [Bao](https://github.com/bao-project/bao-hypervisor)'s repository) to understand what is what and why are they useful to Bao.
+If you've seen the configuration files that are in the `config` directory, you are probably wondering where to start and what to modify (and this is a legitimate question). First of all, I recommend you to go watch Bao's demonstration on youtube (link in [Bao](https://github.com/bao-project/bao-hypervisor)'s repository) to understand what is what and why are they useful to Bao.
 
 If you want to **manually create** your configuration file, you can use configurations that alredy exist in the repository and configurations that are in `demos/[configuration]/configs` of Bao's demo repository and them modify them. You can also use the Appendices that are at the end of this README to know what is the entry point and what are the GIC registers' addresses. These values can be changed depending on the OS and depending on the OS configuration (for example, a baremetal target can begin at `0x300000` because you've modified the linker file to start there). The values I used are the one for Bao's guests from Bao's demo repository, that means that if you fork their guest OS without changing the starting point, you will have no problems (I hope...). 
 
-If you **don't want** to do that, this is understandable, this is why there is a file in the `launch` folder that allows configuration generation: `generate_config.py`. Just launch it and you will be asked for a few things: 
+If you **don't want** to do that, this is understandable, this is why there is a file in the `launch` directory that allows configuration generation: `generate_config.py`. Just launch it and you will be asked for a few things: 
 - Targetted platform (for now only qemu-aarch64-virt, rpi4, zcu102 and zcu104)
 - Configuration name
 - Total CPU number of the platform (by default 4 but we never know)
@@ -144,7 +144,7 @@ If you **don't want** to do that, this is understandable, this is why there is a
 
 The generation is done for the guests OSes in Bao's demo repository. There is no GUI, it's ugly but it does the job. You can change the structure file at any time, feel free to add things that you need (like place_phys for some OSes)
 
-To launch it, go in the `launch` folder and type 
+To launch it, go in the `launch` directory and type 
 ```
 python3 generate_config.py
 ```
@@ -156,16 +156,16 @@ average = sum(elapsed_time_array) / len(elapsed_time_array)
 ```
 
 ## How do I generate log files ?
-Log files are generated for true targets only (you can easily log to a file using QEMU if you really want to not run it on a true target). When you run the make `all` rule of the `launch` folder on a true target (for example rpi4), at the end of the formatting, you will be asked if you want to run the minicom command. If you say yes, it will try to open minicom with the following versioning file format `[config name]-[selected main]-[date]-[test number].log`. The script will assume that the target is located in /dev/ttyUSB0. The SELECTED_MAIN is not mandatory but allows more details in the log's name
+Log files are generated for true targets only (you can easily log to a file using QEMU if you really want to not run it on a true target). When you run the make `all` rule of the `launch` directory on a true target (for example rpi4), at the end of the formatting, you will be asked if you want to run the minicom command. If you say yes, it will try to open minicom with the following versioning file format `[config name]-[selected main]-[date]-[test number].log`. The script will assume that the target is located in /dev/ttyUSB0. The SELECTED_MAIN is not mandatory but allows more details in the log's name
 
 **REMARK**: if you say yes, it will **directly** try to open minicom! Also to exit minicom, press Ctrl+A-x
 
-You can also use the `minicom` rule of the makefile of the `launch` folder, you will only need to enter the configuration name and optionally the selected main. For example:
+You can also use the `minicom` rule of the makefile of the `launch` directory, you will only need to enter the configuration name and optionally the selected main. For example:
 ```
 make minicom CONFIG=bench-solo-legacy SELECTED_MAIN=execution-fpsched
 ```
 
-If you want to extract the Python code from the log file, you can use the Python script in `test-logs`, it will create a new folder if it doesn't exist and extract the code from all log files. If the Python file already exists, it won't be replaced. Note that this folder with all the Python files is in the `.gitignore`.
+If you want to extract the Python code from the log file, you can use the Python script in `test-logs`, it will create a new directory if it doesn't exist and extract the code from all log files. If the Python file already exists, it won't be replaced. Note that this directory with all the Python files is in the `.gitignore`.
 
 You can also use these logs (to make graphs for instance) in the `analysis` directory. The file `analysis_utils.py` contains a function to exctract all variables from a file and returns them in a `dict`. **Note** that if you use already present analysis files, the log files they use can be compressed in a `.tar.gz` file (e.g. `bench_2tasks_legacy-execution-2tasks-24-04-24-1.tar.gz`). You will have to uncompress them to analyse them and generate the grapĥs
 
