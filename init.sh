@@ -89,3 +89,9 @@ then
         sudo apt install minicom
     fi
 fi
+
+# Create the appdata file in FreeRTOS and baremetal
+mkdir -p "./freertos-bao-fpmc/src/inc/"
+touch "./freertos-bao-fpmc/src/inc/appdata.h"
+mkdir -p "./baremetal-bao-fpmc/src/inc/"
+touch "./baremetal-bao-fpmc/src/inc/appdata.h"
