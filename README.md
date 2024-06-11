@@ -21,6 +21,8 @@ The script `init.sh` will clone the [Bao demo](https://github.com/bao-project/ba
 
 Installing the three of them takes around 3.5 GB.
 
+If you want to pull all changes, there is a `pull_changes.sh` that will pull all changes made to the submodules.
+
 ---
 
 You will then need to install images by yourself in the `images` directory. Images use the `.bin` format, not `.elf`! You can probably generate the a binary file from the elf executable with
