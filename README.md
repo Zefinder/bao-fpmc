@@ -117,11 +117,16 @@ For baremetal, it is basically the same thing but the function is called `task()
 ### PREM tasks and IPI in FreeRTOS
 You might want to use PREM tasks to either test them or to implement some real time tasks. This implementation of PREM (using Bao) use hypercalls and IPI to know when to start and when to stop. It means that IPI handlers are implemented inside PREM. Enabling IPI handlers is disabled by default since you can't use them for anything else. If you want to use PREM you have 2 choices: 
 - Reimplement IPI to make PREM work (good luck I guess)
-- Use the default handlers, compiling with `DEFAULT_IPI=y` (any other value also works as long as it's not empty)
+- Use the default handlers, compiling with `DEFAULT_IPI=y` (any other value provoke an error)
 
-Hence if you want to compile `test-prem` on Raspberry4, you will type 
+Hence if you want to compile `test-fpsched` on Raspberry4, you will type 
 ```
-make build-image PLATFORM=rpi4 SELECTED_MAIN=test-prem BUILD=freertos DEFAULT_IPI=y
+make build-image PLATFORM=rpi4 CONFIG=test_prem SELECTED_MAIN=test-fpsched BUILD=freertos DEFAULT_IPI=y
+```
+
+There is also the memory offset after prefetch option that you can specify during build. This one will require `MEMORY_REQUEST_WAIT`. The best example is to compile `test-prem`:
+```
+make build-image PLATFORM=rpi4 CONFIG=test_prem SELECTED_MAIN=test-prem BUILD=freertos DEFAULT_IPI=y MEMORY_REQUEST_WAIT=y
 ```
 
 ## How do I create a configuration file
