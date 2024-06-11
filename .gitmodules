@@ -1,9 +1,12 @@
 [submodule "bao-hypervisor"]
 	path = bao-hypervisor
 	url = https://github.com/Zefinder/bao-hypervisor.git
+	branch = main
 [submodule "freertos-bao-fpmc"]
 	path = freertos-bao-fpmc
 	url = https://github.com/Zefinder/freertos-bao-fpmc
+	branch = master
 [submodule "baremetal-bao-fpmc"]
 	path = baremetal-bao-fpmc
 	url = https://github.com/Zefinder/baremetal-bao-fpmc.git
+	branch = master
