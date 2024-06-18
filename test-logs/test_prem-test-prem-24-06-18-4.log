@@ -1,0 +1,1776 @@
+NOTICE:  BL31: v2.9(release):8a3945e
+NOTICE:  BL31: Built : 11:27:45, Mar 28 2024
+
+
+U-Boot 2024.04-rc5-ga5ec56ae (Jun 18 2024 - 15:01:11 +0200)
+
+DRAM:  948 MiB (effective 3.9 GiB)
+RPI 4 Model B (0xc03115)
+Core:  211 devices, 16 uclasses, devicetree: board
+MMC:   mmcnr@7e300000: 1, mmc@7e340000: 0
+Loading Environment from FAT... OK
+In:    serial,usbkbd
+Out:   serial,vidconsole
+Err:   serial,vidconsole
+Net:   eth0: ethernet@7d580000
+PCIe BRCM: link up, 5.0 Gbps x1 (SSC)
+starting USB...
+Bus xhci_pci: Register 5000420 NbrPorts 5
+Starting the controller
+USB XHCI 1.00
+scanning bus xhci_pci for devices... 2 USB Device(s) found
+       scanning usb for storage devices... 0 Storage Device(s) found
+Hit any key to stop autoboot:  2  1  0 
+1425408 bytes read in 74 ms (18.4 MiB/s)
+## Starting application at 0x00200000 ...
+Bao Hypervisor
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=0
+BAO INFO: current_time=236503942
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=236503942
+BAO INFO: current_time=239977304
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3473362 (64 ms)
+BAO INFO: current_time+3*time_taken=250397390
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=250397390
+BAO INFO: current_time=241191442
+BAO INFO: Must wait 9205948 ticks (170 ms)
+BAO INFO: answer=18411896 (ack=0,ttw=9205948)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=250397390
+BAO INFO: current_time=251561240
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=251561240
+BAO INFO: current_time=255072335
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511095 (65 ms)
+BAO INFO: current_time+3*time_taken=265605620
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=265605620
+BAO INFO: current_time=256286455
+BAO INFO: Must wait 9319165 ticks (172 ms)
+BAO INFO: answer=18638330 (ack=0,ttw=9319165)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=265605620
+BAO INFO: current_time=266764932
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=266764932
+BAO INFO: current_time=270276008
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511076 (65 ms)
+BAO INFO: current_time+3*time_taken=280809236
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=280809236
+BAO INFO: current_time=271490123
+BAO INFO: Must wait 9319113 ticks (172 ms)
+BAO INFO: answer=18638226 (ack=0,ttw=9319113)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=280809236
+BAO INFO: current_time=281968579
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=281968579
+BAO INFO: current_time=285479681
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511102 (65 ms)
+BAO INFO: current_time+3*time_taken=296012987
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=296012987
+BAO INFO: current_time=286693795
+BAO INFO: Must wait 9319192 ticks (172 ms)
+BAO INFO: answer=18638384 (ack=0,ttw=9319192)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=0
+BAO INFO: current_time=290858520
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=296012987
+BAO INFO: current_time=297172695
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=290858520
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=297172695
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=6314175 (116 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=297172695
+BAO INFO: current_time=302333772
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5161077 (95 ms)
+BAO INFO: current_time+3*time_taken=317817003
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=302333772
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=6314175 (116 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=302333772
+BAO INFO: current_time=304723604
+BAO INFO: already_fetched_time=6314175
+BAO INFO: time_taken=8704007 (161 ms)
+BAO INFO: current_time+3*time_taken=330835625
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=317817003
+BAO INFO: current_time=306013271
+BAO INFO: Must wait 11803732 ticks (218 ms)
+BAO INFO: answer=23607464 (ack=0,ttw=11803732)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=317817003
+BAO INFO: current_time=319004408
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=319004408
+BAO INFO: current_time=322515463
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511055 (65 ms)
+BAO INFO: current_time+3*time_taken=333048628
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=333048628
+BAO INFO: current_time=323729585
+BAO INFO: Must wait 9319043 ticks (172 ms)
+BAO INFO: answer=18638086 (ack=0,ttw=9319043)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=333048628
+BAO INFO: current_time=334208066
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=334208066
+BAO INFO: current_time=337719140
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511074 (65 ms)
+BAO INFO: current_time+3*time_taken=348252362
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=348252362
+BAO INFO: current_time=338933256
+BAO INFO: Must wait 9319106 ticks (172 ms)
+BAO INFO: answer=18638212 (ack=0,ttw=9319106)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=330835625
+BAO INFO: current_time=349198547
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=348252362
+BAO INFO: current_time=350009440
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=349198547
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=350009440
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=810893 (15 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=350009440
+BAO INFO: current_time=355203612
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5194172 (96 ms)
+BAO INFO: current_time+3*time_taken=370786128
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=355203612
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=810893 (15 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=355203612
+BAO INFO: current_time=357583951
+BAO INFO: already_fetched_time=810893
+BAO INFO: time_taken=3191232 (59 ms)
+BAO INFO: current_time+3*time_taken=367157647
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=370786128
+BAO INFO: current_time=358864134
+BAO INFO: Must wait 11921994 ticks (220 ms)
+BAO INFO: answer=23843988 (ack=0,ttw=11921994)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=370786128
+BAO INFO: current_time=371964055
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=371964055
+BAO INFO: current_time=375475154
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511099 (65 ms)
+BAO INFO: current_time+3*time_taken=386008451
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=386008451
+BAO INFO: current_time=376689271
+BAO INFO: Must wait 9319180 ticks (172 ms)
+BAO INFO: answer=18638360 (ack=0,ttw=9319180)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=386008451
+BAO INFO: current_time=387167749
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=387167749
+BAO INFO: current_time=390678821
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511072 (65 ms)
+BAO INFO: current_time+3*time_taken=401212037
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=401212037
+BAO INFO: current_time=391892946
+BAO INFO: Must wait 9319091 ticks (172 ms)
+BAO INFO: answer=18638182 (ack=0,ttw=9319091)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=401212037
+BAO INFO: current_time=402371407
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=402371407
+BAO INFO: current_time=405882499
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511092 (65 ms)
+BAO INFO: current_time+3*time_taken=416415775
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=416415775
+BAO INFO: current_time=407096611
+BAO INFO: Must wait 9319164 ticks (172 ms)
+BAO INFO: answer=18638328 (ack=0,ttw=9319164)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=367157647
+BAO INFO: current_time=408224899
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=416415775
+BAO INFO: current_time=417575990
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=408224899
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=417575990
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=9351091 (173 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=417575990
+BAO INFO: current_time=422737113
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5161123 (95 ms)
+BAO INFO: current_time+3*time_taken=438220482
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=422737113
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=9351091 (173 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=422737113
+BAO INFO: current_time=425126889
+BAO INFO: already_fetched_time=9351091
+BAO INFO: time_taken=11740867 (217 ms)
+BAO INFO: current_time+3*time_taken=460349490
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=438220482
+BAO INFO: current_time=426421284
+BAO INFO: Must wait 11799198 ticks (218 ms)
+BAO INFO: answer=23598396 (ack=0,ttw=11799198)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=438220482
+BAO INFO: current_time=439412455
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=460349490
+BAO INFO: current_time=442627555
+BAO INFO: Must wait 17721935 ticks (328 ms)
+BAO INFO: answer=35443870 (ack=0,ttw=17721935)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=439412455
+BAO INFO: current_time=443722941
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4310486 (79 ms)
+BAO INFO: current_time+3*time_taken=456654399
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=456654399
+BAO INFO: current_time=444979593
+BAO INFO: Must wait 11674806 ticks (216 ms)
+BAO INFO: answer=23349612 (ack=0,ttw=11674806)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=456654399
+BAO INFO: current_time=457861855
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=457861855
+BAO INFO: current_time=461372930
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511075 (65 ms)
+BAO INFO: current_time+3*time_taken=471906155
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=460349490
+BAO INFO: current_time=462586868
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=471906155
+BAO INFO: current_time=463440323
+BAO INFO: Must wait 8465832 ticks (156 ms)
+BAO INFO: answer=16931664 (ack=0,ttw=8465832)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=471906155
+BAO INFO: current_time=473050910
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=462586868
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=473050910
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=10464042 (193 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=473050910
+BAO INFO: current_time=478216721
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5165811 (95 ms)
+BAO INFO: current_time+3*time_taken=493714154
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=478216721
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=10464042 (193 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=478216721
+BAO INFO: current_time=480611287
+BAO INFO: already_fetched_time=10464042
+BAO INFO: time_taken=12858608 (238 ms)
+BAO INFO: current_time+3*time_taken=519187111
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=493714154
+BAO INFO: current_time=481910427
+BAO INFO: Must wait 11803727 ticks (218 ms)
+BAO INFO: answer=23607454 (ack=0,ttw=11803727)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=493714154
+BAO INFO: current_time=494901657
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=519187111
+BAO INFO: current_time=498116751
+BAO INFO: Must wait 21070360 ticks (390 ms)
+BAO INFO: answer=42140720 (ack=0,ttw=21070360)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=494901657
+BAO INFO: current_time=499212141
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4310484 (79 ms)
+BAO INFO: current_time+3*time_taken=512143593
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=512143593
+BAO INFO: current_time=500468798
+BAO INFO: Must wait 11674795 ticks (216 ms)
+BAO INFO: answer=23349590 (ack=0,ttw=11674795)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=512143593
+BAO INFO: current_time=513351026
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=513351026
+BAO INFO: current_time=516862132
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511106 (65 ms)
+BAO INFO: current_time+3*time_taken=527395450
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=527395450
+BAO INFO: current_time=518076244
+BAO INFO: Must wait 9319206 ticks (172 ms)
+BAO INFO: answer=18638412 (ack=0,ttw=9319206)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=519187111
+BAO INFO: current_time=520282700
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=527395450
+BAO INFO: current_time=528555742
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=520282700
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=528555742
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=8273042 (153 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=528555742
+BAO INFO: current_time=533716867
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5161125 (95 ms)
+BAO INFO: current_time+3*time_taken=549200242
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=533716867
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=8273042 (153 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=533716867
+BAO INFO: current_time=536106693
+BAO INFO: already_fetched_time=8273042
+BAO INFO: time_taken=10662868 (197 ms)
+BAO INFO: current_time+3*time_taken=568095297
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=549200242
+BAO INFO: current_time=537401091
+BAO INFO: Must wait 11799151 ticks (218 ms)
+BAO INFO: answer=23598302 (ack=0,ttw=11799151)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=549200242
+BAO INFO: current_time=550392249
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=550392249
+BAO INFO: current_time=553903359
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511110 (65 ms)
+BAO INFO: current_time+3*time_taken=564436689
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=564436689
+BAO INFO: current_time=555117479
+BAO INFO: Must wait 9319210 ticks (172 ms)
+BAO INFO: answer=18638420 (ack=0,ttw=9319210)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=564436689
+BAO INFO: current_time=565595961
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=565595961
+BAO INFO: current_time=569107032
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511071 (65 ms)
+BAO INFO: current_time+3*time_taken=579640245
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=579640245
+BAO INFO: current_time=570321148
+BAO INFO: Must wait 9319097 ticks (172 ms)
+BAO INFO: answer=18638194 (ack=0,ttw=9319097)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=579640245
+BAO INFO: current_time=580799608
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=580799608
+BAO INFO: current_time=584310698
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511090 (65 ms)
+BAO INFO: current_time+3*time_taken=594843968
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=594843968
+BAO INFO: current_time=585524765
+BAO INFO: Must wait 9319203 ticks (172 ms)
+BAO INFO: answer=18638406 (ack=0,ttw=9319203)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=568095297
+BAO INFO: current_time=586744494
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=594843968
+BAO INFO: current_time=596004185
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=586744494
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=596004185
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=9259691 (171 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=596004185
+BAO INFO: current_time=601165269
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5161084 (95 ms)
+BAO INFO: current_time+3*time_taken=616648521
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=601165269
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=9259691 (171 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=601165269
+BAO INFO: current_time=603555087
+BAO INFO: already_fetched_time=9259691
+BAO INFO: time_taken=11649509 (215 ms)
+BAO INFO: current_time+3*time_taken=638503614
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=616648521
+BAO INFO: current_time=604849487
+BAO INFO: Must wait 11799034 ticks (218 ms)
+BAO INFO: answer=23598068 (ack=0,ttw=11799034)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=616648521
+BAO INFO: current_time=617840642
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=638503614
+BAO INFO: current_time=621055753
+BAO INFO: Must wait 17447861 ticks (323 ms)
+BAO INFO: answer=34895722 (ack=0,ttw=17447861)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=617840642
+BAO INFO: current_time=622151149
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4310507 (79 ms)
+BAO INFO: current_time+3*time_taken=635082670
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=635082670
+BAO INFO: current_time=623407798
+BAO INFO: Must wait 11674872 ticks (216 ms)
+BAO INFO: answer=23349744 (ack=0,ttw=11674872)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=635082670
+BAO INFO: current_time=636290038
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=638503614
+BAO INFO: current_time=639599203
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=636290038
+BAO INFO: current_time=640410117
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4120079 (76 ms)
+BAO INFO: current_time+3*time_taken=652770354
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=640410117
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=652770354
+BAO INFO: current_time=642804696
+BAO INFO: Must wait 9965658 ticks (184 ms)
+BAO INFO: answer=19931316 (ack=0,ttw=9965658)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=652770354
+BAO INFO: current_time=653937513
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=640410117
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=653937513
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=13527396 (250 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=653937513
+BAO INFO: current_time=659103324
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5165811 (95 ms)
+BAO INFO: current_time+3*time_taken=674600757
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=659103324
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=13527396 (250 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=659103324
+BAO INFO: current_time=661497882
+BAO INFO: already_fetched_time=13527396
+BAO INFO: time_taken=15921954 (294 ms)
+BAO INFO: current_time+3*time_taken=709263744
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=674600757
+BAO INFO: current_time=662797029
+BAO INFO: Must wait 11803728 ticks (218 ms)
+BAO INFO: answer=23607456 (ack=0,ttw=11803728)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=674600757
+BAO INFO: current_time=675788198
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=709263744
+BAO INFO: current_time=679003429
+BAO INFO: Must wait 30260315 ticks (560 ms)
+BAO INFO: answer=60520630 (ack=0,ttw=30260315)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=675788198
+BAO INFO: current_time=680098801
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4310603 (79 ms)
+BAO INFO: current_time+3*time_taken=693030610
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=693030610
+BAO INFO: current_time=681355457
+BAO INFO: Must wait 11675153 ticks (216 ms)
+BAO INFO: answer=23350306 (ack=0,ttw=11675153)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=693030610
+BAO INFO: current_time=694237656
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=694237656
+BAO INFO: current_time=697748733
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511077 (65 ms)
+BAO INFO: current_time+3*time_taken=708281964
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=708281964
+BAO INFO: current_time=698962848
+BAO INFO: Must wait 9319116 ticks (172 ms)
+BAO INFO: answer=18638232 (ack=0,ttw=9319116)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=708281964
+BAO INFO: current_time=709443293
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=709263744
+BAO INFO: current_time=710359311
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=709443293
+BAO INFO: current_time=712954400
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511107 (65 ms)
+BAO INFO: current_time+3*time_taken=723487721
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=712954400
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=723487721
+BAO INFO: current_time=715306449
+BAO INFO: Must wait 8181272 ticks (151 ms)
+BAO INFO: answer=16362544 (ack=0,ttw=8181272)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=723487721
+BAO INFO: current_time=724645020
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=712954400
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=724645020
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=11690620 (216 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=724645020
+BAO INFO: current_time=729810825
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5165805 (95 ms)
+BAO INFO: current_time+3*time_taken=745308240
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=729810825
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=11690620 (216 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=729810825
+BAO INFO: current_time=732205335
+BAO INFO: already_fetched_time=11690620
+BAO INFO: time_taken=14085130 (260 ms)
+BAO INFO: current_time+3*time_taken=774460725
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=745308240
+BAO INFO: current_time=733504473
+BAO INFO: Must wait 11803767 ticks (218 ms)
+BAO INFO: answer=23607534 (ack=0,ttw=11803767)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=745308240
+BAO INFO: current_time=746495705
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=746495705
+BAO INFO: current_time=750006803
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511098 (65 ms)
+BAO INFO: current_time+3*time_taken=760540097
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=760540097
+BAO INFO: current_time=751220921
+BAO INFO: Must wait 9319176 ticks (172 ms)
+BAO INFO: answer=18638352 (ack=0,ttw=9319176)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=760540097
+BAO INFO: current_time=761699392
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=761699392
+BAO INFO: current_time=765210475
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511083 (65 ms)
+BAO INFO: current_time+3*time_taken=775743724
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=774460725
+BAO INFO: current_time=766424417
+BAO INFO: Must wait 8036308 ticks (148 ms)
+BAO INFO: answer=16072616 (ack=0,ttw=8036308)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=775743724
+BAO INFO: current_time=767552877
+BAO INFO: Must wait 8190847 ticks (151 ms)
+BAO INFO: answer=16381694 (ack=0,ttw=8190847)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=774460725
+BAO INFO: current_time=775589381
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=775743724
+BAO INFO: current_time=776890781
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=775589381
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=776890781
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=1301400 (24 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=776890781
+BAO INFO: current_time=782047128
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5156347 (95 ms)
+BAO INFO: current_time+3*time_taken=797516169
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=782047128
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=1301400 (24 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=782047128
+BAO INFO: current_time=784432211
+BAO INFO: already_fetched_time=1301400
+BAO INFO: time_taken=3686483 (68 ms)
+BAO INFO: current_time+3*time_taken=795491660
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=797516169
+BAO INFO: current_time=785717126
+BAO INFO: Must wait 11799043 ticks (218 ms)
+BAO INFO: answer=23598086 (ack=0,ttw=11799043)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=797516169
+BAO INFO: current_time=798708297
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=795491660
+BAO INFO: current_time=801923031
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=798708297
+BAO INFO: current_time=802733957
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4025660 (74 ms)
+BAO INFO: current_time+3*time_taken=814810937
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=802733957
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=814810937
+BAO INFO: current_time=805128538
+BAO INFO: Must wait 9682399 ticks (179 ms)
+BAO INFO: answer=19364798 (ack=0,ttw=9682399)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=814810937
+BAO INFO: current_time=815989493
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=802733957
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=815989493
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=13255536 (245 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=815989493
+BAO INFO: current_time=821155321
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5165828 (95 ms)
+BAO INFO: current_time+3*time_taken=836652805
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=821155321
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=13255536 (245 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=821155321
+BAO INFO: current_time=823549887
+BAO INFO: already_fetched_time=13255536
+BAO INFO: time_taken=15650102 (289 ms)
+BAO INFO: current_time+3*time_taken=870500193
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=836652805
+BAO INFO: current_time=824849025
+BAO INFO: Must wait 11803780 ticks (218 ms)
+BAO INFO: answer=23607560 (ack=0,ttw=11803780)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=836652805
+BAO INFO: current_time=837840170
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=870500193
+BAO INFO: current_time=841055410
+BAO INFO: Must wait 29444783 ticks (545 ms)
+BAO INFO: answer=58889566 (ack=0,ttw=29444783)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=837840170
+BAO INFO: current_time=842150803
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4310633 (79 ms)
+BAO INFO: current_time+3*time_taken=855082702
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=855082702
+BAO INFO: current_time=843407456
+BAO INFO: Must wait 11675246 ticks (216 ms)
+BAO INFO: answer=23350492 (ack=0,ttw=11675246)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=855082702
+BAO INFO: current_time=856289683
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=856289683
+BAO INFO: current_time=859800792
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511109 (65 ms)
+BAO INFO: current_time+3*time_taken=870334119
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=870334119
+BAO INFO: current_time=861014908
+BAO INFO: Must wait 9319211 ticks (172 ms)
+BAO INFO: answer=18638422 (ack=0,ttw=9319211)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=870334119
+BAO INFO: current_time=871495304
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=870500193
+BAO INFO: current_time=872306212
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=871495304
+BAO INFO: current_time=875006407
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511103 (65 ms)
+BAO INFO: current_time+3*time_taken=885539716
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=875006407
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=885539716
+BAO INFO: current_time=877358446
+BAO INFO: Must wait 8181270 ticks (151 ms)
+BAO INFO: answer=16362540 (ack=0,ttw=8181270)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=885539716
+BAO INFO: current_time=886696980
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=875006407
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=886696980
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=11690573 (216 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=886696980
+BAO INFO: current_time=891862831
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5165851 (95 ms)
+BAO INFO: current_time+3*time_taken=907360384
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=891862831
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=11690573 (216 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=891862831
+BAO INFO: current_time=894257392
+BAO INFO: already_fetched_time=11690573
+BAO INFO: time_taken=14085134 (260 ms)
+BAO INFO: current_time+3*time_taken=936512794
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=907360384
+BAO INFO: current_time=895556533
+BAO INFO: Must wait 11803851 ticks (218 ms)
+BAO INFO: answer=23607702 (ack=0,ttw=11803851)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=907360384
+BAO INFO: current_time=908547724
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=908547724
+BAO INFO: current_time=912058803
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511079 (65 ms)
+BAO INFO: current_time+3*time_taken=922592040
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=922592040
+BAO INFO: current_time=913272926
+BAO INFO: Must wait 9319114 ticks (172 ms)
+BAO INFO: answer=18638228 (ack=0,ttw=9319114)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=922592040
+BAO INFO: current_time=923751404
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=923751404
+BAO INFO: current_time=927262472
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511068 (65 ms)
+BAO INFO: current_time+3*time_taken=937795676
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=937795676
+BAO INFO: current_time=928476591
+BAO INFO: Must wait 9319085 ticks (172 ms)
+BAO INFO: answer=18638170 (ack=0,ttw=9319085)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=937795676
+BAO INFO: current_time=938955061
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=938955061
+BAO INFO: current_time=942466148
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511087 (65 ms)
+BAO INFO: current_time+3*time_taken=952999409
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=952999409
+BAO INFO: current_time=943680267
+BAO INFO: Must wait 9319142 ticks (172 ms)
+BAO INFO: answer=18638284 (ack=0,ttw=9319142)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=936512794
+BAO INFO: current_time=946385872
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=952999409
+BAO INFO: current_time=954159478
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=946385872
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=954159478
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=7773606 (143 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=954159478
+BAO INFO: current_time=959320595
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5161117 (95 ms)
+BAO INFO: current_time+3*time_taken=974803946
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=959320595
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=7773606 (143 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=959320595
+BAO INFO: current_time=961710423
+BAO INFO: already_fetched_time=7773606
+BAO INFO: time_taken=10163434 (188 ms)
+BAO INFO: current_time+3*time_taken=992200725
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=974803946
+BAO INFO: current_time=963004814
+BAO INFO: Must wait 11799132 ticks (218 ms)
+BAO INFO: answer=23598264 (ack=0,ttw=11799132)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=974803946
+BAO INFO: current_time=975995981
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=992200725
+BAO INFO: current_time=979211011
+BAO INFO: Must wait 12989714 ticks (240 ms)
+BAO INFO: answer=25979428 (ack=0,ttw=12989714)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=975995981
+BAO INFO: current_time=980306416
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4310435 (79 ms)
+BAO INFO: current_time+3*time_taken=993237721
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=993237721
+BAO INFO: current_time=981563067
+BAO INFO: Must wait 11674654 ticks (216 ms)
+BAO INFO: answer=23349308 (ack=0,ttw=11674654)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=992200725
+BAO INFO: current_time=993296324
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=993237721
+BAO INFO: current_time=994444337
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=993296324
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=994444337
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=1148013 (21 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=994444337
+BAO INFO: current_time=999600683
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5156346 (95 ms)
+BAO INFO: current_time+3*time_taken=1015069721
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=999600683
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=1148013 (21 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=999600683
+BAO INFO: current_time=1001990497
+BAO INFO: already_fetched_time=1148013
+BAO INFO: time_taken=3537827 (65 ms)
+BAO INFO: current_time+3*time_taken=1012603978
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1015069721
+BAO INFO: current_time=1003284898
+BAO INFO: Must wait 11784823 ticks (218 ms)
+BAO INFO: answer=23569646 (ack=0,ttw=11784823)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1015069721
+BAO INFO: current_time=1016285553
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=1012603978
+BAO INFO: current_time=1019490800
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1016285553
+BAO INFO: current_time=1020311214
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4025661 (74 ms)
+BAO INFO: current_time+3*time_taken=1032388197
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=1020311214
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1032388197
+BAO INFO: current_time=1022724761
+BAO INFO: Must wait 9663436 ticks (178 ms)
+BAO INFO: answer=19326872 (ack=0,ttw=9663436)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1032388197
+BAO INFO: current_time=1033540856
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=1020311214
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=1033540856
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=13229642 (244 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1033540856
+BAO INFO: current_time=1038725676
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5184820 (96 ms)
+BAO INFO: current_time+3*time_taken=1054280136
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=1038725676
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=13229642 (244 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=1038725676
+BAO INFO: current_time=1041139200
+BAO INFO: already_fetched_time=13229642
+BAO INFO: time_taken=15643166 (289 ms)
+BAO INFO: current_time+3*time_taken=1088068698
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1054280136
+BAO INFO: current_time=1042452565
+BAO INFO: Must wait 11827571 ticks (219 ms)
+BAO INFO: answer=23655142 (ack=0,ttw=11827571)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1054280136
+BAO INFO: current_time=1055507586
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1055507586
+BAO INFO: current_time=1059028127
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3520541 (65 ms)
+BAO INFO: current_time+3*time_taken=1069589750
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1069589750
+BAO INFO: current_time=1060256467
+BAO INFO: Must wait 9333283 ticks (172 ms)
+BAO INFO: answer=18666566 (ack=0,ttw=9333283)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=1088068698
+BAO INFO: current_time=1069241904
+BAO INFO: Must wait 18826794 ticks (348 ms)
+BAO INFO: answer=37653588 (ack=0,ttw=18826794)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1069589750
+BAO INFO: current_time=1070743467
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1070743467
+BAO INFO: current_time=1074264048
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3520581 (65 ms)
+BAO INFO: current_time+3*time_taken=1084825791
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1084825791
+BAO INFO: current_time=1075492393
+BAO INFO: Must wait 9333398 ticks (172 ms)
+BAO INFO: answer=18666796 (ack=0,ttw=9333398)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1084825791
+BAO INFO: current_time=1085982308
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=1088068698
+BAO INFO: current_time=1089173771
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1085982308
+BAO INFO: current_time=1089994167
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4011859 (74 ms)
+BAO INFO: current_time+3*time_taken=1102029744
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=1089994167
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1102029744
+BAO INFO: current_time=1092407714
+BAO INFO: Must wait 9622030 ticks (178 ms)
+BAO INFO: answer=19244060 (ack=0,ttw=9622030)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1102029744
+BAO INFO: current_time=1103223780
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=1089994167
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=1103223780
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=13229613 (244 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1103223780
+BAO INFO: current_time=1108408565
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=5184785 (96 ms)
+BAO INFO: current_time+3*time_taken=1123962920
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=1108408565
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=13229613 (244 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=1108408565
+BAO INFO: current_time=1110822096
+BAO INFO: already_fetched_time=13229613
+BAO INFO: time_taken=15643144 (289 ms)
+BAO INFO: current_time+3*time_taken=1157751528
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1123962920
+BAO INFO: current_time=1112135460
+BAO INFO: Must wait 11827460 ticks (219 ms)
+BAO INFO: answer=23654920 (ack=0,ttw=11827460)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1123962920
+BAO INFO: current_time=1125190485
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1125190485
+BAO INFO: current_time=1128711077
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3520592 (65 ms)
+BAO INFO: current_time+3*time_taken=1139272853
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=1157751528
+BAO INFO: current_time=1129939240
+BAO INFO: Must wait 27812288 ticks (515 ms)
+BAO INFO: answer=55624576 (ack=0,ttw=27812288)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1139272853
+BAO INFO: current_time=1131086664
+BAO INFO: Must wait 8186189 ticks (151 ms)
+BAO INFO: answer=16372378 (ack=0,ttw=8186189)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1139272853
+BAO INFO: current_time=1140434932
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1140434932
+BAO INFO: current_time=1143955490
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3520558 (65 ms)
+BAO INFO: current_time+3*time_taken=1154517164
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1154517164
+BAO INFO: current_time=1145183833
+BAO INFO: Must wait 9333331 ticks (172 ms)
+BAO INFO: answer=18666662 (ack=0,ttw=9333331)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1154517164
+BAO INFO: current_time=1155673722
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=1157751528
+BAO INFO: current_time=1158899147
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=1155673722
+BAO INFO: current_time=1159719560
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4045838 (74 ms)
+BAO INFO: current_time+3*time_taken=1171857074
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: Sending to CPU 1 interrupt 7
+BAO INFO: current_time=1159719560
+BAO INFO: CPU 1 said: 7
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: CPU 1 said: 7
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1171857074
+BAO INFO: current_time=1162133104
+BAO INFO: Must wait 9723970 ticks (180 ms)
+BAO INFO: answer=19447940 (ack=0,ttw=9723970)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=1171857074
+BAO INFO: current_time=1173057921
+BAO INFO: 
+BAO INFO: Sending to CPU 1 interrupt 6
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	last_start_time=1159719560
+BAO INFO: CPU 1 said: 6
+BAO INFO: 	current_time=1173057921
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=13338361 (247 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
