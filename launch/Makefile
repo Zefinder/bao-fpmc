@@ -17,8 +17,7 @@ demo:
 minicom:
 	./launch-minicom.sh $(CONFIG) $(SELECTED_MAIN)
 
-clean:
-	make clean -C ../bao-hypervisor
+clean: clean-image
 	rm -rf ../build-essentials/$(PLATFORM)
 	rm -rf ./wrkdir
 
@@ -30,3 +29,4 @@ clean-image:
 	rm -rf ../freertos-bao-fpmc/build
 	rm -rf ../baremetal-bao-fpmc/build
 	rm -rf ../images/build/*
+	make clean -C ../bao-hypervisor

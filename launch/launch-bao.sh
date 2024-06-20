@@ -226,7 +226,6 @@ cp -L "$BAO_CONFIG_DIRECTORY"/"$config_value"/"$PLATFORM".c\
     "$BAO_WRKDIR_IMGS"/config/"$config_value".c
 
 # Build Bao
-# TODO Clean Bao before each use (changing a parameter in the make won't recompile everything (example with MEMORY_REQUEST_WAIT from y to n and no error))
 make -C $BAO_DIRECTORY\
     PLATFORM="$PLATFORM"\
     CONFIG_REPO="$BAO_WRKDIR_IMGS"/config\
