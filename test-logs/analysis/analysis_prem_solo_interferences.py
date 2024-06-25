@@ -17,40 +17,25 @@ elapsed_time_array_varname_template = elapsed_time_array_varname_template_genera
 min_varname_template = min_varname_template_generator.format(template='{data_size:d}kB_ns')
 max_varname_template = max_varname_template_generator.format(template='{data_size:d}kB_ns')
 
-
-def estimate_coefficients(x, y):
-    # Number of observations/points 
-    n = np.size(x) 
-
-    # Mean of x and y vector 
-    m_x = np.mean(x) 
-    m_y = np.mean(y) 
-
-    # Calculating cross-deviation and deviation about x 
-    SS_xy = np.sum(y*x) - n*m_y*m_x 
-    SS_xx = np.sum(x*x) - n*m_x*m_x 
-
-    # Calculating regression coefficients 
-    b_1 = SS_xy / SS_xx 
-    b_0 = m_y - b_1*m_x 
-    
-    return (b_0, b_1) 
-
-
 def generate_solo_prem_curve(solo_log_max_varnames: dict[str,Any],
-                                          prem_log_max_varnames: dict[str,Any]) -> None:
+                             cache_log_max_varnames: dict[str,Any],
+                             prem_log_max_varnames: dict[str,Any]) -> None:
     # Generate x 
     x = [*range(min_data_size, max_data_size + 1, data_size_increment)]
     
     # For all sizes get the y value
     y_solo = [solo_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
+    y_cache = [cache_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
+    y_test = [y_solo[i] + y_cache[i] for i in range(len(y_solo))]
     y_prem = [prem_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
     
     # Set plot title
     plt.title('Worst case execution time for solo and one interference with respect to prefetched data size (in nanoseconds)')
     plt.xticks([*range(0, max_data_size + 1, 20)])
-    plt.plot(x, y_solo, label='No interference')
-    plt.plot(x, y_prem, label='No interference (PREM)')
+    plt.plot(x, y_solo, label='Prefetch')
+    plt.plot(x, y_cache, label='Cache clear')
+    plt.plot(x, y_test, label='Theoric PREM (cache_clear + prefetch)')
+    plt.plot(x, y_prem, label='Experimental PREM (cache_clear + prefetch)')
     plt.xlabel('Prefetched data size')
     plt.ylabel('Execution time')
     plt.legend()
@@ -168,11 +153,13 @@ def generate_solo_interference_regressed_difference(y_pred: tuple[float]) -> Non
 def main():
     # Big files so modules will crash... Only get few variables
     solo_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-solo-24-06-03-2.py')
+    cache_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-cache-clear-24-06-24-1.py')
     prem_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-prem-solo-24-06-21-1.py')
     
     # Plot curves with solo and interference 
     plt.figure('Solo and interference', figsize=(16, 10))
     generate_solo_prem_curve(solo_log_max_varnames=solo_log_max_varnames,
+                             cache_log_max_varnames=cache_log_max_varnames,
                              prem_log_max_varnames=prem_log_max_varnames)
     plt.savefig('../graphs/wcet_solo_prem.png')
     

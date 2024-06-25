@@ -24,10 +24,14 @@ def generate_microbench_bargraph(microbench_log_varname: dict[str, Any]) -> None
     execution_max = {
         'hypercall': (microbench_log_varname[max_varname_template.format(name='hypercall')]),
         'IPI': (microbench_log_varname[max_varname_template.format(name='ipi')]),
-        'arbitration (prio 0)': (microbench_log_varname[max_varname_template.format(name='prio0')]),
-        'arbitration (prio 1)': (microbench_log_varname[max_varname_template.format(name='prio2')]),
-        'arbitration (prio 2)': (microbench_log_varname[max_varname_template.format(name='prio4')]),
-        'arbitration (prio 3)': (microbench_log_varname[max_varname_template.format(name='prio6')]),
+        'arbitration (prio 0)': (microbench_log_varname[max_varname_template.format(name='request_prio0')]),
+        'arbitration (prio 1)': (microbench_log_varname[max_varname_template.format(name='request_prio2')]),
+        'arbitration (prio 2)': (microbench_log_varname[max_varname_template.format(name='request_prio4')]),
+        'arbitration (prio 3)': (microbench_log_varname[max_varname_template.format(name='request_prio6')]),
+        'revoke (prio 0)': (microbench_log_varname[max_varname_template.format(name='revoke_prio0')]),
+        # 'revoke (prio 1)': (microbench_log_varname[max_varname_template.format(name='revoke_prio2')]),
+        # 'revoke (prio 2)': (microbench_log_varname[max_varname_template.format(name='revoke_prio4')]),
+        # 'revoke (prio 3)': (microbench_log_varname[max_varname_template.format(name='revoke_prio6')]),
     }
     
     x = np.arange(len(execution))  # the label locations
@@ -46,6 +50,7 @@ def generate_microbench_bargraph(microbench_log_varname: dict[str, Any]) -> None
     ax.set_ylabel('Execution time (in ns)')
     ax.set_title('Worst case execution time for important PREM steps (in nanoseconds)')
     ax.legend(loc='upper right')
+    
 
 def main():
     # Setting path to root folder
