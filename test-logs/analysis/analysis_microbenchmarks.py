@@ -29,9 +29,9 @@ def generate_microbench_bargraph(microbench_log_varname: dict[str, Any]) -> None
         'arbitration (prio 2)': (microbench_log_varname[max_varname_template.format(name='request_prio4')]),
         'arbitration (prio 3)': (microbench_log_varname[max_varname_template.format(name='request_prio6')]),
         'revoke (prio 0)': (microbench_log_varname[max_varname_template.format(name='revoke_prio0')]),
-        # 'revoke (prio 1)': (microbench_log_varname[max_varname_template.format(name='revoke_prio2')]),
-        # 'revoke (prio 2)': (microbench_log_varname[max_varname_template.format(name='revoke_prio4')]),
-        # 'revoke (prio 3)': (microbench_log_varname[max_varname_template.format(name='revoke_prio6')]),
+        'revoke (prio 1)': (microbench_log_varname[max_varname_template.format(name='revoke_prio2')]),
+        'revoke (prio 2)': (microbench_log_varname[max_varname_template.format(name='revoke_prio4')]),
+        'revoke (prio 3)': (microbench_log_varname[max_varname_template.format(name='revoke_prio6')]),
     }
     
     x = np.arange(len(execution))  # the label locations
@@ -57,7 +57,7 @@ def main():
     sys.path.append('../')
 
     # Import extracted log files 
-    microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-06-06-4')
+    microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-06-25-2')
     
     # Extract variables
     microbench_log_varname = get_module_variables(microbench_log)
