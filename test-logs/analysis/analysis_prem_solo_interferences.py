@@ -3,6 +3,7 @@ import sys
 import importlib 
 from analyse_utils import *
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import numpy as np
 from typing import Any
 
@@ -17,16 +18,16 @@ elapsed_time_array_varname_template = elapsed_time_array_varname_template_genera
 min_varname_template = min_varname_template_generator.format(template='{data_size:d}kB_ns')
 max_varname_template = max_varname_template_generator.format(template='{data_size:d}kB_ns')
 
-def generate_solo_prem_curve(solo_log_max_varnames: dict[str,Any],
-                             cache_log_max_varnames: dict[str,Any],
-                             prem_log_max_varnames: dict[str,Any]) -> None:
+def generate_solo_cache_prem_curve(solo_log_max_varnames: dict[str,Any],
+                                   cache_log_max_varnames: dict[str,Any],
+                                   prem_log_max_varnames: dict[str,Any]) -> None:
     # Generate x 
     x = [*range(min_data_size, max_data_size + 1, data_size_increment)]
     
     # For all sizes get the y value
     y_solo = [solo_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
     y_cache = [cache_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
-    y_test = [y_solo[i] + y_cache[i] for i in range(len(y_solo))]
+    y_theo = [y_solo[i] + y_cache[i] for i in range(len(y_solo))]
     y_prem = [prem_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
     
     # Set plot title
@@ -34,29 +35,33 @@ def generate_solo_prem_curve(solo_log_max_varnames: dict[str,Any],
     plt.xticks([*range(0, max_data_size + 1, 20)])
     plt.plot(x, y_solo, label='Prefetch')
     plt.plot(x, y_cache, label='Cache clear')
-    plt.plot(x, y_test, label='Theoric PREM (cache_clear + prefetch)')
-    plt.plot(x, y_prem, label='Experimental PREM (cache_clear + prefetch)')
+    plt.plot(x, y_theo, label='Theoric memory phase (cache_clear + prefetch)')
+    plt.plot(x, y_prem, label='Experimental memory phase (cache_clear + prefetch)')
     plt.xlabel('Prefetched data size')
     plt.ylabel('Execution time')
     plt.legend()
     
     
-def generate_solo_interference_ratio(solo_log_max_varnames: dict[str,Any],
-                                     interference1_log_max_varnames: dict[str,Any]) -> None:
+def generate_solo_cache_prem_ratio_curve(solo_log_max_varnames: dict[str,Any],
+                                         cache_log_max_varnames: dict[str,Any],
+                                         prem_log_max_varnames: dict[str,Any]) -> None:
     # Generate x 
     x = [*range(min_data_size, max_data_size + 1, data_size_increment)]
     
     # For all sizes get the y value
     y_solo = [solo_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
-    y_interference1 = [interference1_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
-    y_ratio = [y_interference1[i] / y_solo[i] for i in range(0, len(y_solo))]
+    y_cache = [cache_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
+    y_prem = [prem_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
+    y_cp_ratio = [(y_cache[i] / y_prem[i]) * 100 for i in range(0, len(y_solo))]
     
     # Set plot title
-    plt.title('Ratio between worst case execution time of one interference and solo')
+    plt.title('Maximum cache clear presence in memory phase')
     plt.xticks([*range(0, max_data_size + 1, 20)])
     plt.xlabel('Prefetched data size')
-    plt.ylim(2.1, 3.8)
-    plt.plot(x, y_ratio)
+    plt.plot(x, y_cp_ratio)
+    plt.text(-15, 72, '{:.04f}%'.format(y_cp_ratio[0]), color=u'#1f77b4', fontsize=12)
+    plt.text(515, 37, '{:.04f}%'.format(y_cp_ratio[max_data_size - 1]), color=u'#1f77b4', fontsize=12)
+    plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter())
     
 
 def generate_solo_interference_difference(solo_log_max_varnames: dict[str,Any],
@@ -157,11 +162,17 @@ def main():
     prem_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-prem-solo-24-06-21-1.py')
     
     # Plot curves with solo and interference 
-    plt.figure('Solo and interference', figsize=(16, 10))
-    generate_solo_prem_curve(solo_log_max_varnames=solo_log_max_varnames,
-                             cache_log_max_varnames=cache_log_max_varnames,
-                             prem_log_max_varnames=prem_log_max_varnames)
-    plt.savefig('../graphs/wcet_solo_prem.png')
+    plt.figure('fetch cache prem', figsize=(16, 10))
+    generate_solo_cache_prem_curve(solo_log_max_varnames=solo_log_max_varnames,
+                                   cache_log_max_varnames=cache_log_max_varnames,
+                                   prem_log_max_varnames=prem_log_max_varnames)
+    plt.savefig('../graphs/wcet_solo_cache_prem.png')
+    
+    plt.figure('fetch cache prem ratio', figsize=(16, 10))
+    generate_solo_cache_prem_ratio_curve(solo_log_max_varnames=solo_log_max_varnames,
+                                   cache_log_max_varnames=cache_log_max_varnames,
+                                   prem_log_max_varnames=prem_log_max_varnames)
+    plt.savefig('../graphs/wcet_solo_cache_prem_ratio.png')
     
     # #Plot ratio between solo and interference 
     # plt.figure('Solo and interference ratio', figsize=(16, 10))

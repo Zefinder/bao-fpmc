@@ -57,7 +57,7 @@ def main():
     sys.path.append('../')
 
     # Import extracted log files 
-    microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-06-25-2')
+    microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-06-25-3')
     
     # Extract variables
     microbench_log_varname = get_module_variables(microbench_log)
