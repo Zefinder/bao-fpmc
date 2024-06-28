@@ -31,12 +31,12 @@ def generate_solo_cache_prem_curve(solo_log_max_varnames: dict[str,Any],
     y_prem = [prem_log_max_varnames[max_varname_template.format(data_size=data_size)] for data_size in x]
     
     # Set plot title
-    plt.title('Worst case execution time for solo and one interference with respect to prefetched data size (in nanoseconds)')
+    plt.title('Worst case execution time for memory phase with respect to prefetched data size (in nanoseconds)')
     plt.xticks([*range(0, max_data_size + 1, 20)])
     plt.plot(x, y_solo, label='Prefetch')
     plt.plot(x, y_cache, label='Cache clear')
     plt.plot(x, y_theo, label='Theoric memory phase (cache_clear + prefetch)')
-    plt.plot(x, y_prem, label='Experimental memory phase (cache_clear + prefetch)')
+    plt.plot(x, y_prem, label='Experimental memory phase (cache_clear + prefetch + hypercalls)')
     plt.xlabel('Prefetched data size')
     plt.ylabel('Execution time')
     plt.legend()
@@ -159,7 +159,7 @@ def main():
     # Big files so modules will crash... Only get few variables
     solo_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-solo-24-06-03-2.py')
     cache_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-cache-clear-24-06-24-1.py')
-    prem_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-prem-solo-24-06-21-1.py')
+    prem_log_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-prem-solo-24-06-26-1.py')
     
     # Plot curves with solo and interference 
     plt.figure('fetch cache prem', figsize=(16, 10))
@@ -197,7 +197,6 @@ def main():
     # plt.figure('Solo and interference regressed difference', figsize=(16, 10))
     # generate_solo_interference_regressed_difference(y_pred=y_pred)
     # plt.savefig('../graphs/wcet_solo_interference_regressed_difference.png')
-    
     
         
 if __name__ == '__main__':
