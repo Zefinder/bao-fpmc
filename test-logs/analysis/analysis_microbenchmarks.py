@@ -129,10 +129,12 @@ def main():
     sys.path.append('../')
 
     # Import extracted log files 
-    microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-06-25-3')
+    microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-07-03-1')
+    microbench_solo_log = importlib.import_module('extract.bench_solo_legacy-execution-microbenchmarks-24-07-03-1')
     
     # Extract variables
     microbench_log_varname = get_module_variables(microbench_log)
+    microbench_solo_log_varname = get_module_variables(microbench_solo_log)
     
     # Plot max time in bars
     plt.figure('microbench max bars')
@@ -148,6 +150,21 @@ def main():
     plt.figure('microbench avg bars')
     generate_microbench_avg_bargraph(microbench_log_varname=microbench_log_varname)
     plt.savefig('../graphs/wcet_microbenchmarks_avg.png')
+    
+    # Plot max time in bars
+    plt.figure('microbench solo max bars')
+    generate_microbench_max_bargraph(microbench_log_varname=microbench_solo_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_max.png')
+    
+    # Plot min time in bars 
+    plt.figure('microbench solo min bars')
+    generate_microbench_min_bargraph(microbench_log_varname=microbench_solo_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_min.png')
+    
+    # Plot average time in bars 
+    plt.figure('microbench solo avg bars')
+    generate_microbench_avg_bargraph(microbench_log_varname=microbench_solo_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_avg.png')
     
 
 if __name__ == '__main__':
