@@ -131,11 +131,16 @@ def main():
     # Import extracted log files 
     microbench_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-07-03-1')
     microbench_solo_log = importlib.import_module('extract.bench_solo_legacy-execution-microbenchmarks-24-07-03-1')
+    microbench_wait_log = importlib.import_module('extract.bench_interference3_nop-execution-microbenchmarks-24-07-05-1')
+    microbench_solo_wait_log = importlib.import_module('extract.bench_solo_legacy-execution-microbenchmarks-24-07-05-1')
     
     # Extract variables
     microbench_log_varname = get_module_variables(microbench_log)
     microbench_solo_log_varname = get_module_variables(microbench_solo_log)
+    microbench_wait_log_varname = get_module_variables(microbench_wait_log)
+    microbench_solo_wait_log_varname = get_module_variables(microbench_solo_wait_log)
     
+    # Bench interference
     # Plot max time in bars
     plt.figure('microbench max bars')
     generate_microbench_max_bargraph(microbench_log_varname=microbench_log_varname)
@@ -151,20 +156,55 @@ def main():
     generate_microbench_avg_bargraph(microbench_log_varname=microbench_log_varname)
     plt.savefig('../graphs/wcet_microbenchmarks_avg.png')
     
+    
+    # Bench solo
     # Plot max time in bars
     plt.figure('microbench solo max bars')
     generate_microbench_max_bargraph(microbench_log_varname=microbench_solo_log_varname)
-    plt.savefig('../graphs/wcet_microbenchmarks_solo_max.png')
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_wait_max.png')
     
     # Plot min time in bars 
     plt.figure('microbench solo min bars')
     generate_microbench_min_bargraph(microbench_log_varname=microbench_solo_log_varname)
-    plt.savefig('../graphs/wcet_microbenchmarks_solo_min.png')
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_wait_min.png')
     
     # Plot average time in bars 
     plt.figure('microbench solo avg bars')
     generate_microbench_avg_bargraph(microbench_log_varname=microbench_solo_log_varname)
-    plt.savefig('../graphs/wcet_microbenchmarks_solo_avg.png')
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_wait_avg.png')
+    
+    
+    # Bench interference with 100µs wait between each hypercall
+    # Plot max time in bars
+    plt.figure('microbench wait max bars')
+    generate_microbench_max_bargraph(microbench_log_varname=microbench_wait_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_wait_max.png')
+    
+    # Plot min time in bars 
+    plt.figure('microbench wait min bars')
+    generate_microbench_min_bargraph(microbench_log_varname=microbench_wait_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_wait_min.png')
+    
+    # Plot average time in bars 
+    plt.figure('microbench wait avg bars')
+    generate_microbench_avg_bargraph(microbench_log_varname=microbench_wait_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_wait_avg.png')
+    
+    
+    # Bench solo with 100µs wait between each hypercall
+    plt.figure('microbench solo wait max bars')
+    generate_microbench_max_bargraph(microbench_log_varname=microbench_solo_wait_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_wait_max.png')
+    
+    # Plot min time in bars 
+    plt.figure('microbench solo wait min bars')
+    generate_microbench_min_bargraph(microbench_log_varname=microbench_solo_wait_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_wait_min.png')
+    
+    # Plot average time in bars 
+    plt.figure('microbench solo wait avg bars')
+    generate_microbench_avg_bargraph(microbench_log_varname=microbench_solo_wait_log_varname)
+    plt.savefig('../graphs/wcet_microbenchmarks_solo_wait_avg.png')
     
 
 if __name__ == '__main__':
