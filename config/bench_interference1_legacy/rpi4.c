@@ -3,7 +3,6 @@
 // List of used images
 VM_IMAGE(freertos_image0, XSTR(../images/build/freertos_hyp.bin));
 VM_IMAGE(baremetal_image1, XSTR(../images/build/baremetal_hyp.bin));
-VM_IMAGE(baremetal_image2, XSTR(../images/build/baremetal_hyp.bin));
 
 
 // Configuration struct
@@ -17,6 +16,9 @@ struct config config = {
     .vmlist_size = 2,
     .vmlist = {
         {
+            // CPU affinity
+            .cpu_affinity = 0b0001,
+
             // Image description
             .image = {
                 .base_addr = 0x00000000,
