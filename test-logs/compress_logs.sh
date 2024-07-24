@@ -13,19 +13,32 @@ readarray -t files_to_compress < <(find . -type f -size +25M -and -name "*.log")
 
 for log_file in "${files_to_compress[@]}"
 do
+    # Removing .log and putting .tar.bz2
     archive_file=${log_file::-4}'.tar.bz2'
+
+    # If archive already exists, then do nothing, else compress
     if [[ -f "$archive_file" ]]
     then
         echo "Archive already exists for ${log_file}!"
         echo 'Skip!'
         echo
     else
+        # Get original file size
         file_size=$(du -hs "$log_file" | cut -f1)
+        
+        # Generating bzip2 archive
         echo "Generating archive: ${archive_file}... (original size: ${file_size})"
         tar -jcf "${archive_file}" "${log_file}"
+
+        # Get archive size
         archive_size=$(du -hs "$archive_file" | cut -f1)
+        
+        # Append to gitignore file (without the first .)
         echo 'Adding to .gitignore...'
+        log_file=${log_file:1}
         echo "${log_file}" >> ./.gitignore
+
+        # Display archive size, if over 100MB then print red, else if over 50MB print yellow
         echo "Done! (final size: ${archive_size})"
         archive_size=${archive_size::-1}
         last_char=${archive_size:-1}
