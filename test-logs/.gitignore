@@ -25,3 +25,6 @@ bench_solo_legacy-execution-microbenchmarks-24-07-05-1.log
 bench_interference1_legacy-execution-prem-solo-24-07-16-1.log
 bench_interference2_legacy-execution-prem-solo-24-07-17-1.log
 bench_interference3_legacy-execution-prem-solo-24-07-18-1.log
+bench_interference1_legacy-execution-solo-24-07-19-1.log
+bench_interference2_legacy-execution-solo-24-07-22-1.log
+bench_interference3_legacy-execution-solo-24-07-23-1.log
