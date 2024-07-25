@@ -69,6 +69,21 @@ def plot_interference_curves(title: str,
     plt.ylabel(ylabel='Prefetch time (in ns)')
     plt.legend()
 
+
+def plot_solo_curves(solo_legacy_max: dict[str, Any],
+                     solo_prem_max: dict[str, Any]):
+    # Generate y values from the max
+    x = [*range(1, len(solo_legacy_max) + 1)]
+    y_solo = [solo_legacy_max[max_varname_template.format(data_size=data_size)] for data_size in x]
+    y_solo_prem = [solo_prem_max[max_varname_template.format(data_size=data_size)] for data_size in x]
+    plt.title(label="Worst case execution time of the solo execution without interfering core with and without PREM (in nanoseconds)")
+    plt.plot(x, y_solo, label='Solo legacy')
+    plt.plot(x, y_solo_prem, label='Solo PREM')
+    plt.xlabel(xlabel='Prefetched data size (in kB)')
+    plt.ylabel(ylabel='Prefetch time (in ns)')
+    plt.legend()
+
+
 def main():
     # Setting path to root folder
     sys.path.append('../')
@@ -81,7 +96,7 @@ def main():
     interference3_legacy_max_varnames = get_variables_from_big_file('max_', '../extract/bench_interference3_legacy-execution-solo-24-07-23-1.py')
     
     # PREM
-    solo_prem_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-prem-solo-24-06-26-1.py')
+    solo_prem_max_varnames = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-prem-solo-24-07-24-1.py')
     interference1_prem_max_varnames = get_variables_from_big_file('max_', '../extract/bench_interference1_legacy-execution-prem-solo-24-07-16-1.py')
     interference2_prem_max_varnames = get_variables_from_big_file('max_', '../extract/bench_interference2_legacy-execution-prem-solo-24-07-17-1.py')
     interference3_prem_max_varnames = get_variables_from_big_file('max_', '../extract/bench_interference3_legacy-execution-prem-solo-24-07-18-1.py')
@@ -118,6 +133,11 @@ def main():
                              interference_legacy_curve=interference3_legacy_max_varnames,
                              interference_prem_curve=interference3_prem_max_varnames)
     plt.savefig('../graphs/comparison_prem_legacy_interference3.png')
+    
+    plt.figure('solos', figsize=(15, 10))
+    plot_solo_curves(solo_legacy_max=solo_legacy_max_varnames,
+                     solo_prem_max=solo_prem_max_varnames)
+    plt.savefig('../graphs/comparison_solo_legacy_prem.png')
 
 
 if __name__ == '__main__':
