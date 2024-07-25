@@ -1,0 +1,1041 @@
+NOTICE:  BL31: v2.9(release):8a3945e
+NOTICE:  BL31: Built : 11:27:45, Mar 28 2024
+
+
+U-Boot 2024.04-rc5-ga5ec56ae (Jun 18 2024 - 15:11:52 +0200)
+
+DRAM:  948 MiB (effective 3.9 GiB)
+RPI 4 Model B (0xc03115)
+Core:  211 devices, 16 uclasses, devicetree: board
+MMC:   mmcnr@7e300000: 1, mmc@7e340000: 0
+Loading Environment from FAT... OK
+In:    serial,usbkbd
+Out:   serial,vidconsole
+Err:   serial,vidconsole
+Net:   eth0: ethernet@7d580000
+PCIe BRCM: link up, 5.0 Gbps x1 (SSC)
+starting USB...
+Bus xhci_pci: Register 5000420 NbrPorts 5
+Starting the controller
+USB XHCI 1.00
+scanning bus xhci_pci for devices... 2 USB Device(s) found
+       scanning usb for storage devices... 0 Storage Device(s) found
+Hit any key to stop autoboot:  2  1  0 
+1425408 bytes read in 74 ms (18.4 MiB/s)
+## Starting application at 0x00200000 ...
+Bao Hypervisor
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=0
+BAO INFO: current_time=236501738
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=236501738
+BAO INFO: current_time=239975126
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3473388 (64 ms)
+BAO INFO: current_time+3*time_taken=250395290
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=250395290
+BAO INFO: current_time=241189263
+BAO INFO: Must wait 9206027 ticks (170 ms)
+BAO INFO: answer=18412054 (ack=0,ttw=9206027)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=250395290
+BAO INFO: current_time=251559017
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=251559017
+BAO INFO: current_time=255070102
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511085 (65 ms)
+BAO INFO: current_time+3*time_taken=265603357
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=265603357
+BAO INFO: current_time=256284217
+BAO INFO: Must wait 9319140 ticks (172 ms)
+BAO INFO: answer=18638280 (ack=0,ttw=9319140)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=265603357
+BAO INFO: current_time=266762707
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=266762707
+BAO INFO: current_time=270273772
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511065 (65 ms)
+BAO INFO: current_time+3*time_taken=280806967
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=280806967
+BAO INFO: current_time=271487891
+BAO INFO: Must wait 9319076 ticks (172 ms)
+BAO INFO: answer=18638152 (ack=0,ttw=9319076)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=280806967
+BAO INFO: current_time=281966364
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=281966364
+BAO INFO: current_time=285477444
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511080 (65 ms)
+BAO INFO: current_time+3*time_taken=296010684
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=296010684
+BAO INFO: current_time=286691559
+BAO INFO: Must wait 9319125 ticks (172 ms)
+BAO INFO: answer=18638250 (ack=0,ttw=9319125)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=0
+BAO INFO: current_time=290856269
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=296010684
+BAO INFO: current_time=297170435
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=290856269
+BAO INFO: 	current_time=297649438
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=6793169 (125 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=297170435
+BAO INFO: current_time=301904817
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4734382 (87 ms)
+BAO INFO: current_time+3*time_taken=316107963
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=303118796
+BAO INFO: already_fetched_time=6793169 (125 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=303118796
+BAO INFO: current_time=303867903
+BAO INFO: already_fetched_time=6793169
+BAO INFO: time_taken=7542276 (139 ms)
+BAO INFO: current_time+3*time_taken=326494731
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=316107963
+BAO INFO: current_time=305157580
+BAO INFO: Must wait 10950383 ticks (202 ms)
+BAO INFO: answer=21900766 (ack=0,ttw=10950383)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=316107963
+BAO INFO: current_time=317278837
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=317278837
+BAO INFO: current_time=320789930
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511093 (65 ms)
+BAO INFO: current_time+3*time_taken=331323209
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=331323209
+BAO INFO: current_time=322004054
+BAO INFO: Must wait 9319155 ticks (172 ms)
+BAO INFO: answer=18638310 (ack=0,ttw=9319155)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=331323209
+BAO INFO: current_time=332482505
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=332482505
+BAO INFO: current_time=335993602
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511097 (65 ms)
+BAO INFO: current_time+3*time_taken=346526893
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=346526893
+BAO INFO: current_time=337207721
+BAO INFO: Must wait 9319172 ticks (172 ms)
+BAO INFO: answer=18638344 (ack=0,ttw=9319172)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=346526893
+BAO INFO: current_time=347686193
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=326494731
+BAO INFO: current_time=348497096
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=347686193
+BAO INFO: current_time=351197291
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511098 (65 ms)
+BAO INFO: current_time+3*time_taken=361730585
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=352411258
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=361730585
+BAO INFO: current_time=353122605
+BAO INFO: Must wait 8607980 ticks (159 ms)
+BAO INFO: answer=17215960 (ack=0,ttw=8607980)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=361730585
+BAO INFO: current_time=362896152
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=352411258
+BAO INFO: 	current_time=363375116
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=10963858 (203 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=362896152
+BAO INFO: current_time=367635239
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4739087 (87 ms)
+BAO INFO: current_time+3*time_taken=381852500
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=368849224
+BAO INFO: already_fetched_time=10963858 (203 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=368849224
+BAO INFO: current_time=369603068
+BAO INFO: already_fetched_time=10963858
+BAO INFO: time_taken=11717702 (216 ms)
+BAO INFO: current_time+3*time_taken=404756174
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=381852500
+BAO INFO: current_time=370902214
+BAO INFO: Must wait 10950286 ticks (202 ms)
+BAO INFO: answer=21900572 (ack=0,ttw=10950286)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=381852500
+BAO INFO: current_time=383023436
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=383023436
+BAO INFO: current_time=386534523
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511087 (65 ms)
+BAO INFO: current_time+3*time_taken=397067784
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=397067784
+BAO INFO: current_time=387748642
+BAO INFO: Must wait 9319142 ticks (172 ms)
+BAO INFO: answer=18638284 (ack=0,ttw=9319142)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=397067784
+BAO INFO: current_time=398227099
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=398227099
+BAO INFO: current_time=401738194
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511095 (65 ms)
+BAO INFO: current_time+3*time_taken=412271479
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=412271479
+BAO INFO: current_time=402952319
+BAO INFO: Must wait 9319160 ticks (172 ms)
+BAO INFO: answer=18638320 (ack=0,ttw=9319160)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=404756174
+BAO INFO: current_time=405734881
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=405734881
+BAO INFO: current_time=411953831
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=6218950 (115 ms)
+BAO INFO: current_time+3*time_taken=430610681
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=412271479
+BAO INFO: current_time=413430077
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=413430077
+BAO INFO: current_time=416941167
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511090 (65 ms)
+BAO INFO: current_time+3*time_taken=427474437
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=427474437
+BAO INFO: current_time=418155283
+BAO INFO: Must wait 9319154 ticks (172 ms)
+BAO INFO: answer=18638308 (ack=0,ttw=9319154)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=427474437
+BAO INFO: current_time=428635720
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=430610681
+BAO INFO: current_time=429446655
+BAO INFO: Must wait 1164026 ticks (21 ms)
+BAO INFO: answer=2328052 (ack=0,ttw=1164026)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=430610681
+BAO INFO: current_time=431729829
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=428635720
+BAO INFO: current_time=432540752
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3905032 (72 ms)
+BAO INFO: current_time+3*time_taken=444255848
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=433797255
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=444255848
+BAO INFO: current_time=434508598
+BAO INFO: Must wait 9747250 ticks (180 ms)
+BAO INFO: answer=19494500 (ack=0,ttw=9747250)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=444255848
+BAO INFO: current_time=445423920
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=433797255
+BAO INFO: 	current_time=445902917
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=12105662 (224 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=445423920
+BAO INFO: current_time=450163037
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4739117 (87 ms)
+BAO INFO: current_time+3*time_taken=464380388
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=451377024
+BAO INFO: already_fetched_time=12105662 (224 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=451377024
+BAO INFO: current_time=452130870
+BAO INFO: already_fetched_time=12105662
+BAO INFO: time_taken=12859508 (238 ms)
+BAO INFO: current_time+3*time_taken=490709394
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=464380388
+BAO INFO: current_time=453430018
+BAO INFO: Must wait 10950370 ticks (202 ms)
+BAO INFO: answer=21900740 (ack=0,ttw=10950370)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=464380388
+BAO INFO: current_time=465551256
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=465551256
+BAO INFO: current_time=469062320
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511064 (65 ms)
+BAO INFO: current_time+3*time_taken=479595512
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=490709394
+BAO INFO: current_time=470276262
+BAO INFO: Must wait 20433132 ticks (378 ms)
+BAO INFO: answer=40866264 (ack=0,ttw=20433132)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=479595512
+BAO INFO: current_time=471414204
+BAO INFO: Must wait 8181308 ticks (151 ms)
+BAO INFO: answer=16362616 (ack=0,ttw=8181308)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=479595512
+BAO INFO: current_time=480752996
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=480752996
+BAO INFO: current_time=484264061
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511065 (65 ms)
+BAO INFO: current_time+3*time_taken=494797256
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=494797256
+BAO INFO: current_time=485478184
+BAO INFO: Must wait 9319072 ticks (172 ms)
+BAO INFO: answer=18638144 (ack=0,ttw=9319072)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=490709394
+BAO INFO: current_time=491847531
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=494797256
+BAO INFO: current_time=495957702
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=491847531
+BAO INFO: 	current_time=496436701
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=4589170 (84 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=495957702
+BAO INFO: current_time=500687338
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4729636 (87 ms)
+BAO INFO: current_time+3*time_taken=514876246
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=514876246
+BAO INFO: current_time=501901454
+BAO INFO: Must wait 12974792 ticks (240 ms)
+BAO INFO: answer=25949584 (ack=0,ttw=12974792)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=514876246
+BAO INFO: current_time=516088232
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=516088232
+BAO INFO: current_time=519599318
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511086 (65 ms)
+BAO INFO: current_time+3*time_taken=530132576
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=530132576
+BAO INFO: current_time=520813435
+BAO INFO: Must wait 9319141 ticks (172 ms)
+BAO INFO: answer=18638282 (ack=0,ttw=9319141)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=491847531
+BAO INFO: current_time=522971965
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=522971965
+BAO INFO: current_time=529190896
+BAO INFO: already_fetched_time=4589170
+BAO INFO: time_taken=10808101 (200 ms)
+BAO INFO: current_time+3*time_taken=561615199
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=530132576
+BAO INFO: current_time=531291255
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=531291255
+BAO INFO: current_time=534802351
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511096 (65 ms)
+BAO INFO: current_time+3*time_taken=545335639
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=545335639
+BAO INFO: current_time=536016469
+BAO INFO: Must wait 9319170 ticks (172 ms)
+BAO INFO: answer=18638340 (ack=0,ttw=9319170)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=545335639
+BAO INFO: current_time=546496863
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=546496863
+BAO INFO: current_time=550007947
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511084 (65 ms)
+BAO INFO: current_time+3*time_taken=560541199
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=560541199
+BAO INFO: current_time=551222069
+BAO INFO: Must wait 9319130 ticks (172 ms)
+BAO INFO: answer=18638260 (ack=0,ttw=9319130)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=560541199
+BAO INFO: current_time=561700531
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=561700531
+BAO INFO: current_time=565211622
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511091 (65 ms)
+BAO INFO: current_time+3*time_taken=575744895
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=575744895
+BAO INFO: current_time=566425740
+BAO INFO: Must wait 9319155 ticks (172 ms)
+BAO INFO: answer=18638310 (ack=0,ttw=9319155)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=575744895
+BAO INFO: current_time=576904220
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=561615199
+BAO INFO: current_time=579335188
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=576904220
+BAO INFO: current_time=580415305
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511085 (65 ms)
+BAO INFO: current_time+3*time_taken=590948560
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=581629278
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=590948560
+BAO INFO: current_time=582340624
+BAO INFO: Must wait 8607936 ticks (159 ms)
+BAO INFO: answer=17215872 (ack=0,ttw=8607936)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=590948560
+BAO INFO: current_time=592114162
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=581629278
+BAO INFO: 	current_time=592593140
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=10963862 (203 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=592114162
+BAO INFO: current_time=596853261
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4739099 (87 ms)
+BAO INFO: current_time+3*time_taken=611070558
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=598067241
+BAO INFO: already_fetched_time=10963862 (203 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=598067241
+BAO INFO: current_time=598821085
+BAO INFO: already_fetched_time=10963862
+BAO INFO: time_taken=11717706 (216 ms)
+BAO INFO: current_time+3*time_taken=633974203
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=611070558
+BAO INFO: current_time=600120236
+BAO INFO: Must wait 10950322 ticks (202 ms)
+BAO INFO: answer=21900644 (ack=0,ttw=10950322)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=611070558
+BAO INFO: current_time=612241484
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=612241484
+BAO INFO: current_time=615752544
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511060 (65 ms)
+BAO INFO: current_time+3*time_taken=626285724
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=633974203
+BAO INFO: current_time=616966487
+BAO INFO: Must wait 17007716 ticks (314 ms)
+BAO INFO: answer=34015432 (ack=0,ttw=17007716)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=626285724
+BAO INFO: current_time=618104423
+BAO INFO: Must wait 8181301 ticks (151 ms)
+BAO INFO: answer=16362602 (ack=0,ttw=8181301)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=626285724
+BAO INFO: current_time=627443222
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=627443222
+BAO INFO: current_time=630954279
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511057 (65 ms)
+BAO INFO: current_time+3*time_taken=641487450
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=641487450
+BAO INFO: current_time=632168344
+BAO INFO: Must wait 9319106 ticks (172 ms)
+BAO INFO: answer=18638212 (ack=0,ttw=9319106)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=633974203
+BAO INFO: current_time=635112334
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=635112334
+BAO INFO: current_time=641332125
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=6219791 (115 ms)
+BAO INFO: current_time+3*time_taken=659991498
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=641487450
+BAO INFO: current_time=642646409
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=642646409
+BAO INFO: current_time=646157489
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511080 (65 ms)
+BAO INFO: current_time+3*time_taken=656690729
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=656690729
+BAO INFO: current_time=647371610
+BAO INFO: Must wait 9319119 ticks (172 ms)
+BAO INFO: answer=18638238 (ack=0,ttw=9319119)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=656690729
+BAO INFO: current_time=657851989
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=659991498
+BAO INFO: current_time=658756652
+BAO INFO: Must wait 1234846 ticks (22 ms)
+BAO INFO: answer=2469692 (ack=0,ttw=1234846)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=659991498
+BAO INFO: current_time=661068131
+BAO INFO: Memory access refused
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=657851989
+BAO INFO: current_time=661879064
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4027075 (74 ms)
+BAO INFO: current_time+3*time_taken=673960289
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=663135562
+BAO INFO: already_fetched_time=0 (0 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=673960289
+BAO INFO: current_time=663846910
+BAO INFO: Must wait 10113379 ticks (187 ms)
+BAO INFO: answer=20226758 (ack=0,ttw=10113379)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=673960289
+BAO INFO: current_time=675152338
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=663135562
+BAO INFO: 	current_time=675631314
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=12495752 (231 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=675152338
+BAO INFO: current_time=679891437
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4739099 (87 ms)
+BAO INFO: current_time+3*time_taken=694108734
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=681105415
+BAO INFO: already_fetched_time=12495752 (231 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=681105415
+BAO INFO: current_time=681859264
+BAO INFO: already_fetched_time=12495752
+BAO INFO: time_taken=13249601 (245 ms)
+BAO INFO: current_time+3*time_taken=721608067
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=694108734
+BAO INFO: current_time=683158410
+BAO INFO: Must wait 10950324 ticks (202 ms)
+BAO INFO: answer=21900648 (ack=0,ttw=10950324)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=694108734
+BAO INFO: current_time=695279682
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=695279682
+BAO INFO: current_time=698790777
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511095 (65 ms)
+BAO INFO: current_time+3*time_taken=709324062
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=709324062
+BAO INFO: current_time=700004897
+BAO INFO: Must wait 9319165 ticks (172 ms)
+BAO INFO: answer=18638330 (ack=0,ttw=9319165)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=709324062
+BAO INFO: current_time=710483346
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=710483346
+BAO INFO: current_time=713994452
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511106 (65 ms)
+BAO INFO: current_time+3*time_taken=724527770
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=724527770
+BAO INFO: current_time=715208569
+BAO INFO: Must wait 9319201 ticks (172 ms)
+BAO INFO: answer=18638402 (ack=0,ttw=9319201)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=724527770
+BAO INFO: current_time=725687045
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=725687045
+BAO INFO: current_time=729198116
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511071 (65 ms)
+BAO INFO: current_time+3*time_taken=739731329
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=739731329
+BAO INFO: current_time=730412184
+BAO INFO: Must wait 9319145 ticks (172 ms)
+BAO INFO: answer=18638290 (ack=0,ttw=9319145)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=739731329
+BAO INFO: current_time=740890734
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=740890734
+BAO INFO: current_time=744401791
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511057 (65 ms)
+BAO INFO: current_time+3*time_taken=754934962
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=754934962
+BAO INFO: current_time=745615909
+BAO INFO: Must wait 9319053 ticks (172 ms)
+BAO INFO: answer=18638106 (ack=0,ttw=9319053)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=721608067
+BAO INFO: current_time=752903144
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=754934962
+BAO INFO: current_time=756094122
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=752903144
+BAO INFO: 	current_time=756573141
+BAO INFO: 	previous_fetch_time=0 (0 ms)
+BAO INFO: 	added_fetch_time=3669997 (67 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=756094122
+BAO INFO: current_time=760823781
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4729659 (87 ms)
+BAO INFO: current_time+3*time_taken=775012758
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=775012758
+BAO INFO: current_time=762037899
+BAO INFO: Must wait 12974859 ticks (240 ms)
+BAO INFO: answer=25949718 (ack=0,ttw=12974859)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 REQUEST ------
+BAO INFO: next_fetch_time=752903144
+BAO INFO: current_time=775327963
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=775012758
+BAO INFO: current_time=776224153
+BAO INFO: 
+BAO INFO: 	------ CPU 1 PAUSE ------
+BAO INFO: 	last_start_time=775327963
+BAO INFO: 	current_time=776703144
+BAO INFO: 	previous_fetch_time=3669997 (67 ms)
+BAO INFO: 	added_fetch_time=1375181 (25 ms)
+BAO INFO: 	------ CPU 1 END ------
+BAO INFO: 
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=776224153
+BAO INFO: current_time=780986970
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=4762817 (88 ms)
+BAO INFO: current_time+3*time_taken=795275421
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 1 RESUME ------
+BAO INFO: current_time=782200947
+BAO INFO: already_fetched_time=5045178 (93 ms)
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 1 REVOKE ------
+BAO INFO: last_start_time=782200947
+BAO INFO: current_time=782945321
+BAO INFO: already_fetched_time=5045178
+BAO INFO: time_taken=5789552 (107 ms)
+BAO INFO: current_time+3*time_taken=800313977
+BAO INFO: ------ CPU 1 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=795275421
+BAO INFO: current_time=784234983
+BAO INFO: Must wait 11040438 ticks (204 ms)
+BAO INFO: answer=22080876 (ack=0,ttw=11040438)
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=795275421
+BAO INFO: current_time=796464958
+BAO INFO: Memory access granted
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REVOKE ------
+BAO INFO: last_start_time=796464958
+BAO INFO: current_time=799976047
+BAO INFO: already_fetched_time=0
+BAO INFO: time_taken=3511089 (65 ms)
+BAO INFO: current_time+3*time_taken=810509314
+BAO INFO: ------ CPU 0 END ------
+
+BAO INFO: ------ CPU 0 REQUEST ------
+BAO INFO: next_fetch_time=810509314
+BAO INFO: current_time=801190168
+BAO INFO: Must wait 9319146 ticks (172 ms)
+BAO INFO: answer=18638292 (ack=0,ttw=9319146)
+BAO INFO: ------ CPU 0 END ------
+
