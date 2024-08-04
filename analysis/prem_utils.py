@@ -27,17 +27,49 @@ class PREM_task:
 
 # Represents a CPU
 class processor:
+    # Class attribute
+    M_max = -1
+    max_interference = -1
+
     # Inits the processor with a task list (or not) 
     def __init__(self, tasks: list[PREM_task] = []) -> None:
-        self._tasks = [task for task in tasks]
-        
+        self._tasks = []
+        for task in tasks:
+            self._tasks.append(task)
+            
+            # Keep the max value to fasten things
+            if task.M > self.M_max:
+                self.M_max = task.M
+
         
     def add_task(self, task: PREM_task) -> None:
         self._tasks.append(task)
-        
+        if task.M > self.M_max:
+            self.M_max = task.M
     
+    # Returns the tasks with higher priority
+    def higher_tasks(self, prio: int) -> list[PREM_task]:
+        return [task for task in self._tasks if task.prio < prio]
+    
+
+    # Returns the tasks with lower priority
+    def lower_tasks(self, prio: int) -> list[PREM_task]:
+        return [task for task in self._tasks if task.prio > prio]
+
+
+    # Returns the task set of the CPU
     def tasks(self) -> list[PREM_task]:
         return self._tasks
+    
+
+    # Returns the lowest prio of that CPU
+    def get_lowest_prio(self) -> int:
+        return max([task.prio for task in self._tasks])
+    
+
+    def is_lowest_prio(self, prio: int) -> bool:
+        return prio == self.get_lowest_prio()
+
     
     def __str__(self) -> str:
         string_result = ''
