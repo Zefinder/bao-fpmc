@@ -1,0 +1,269 @@
+# Imports
+import matplotlib.pyplot as plt
+from math import ceil, floor
+import numpy as np
+from prem_utils import *
+from fixed_priority_sched import *
+
+
+# Functions
+# ----------------------------------------------------
+# -------------- Intermediate functions --------------
+# ----------------------------------------------------
+# Get the blocking time of a task with lower prio on the same CPU
+def get_blocking_time(Px: processor, prio: int) -> int:
+    lower_priority_executions = [ltask.e for ltask in Px.lower_tasks(prio)]
+    return min(lower_priority_executions) if lower_priority_executions else 0
+
+
+# Get the intra-processor interference time of a task with higher prio on the same CPU
+# Also called I
+def get_intra_processor_interference(Px: processor, delta: int, prio: int) -> int:    
+    higher_priority_interference = [ceil(delta / htask.T) * htask.e for htask in Px.higher_tasks(prio)]
+    return sum(higher_priority_interference) if higher_priority_interference else 0
+
+
+# Get the inter-processor interference, the paper version.
+# Takes the number of time a task can start (considering jitter) and multiply by its memory time
+# Also called alpha
+def get_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int) -> int:
+    interference = 0
+    for Px in system.higher_processors(cpu_prio):
+        for task in Px.tasks():
+            interference += ceil((delta + task.R - task.e) / task.T) * task.M
+            
+    return interference
+
+
+# Get the number of memory phases possible in delta
+# Also called N
+def get_number_memory_phase(Px: processor, task: PREM_task, delta: int) -> int:
+    return sum([ceil(delta / htask.T) for htask in Px.higher_tasks(task.prio)]) + floor(delta / task.T) + (1 if Px.is_lowest_prio(task.prio) else 0)
+    
+
+# Get the max interference possible
+# Also called epsilon
+def get_max_interference(system: PREM_system, cpu_prio: int, Px: processor) -> int:
+    # This is a value that doesn't change, so saved in the processor if already computed
+    if Px.max_interference != -1:
+        return Px.max_interference
+
+    # Else we have eps = alpha(eps + M_max)
+    # The base value of the recurrent equation is the greatest memory phase
+    max_interference = Px.M_max
+    prev_max_interference = -1
+    while prev_max_interference != max_interference:
+        prev_max_interference = max_interference
+        max_interference = get_inter_processor_interference(system=system, cpu_prio=cpu_prio, delta=max_interference)
+    
+    # Save the value 
+    Px.max_interference = max_interference
+    return max_interference
+
+
+# Get the total memory interference in an interval delta
+# Also called beta
+def get_total_memory_interference(system: PREM_system, cpu_prio: int, Px: processor, task: PREM_task, delta: int) -> int:
+    return get_number_memory_phase(Px=Px, task=task, delta=delta) * get_max_interference(system=system, cpu_prio=cpu_prio, Px=Px)
+
+
+# Get the memory phase start time for the k-th instance 
+def get_memory_phase_start_time(system: PREM_system, cpu_prio: int, Px: processor, task: PREM_task, k: int) -> int:
+    # This is a recurrent equation where the initial start time is the blocking time B + all tasks that can all start before it
+    B = get_blocking_time(Px=Px, prio=task.prio)
+    
+    # Base values
+    start_time = B + sum(htask.e for htask in Px.higher_tasks(task.prio)) + (k - 1) * task.e
+    prev_start_time = -1
+    
+    # As long as the solution is not stable, we repeat
+    while prev_start_time != start_time:
+        prev_start_time = start_time
+        start_time = B + get_intra_processor_interference(Px=Px, 
+                                                          delta=start_time, 
+                                                          prio=task.prio) + (k - 1) * task.e + min(get_inter_processor_interference(system=system, 
+                                                                                                                                    cpu_prio=cpu_prio, 
+                                                                                                                                    delta=start_time),
+                                                                                                   get_total_memory_interference(system=system, 
+                                                                                                                                 cpu_prio=cpu_prio,
+                                                                                                                                 Px=Px, 
+                                                                                                                                 task=task,
+                                                                                                                                 delta=start_time))
+        
+    return start_time
+
+
+# Get the computation phase start time for the k-th instance
+def get_computation_phase_start_time(system: PREM_system, cpu_prio: int, Px: processor, task: PREM_task, k: int) -> int:
+    # First step is to get the memory phase start time
+    memory_start_time = get_memory_phase_start_time(system=system, cpu_prio=cpu_prio, Px=Px, task=task, k=k)
+    
+    # Save blocking time to go faster
+    B = get_blocking_time(Px=Px, prio=task.prio)
+    
+    # Same for intra-processor interference since memory start is a constant now
+    I = get_intra_processor_interference(Px=Px, delta=memory_start_time, prio=task.prio)
+    
+    # Same total memory interference (beta)
+    beta_memory_phase = get_total_memory_interference(system=system, cpu_prio=cpu_prio, Px=Px, task=task, delta=memory_start_time)
+    
+    # Constant part that does not change
+    constant_blocking = B + I + task.M + (k - 1) * task.e
+    
+    # Base values
+    start_time = constant_blocking
+    prev_start_time = -1
+    
+    # As long as the solution is not stable we repeat
+    while prev_start_time != start_time:
+        prev_start_time = start_time
+        start_time = constant_blocking + min(get_inter_processor_interference(system=system, 
+                                                                              cpu_prio=cpu_prio, 
+                                                                              delta=start_time),
+                                             beta_memory_phase + get_inter_processor_interference(system=system, 
+                                                                                                  cpu_prio=cpu_prio, 
+                                                                                                  delta=start_time - memory_start_time))
+    
+    return start_time
+
+
+# Indicate whether the busy period recurrent equation converges (true if it converges)
+def is_busy_period_equation_convergent(system: PREM_system, Px: processor, cpu_prio: int) -> bool:
+    # Compute max interference
+    max_interference = get_max_interference(system=system, cpu_prio=cpu_prio, Px=Px)
+    
+    higher_cpu_memory_utilisation = sum([Ph.get_memory_utilisation() for Ph in system.higher_processors(prio=cpu_prio)])
+    max_interference_on_period = sum([max_interference / task.T for task in Px.tasks()])
+    
+    return Px.get_utilisation() + min(higher_cpu_memory_utilisation, max_interference_on_period) < 1
+
+
+# Get the longest busy period of a processor, i.e. the longest time Px will execute tasks with priority higher or equal to the task (including itself)
+# Also called L
+def get_longest_busy_period(system: PREM_system, cpu_prio: int, Px: processor, task: PREM_task) -> int:
+    # If equation not converging... What do we do? Not schedulable? 
+    if not is_busy_period_equation_convergent(system=system, Px=Px, cpu_prio=cpu_prio):
+        return -1
+    
+    # Once again it is a recurrent equation... start point is the blocking time B + all tasks that can all start before it + itself
+    # Save blocking time to go faster
+    B = get_blocking_time(Px=Px, prio=task.prio)
+    
+    # Base values
+    busy_period = B + sum(htask.e for htask in Px.higher_tasks(task.prio)) + task.e
+    prev_busy_period = -1
+    
+    # As long as the solution is not stable we repeat
+    while prev_busy_period != busy_period:
+        prev_busy_period = busy_period
+        # We take into account this task, so we do as if we computed the interference for a lower priority task
+        busy_period = B + get_intra_processor_interference(Px=Px,
+                                                           delta=busy_period, 
+                                                           prio=task.prio + 1) + min(get_inter_processor_interference(system=system,
+                                                                                                                      cpu_prio=cpu_prio,
+                                                                                                                      delta=busy_period), 
+                                                                                     get_total_memory_interference(system=system,
+                                                                                                                   cpu_prio=cpu_prio,
+                                                                                                                   Px=Px,
+                                                                                                                   task=task,
+                                                                                                                   delta=busy_period) + Px.M_max)
+    
+    return busy_period
+
+
+# Get the response time for the k-th instance
+def get_response_time_k_occurence(system: PREM_system, cpu_prio: int, Px: processor, task: PREM_task, k: int) -> int:
+    # R_i,k = cmp_start + C - (k - 1).T
+    computation_start_time = get_computation_phase_start_time(system=system, cpu_prio=cpu_prio, Px=Px, task=task, k = k)
+    return computation_start_time + task.C - (k - 1) * task.T
+
+
+# ----------------------------------------------------
+# ----------------- Usable functions -----------------
+# ----------------------------------------------------
+# Get the response time of a task 
+def get_response_time(system: PREM_system, cpu_prio: int, Px: processor, task: PREM_task) -> int:
+    # It is the max of the kth response time, k between 1 and ceil(L/T)
+    busy_period = get_longest_busy_period(system=system, cpu_prio=cpu_prio, Px=Px, task=task)
+    # If busy period non workable, notify that it is not possible
+    if busy_period == -1:
+        return -1
+    
+    response_times = []
+
+    for k in range(1, ceil(busy_period / task.T) + 1):
+        response_times.append(get_response_time_k_occurence(system=system, cpu_prio=cpu_prio, Px=Px, task=task, k=k))
+    
+    response_time = max(response_times)
+    
+    # Also adds the response time to the task to save its value
+    task.R = response_time
+    
+    return response_time
+
+
+# Get the response time of all tasks in a system
+def get_response_time_system(system: PREM_system) -> list[list[int]]:
+    # Get processors from system
+    processors = system.processors()
+    response_time_system = []
+
+    for cpu_prio in range(0, len(processors)):
+        response_time_processor = []
+        Px = processors[cpu_prio]
+        
+        for task in Px.tasks():
+            response_time = get_response_time(system=system, cpu_prio=cpu_prio, Px=Px, task=task)
+            # If response time is invalid, then return empty
+            if response_time == -1:
+                return []
+            
+            response_time_processor.append(response_time)
+        
+        response_time_system.append(response_time_processor)
+    
+    system.system_analysed = True
+    return response_time_system
+
+
+# Returns if system schedulable per processor
+def is_system_schedulable_per_processor(system: PREM_system) -> list[bool]:
+    if not system.system_analysed:
+        get_response_time_system(system=system)
+    
+    processors = system.processors()
+    schedulability = []
+    for cpu_prio in range(0, len(processors)):
+        Px = processors[cpu_prio]
+        schedulable = True
+        for task in Px.tasks():
+            schedulable &= task.is_schedulable()
+        
+        schedulability.append(schedulable)
+    
+    return schedulability
+
+
+tau_1 = PREM_task(2, 1, 24)
+tau_2 = PREM_task(4, 6, 40)
+tau_3 = PREM_task(14, 10, 50)
+tau_4 = PREM_task(2, 6, 16)
+
+P0 = processor([tau_1, tau_2, tau_3])
+P1 = processor([tau_4])
+
+system = PREM_system([P0, P1])
+
+rate_monotonic_scheduler(Px=P0)
+rate_monotonic_scheduler(Px=P1)
+
+response_time_system = get_response_time_system(system=system)
+
+print(system)
+print('Response time:', response_time_system)
+print('Schedulability:', is_system_schedulable_per_processor(system=system))
+
+# from generate_prem import *
+
+# P0 = generate_prem_taskset(3, interval(10, 50), 'logunif', 0.8, 0.3)
+# print(P0)
