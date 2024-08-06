@@ -45,7 +45,7 @@ def get_classic_inter_processor_interference(system: PREM_system, cpu_prio: int,
 # Global task interference
 # Get the global task, if global task is None, then it means that you need to compute it from the 
 # previous CPUs. If it is the first CPU, then there is no CPU...
-def get_global_task(system: PREM_system, cpu_prio: int, delta: int) -> PREM_task:
+def get_global_task(system: PREM_system, cpu_prio: int) -> PREM_task:
     Px = system.processors()[cpu_prio]
     global_task = Px.get_global_task()
     
@@ -55,36 +55,57 @@ def get_global_task(system: PREM_system, cpu_prio: int, delta: int) -> PREM_task
     
     # All previous global tasks should be calculated
     global_tasks = [P.get_global_task() for P in system.higher_processors(prio=cpu_prio)]
+
+    # Check before if utilisation allows it. If not, then it means that the task is not schedulable
+    print(system)
+    print(cpu_prio)
+    for P in system.higher_processors(prio=cpu_prio):
+        print(P)
+
+    for gtask in global_tasks:
+        print(gtask)
     
     # This is a recurrent equation to determine the smallest response time with only global tasks
     # T = M_max + C_min + I(T - C_min)
     # We can separate it in Tm = M_max + I(Tm) and then T = Tm + C_min
+    # And I(x) = ceil(x/Tj) * Mj for tau_j in global tasks
     # Base value of T is M_max and C_min
     Tm = Px.M_max
     prev_Tm = -1
     while prev_Tm != Tm:
         prev_Tm = Tm
-        Tm = Px.M_max + sum([ceil(delta / gtask.T) * gtask.M for gtask in global_tasks])
+        Tm = Px.M_max + sum([ceil(Tm / gtask.T) * gtask.M for gtask in global_tasks])
     
     T = Tm + Px.C_min
     
     # Save global task
     Px.set_global_task(T=T)
+    print(Px.get_global_task())
+    print()
     
     return Px.get_global_task()
 
 
 # This is the v1 of the improvement of the classic PREM. You take the worst task possible (M_max and C_min),
 # you search for it's max response time and it'll be it's period
-# The idea behind it is to approximate the multi-core system to a single-core with preemptive fixed-priority scheduling. 
-# However the policy is arbitrary, P1 will have the highest global task priority. 
+# The idea behind it is to approximate the multi-task multi-core system to a single-task multi-core with preemptive fixed-priority scheduling. 
 # To remember things, global tasks' periods are stored in processors when computed.
 def get_global_task_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int) -> int:
     interference = 0
     
+    global_tasks = [get_global_task(system=system, cpu_prio=prio) for prio in range(0, cpu_prio)]
+    global_utilisation = sum([gtask.M / gtask.T for gtask in global_tasks])
+    print('Global utilisation:', global_utilisation)
+    if global_utilisation >= 1.:
+        print(f'Utilisation of global tasks for CPUs higher than {cpu_prio:d}: {global_utilisation:f}')
+        for gtask in global_tasks:
+            print(gtask)
+        exit(0)
+
     # For all higher CPU, we ask (or create) a global task and compute interference with it
-    for _ in system.higher_processors(cpu_prio):
-        global_task = get_global_task(system=system, cpu_prio=cpu_prio, delta=delta)
+    for prio in range(0, cpu_prio):
+        global_task = get_global_task(system=system, cpu_prio=prio)
+        # print('delta:', delta)
         interference += ceil(delta / global_task.T) * global_task.M
             
     return interference
