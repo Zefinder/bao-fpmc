@@ -14,7 +14,7 @@ class PREM_task:
 
         self.e = M + C # Execution time
         self.prio = prio # Priority
-        self.R = 0 # Response time
+        self.R = -1 # Response time
 
 
     def set_response_time(self, response_time: int) -> None:
@@ -22,7 +22,7 @@ class PREM_task:
 
 
     def is_schedulable(self) -> bool:
-        return self.R <= self.D
+        return self.R != -1 and self.R <= self.D
     
 
     def __str__(self) -> str:
@@ -50,6 +50,7 @@ class processor:
         self._tasks.append(task)
         if task.M > self.M_max:
             self.M_max = task.M
+            
     
     # Returns the tasks with higher priority
     def higher_tasks(self, prio: int) -> list[PREM_task]:

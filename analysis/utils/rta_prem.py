@@ -2,8 +2,8 @@
 import matplotlib.pyplot as plt
 from math import ceil, floor
 import numpy as np
-from prem_utils import *
-from fixed_priority_sched import *
+from utils.prem_utils import *
+from utils.fixed_priority_sched import *
 
 
 # Functions
@@ -242,28 +242,3 @@ def is_system_schedulable_per_processor(system: PREM_system) -> list[bool]:
         schedulability.append(schedulable)
     
     return schedulability
-
-
-tau_1 = PREM_task(2, 1, 24)
-tau_2 = PREM_task(4, 6, 40)
-tau_3 = PREM_task(14, 10, 50)
-tau_4 = PREM_task(2, 6, 16)
-
-P0 = processor([tau_1, tau_2, tau_3])
-P1 = processor([tau_4])
-
-system = PREM_system([P0, P1])
-
-rate_monotonic_scheduler(Px=P0)
-rate_monotonic_scheduler(Px=P1)
-
-response_time_system = get_response_time_system(system=system)
-
-print(system)
-print('Response time:', response_time_system)
-print('Schedulability:', is_system_schedulable_per_processor(system=system))
-
-# from generate_prem import *
-
-# P0 = generate_prem_taskset(3, interval(10, 50), 'logunif', 0.8, 0.3)
-# print(P0)

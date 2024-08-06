@@ -4,8 +4,8 @@
 # That means that functions will modify the PREM objects that are in the CPU 
 
 # Imports
-from prem_utils import *
 from typing import Callable
+from utils.prem_utils import *
 
 # Classes
 # Priority queue for tasks (base from https://www.geeksforgeeks.org/priority-queue-in-python/)
@@ -65,14 +65,21 @@ def set_prio(queue: PriorityTaskQueue, tasks: list[PREM_task]) -> None:
 def rate_monotonic_scheduler(Px: processor) -> None:
     queue = PriorityTaskQueue(lambda task1, task2: 1 if task1.T < task2.T else 0)
     set_prio(queue=queue, tasks=Px.tasks())
+      
         
-
+# Deadline monotonic scheduler, prio goes to the one with the smallest D
 def deadline_monotonic_scheduler(Px: processor) -> None:
     queue = PriorityTaskQueue(lambda task1, task2: 1 if task1.D < task2.D else 0)
     set_prio(queue=queue, tasks=Px.tasks())
 
 
+# Shortest job first scheduler, prio goes to the one with the smallest execution time
 def shortest_job_first_scheduler(Px: processor) -> None:
     queue = PriorityTaskQueue(lambda task1, task2: 1 if task1.e < task2.e else 0)
     set_prio(queue=queue, tasks=Px.tasks())
     
+
+# Sets all processors' priority according to a fixed priority policy
+def set_system_priority(system: PREM_system, fp_scheduler: Callable[[processor], None]) -> None:
+    for Px in system.processors():
+        fp_scheduler(Px)

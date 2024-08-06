@@ -7,7 +7,7 @@ from schedcat.generator.generator_emstada import gen_taskset
 import sys
 
 # Constants
-taskset_file = './schedcat_log.log'
+taskset_file = './utils/schedcat_log.log'
 
 # Functions
 def main():    

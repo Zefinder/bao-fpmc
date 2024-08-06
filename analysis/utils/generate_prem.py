@@ -1,10 +1,13 @@
 # Imports 
 import os
-from math import ceil
-from prem_utils import *
+from math import ceil, floor
+from random import uniform
+from typing import Callable
+from utils.prem_utils import *
 
 # Constants
-taskset_file = './schedcat_log.log'
+schedcat_mediator = './utils/schedcat_mediator.py'
+taskset_file = './utils/schedcat_log.log'
 
 # Interval class
 class interval():    
@@ -12,19 +15,24 @@ class interval():
         self.min = interval_min
         self.max = interval_max
         
+    
     def interval_size(self) -> int:
         return self.max - self.min + 1
     
+    
     def get_interval(self) -> tuple[int, int]:
         return (self.min, self.max)
+    
+    
+    def choose_random(self, random_function: Callable[[int, int], float]) -> float:
+        return floor(random_function(self.min, self.max + 1))
 
-# TODO generate tasks with interval memory utilisation!
 
 # Generates a PREM taskset with a specified task number, period interval and distribution (for random), CPU utilisation and memory bandwidth utilisation.
 # Returns a processor!
-def generate_prem_taskset(task_number: int, period_interval: interval, period_distribution: str, utilisation: float, bandwidth_utilisation: float) -> processor:
+def generate_prem_taskset(task_number: int, period_interval: interval, period_distribution: str, utilisation: float, bandwidth_utilisation_interval: interval) -> processor:
     # Call python 2.7 to generate a taskset with schedcat, result in schedcat_log.log
-    os.system(f'python2.7 schedcat_mediator.py {period_interval.min:d} {period_interval.max:d} {period_distribution:s} {task_number:d} {utilisation:.04f}')
+    os.system(f'python2.7 {schedcat_mediator:s} {period_interval.min:d} {period_interval.max:d} {period_distribution:s} {task_number:d} {utilisation:.04f}')
     
     # Prepare processor
     Px = processor()
@@ -39,6 +47,7 @@ def generate_prem_taskset(task_number: int, period_interval: interval, period_di
         period = int(task_data[1])
         
         # Compute memory phase and computation phase
+        bandwidth_utilisation = bandwidth_utilisation_interval.choose_random(uniform) / 100 # Interval is only int, so need to divide by 100 to get a percentage
         mem_phase = ceil(wcet * bandwidth_utilisation)
         comp_phase = wcet - mem_phase
         
@@ -51,10 +60,11 @@ def generate_prem_taskset(task_number: int, period_interval: interval, period_di
         
     return Px
 
+
 # Generates a PREM system with a specified processor number, task numbers, period intervals and distributions (for random), CPU utilisation and memory bandwidth utilisation.
 # You can choose a different task number for each CPU with different period intervals and distributions. However utilisations will be the same for all of them
 # Returns a PREM system!
-def generate_prem_system(processor_number: int, task_numbers: list[int], period_intervals: list[interval], period_distributions: list[str], utilisation: float, bandwidth_utilisation: float) -> PREM_system:
+def generate_prem_system(processor_number: int, task_numbers: list[int], period_intervals: list[interval], period_distributions: list[str], utilisation: float, bandwidth_utilisation_interval: interval) -> PREM_system:
     # We generate processor_number tasksets and we assemble them to make a system!
     system = PREM_system()
     for cpu_prio in range(0, processor_number):
@@ -62,12 +72,13 @@ def generate_prem_system(processor_number: int, task_numbers: list[int], period_
                                                        period_interval=period_intervals[cpu_prio],
                                                        period_distribution=period_distributions[cpu_prio],
                                                        utilisation=utilisation,
-                                                       bandwidth_utilisation=bandwidth_utilisation)) # For this I don't really understand the "scale down"
+                                                       bandwidth_utilisation_interval=bandwidth_utilisation_interval)) # For this I don't really understand the "scale down"
         
     return system
 
+
 # Generates system_number times a system with the specified parameters. It's just a for loop of generate_prem_system but with the same parameters (so less messy code in the experimentations)
-def generate_prem_systems(system_number: int, processor_number: int, task_numbers: list[int], period_intervals: list[interval], period_distributions: list[str], utilisation: float, bandwidth_utilisation: float) -> list[PREM_system]:
+def generate_prem_systems(system_number: int, processor_number: int, task_numbers: list[int], period_intervals: list[interval], period_distributions: list[str], utilisation: float, bandwidth_utilisation_interval: interval) -> list[PREM_system]:
     system_list = []
     for _ in range(0, system_number):
         system_list.append(generate_prem_system(processor_number=processor_number,
@@ -75,6 +86,6 @@ def generate_prem_systems(system_number: int, processor_number: int, task_number
                                                 period_intervals=period_intervals,
                                                 period_distributions=period_distributions,
                                                 utilisation=utilisation,
-                                                bandwidth_utilisation=bandwidth_utilisation))
+                                                bandwidth_utilisation_interval=bandwidth_utilisation_interval))
         
     return system_list
