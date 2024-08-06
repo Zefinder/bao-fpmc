@@ -31,9 +31,12 @@ class PREM_task:
 
 # Represents a CPU
 class processor:
-    # Class attribute
+    # Class attributes
     M_max = -1
+    C_min = -1
     max_interference = -1
+    global_task = PREM_task(M=-1, C=-1, T=-1)
+    
 
     # Inits the processor with a task list (or not) 
     def __init__(self, tasks: list[PREM_task] = []) -> None:
@@ -44,13 +47,30 @@ class processor:
             # Keep the max value to fasten things
             if task.M > self.M_max:
                 self.M_max = task.M
+            
+            # Keep the min computation value to fasten things
+            if self.C_min == -1 or self.C_min > task.C:
+                self.C_min = task.C
 
-        
+    
+    # Adds a task to the processor
     def add_task(self, task: PREM_task) -> None:
         self._tasks.append(task)
         if task.M > self.M_max:
             self.M_max = task.M
             
+        if self.C_min == -1 or self.C_min > task.C:
+            self.C_min = task.C
+            
+    
+    # Sets the global task for this processor (only used when useing global tasks)
+    def set_global_task(self, T: int) -> None:
+        self.global_task = PREM_task(M=self.M_max, C=self.C_min, T=T)
+
+    
+    # Gets the saved global task
+    def get_global_task(self) -> PREM_task:
+        return self.global_task
     
     # Returns the tasks with higher priority
     def higher_tasks(self, prio: int) -> list[PREM_task]:
@@ -95,6 +115,10 @@ class processor:
         return utilisation
 
     
+    def length(self) -> int:
+        return len(self._tasks)
+    
+    
     def __str__(self) -> str:
         string_result = ''
         for task in self._tasks:
@@ -132,6 +156,10 @@ class PREM_system:
     # Returns all CPU that has a higher priority than the argument
     def higher_processors(self, prio: int) -> list[processor]:
         return self._processors[:prio]
+    
+    
+    def length(self) -> int:
+        return len(self._processors)
     
     
     def __str__(self) -> str:

@@ -10,27 +10,32 @@ import sys
 taskset_file = './utils/schedcat_log.log'
 
 # Functions
-def main():    
-    # First argument is period_min
-    period_min = int(sys.argv[1])
+def main():
+    # First argument is the number of sets to generate
+    taskset_number = int(sys.argv[1])
     
-    # Second argument is period_max
-    period_max = int(sys.argv[2])
+    # Second argument is period_min
+    period_min = int(sys.argv[2])
     
-    # Third argument is period_distribution
-    period_distribution = sys.argv[3]
+    # Third argument is period_max
+    period_max = int(sys.argv[3])
     
-    # Fourth argument is num_task
-    num_task = int(sys.argv[4])
+    # Fourth argument is period_distribution
+    period_distribution = sys.argv[4]
     
-    # Fifth argument is utilisation
-    utilisation = float(sys.argv[5])
+    # Fifth argument is num_task
+    num_task = int(sys.argv[5])
+    
+    # Sixth argument is utilisation
+    utilisation = float(sys.argv[6])
 
-    # Generate task set
-    taskset = gen_taskset(periods=(period_min, period_max),
-                          period_distribution=period_distribution, 
-                          tasks_n=num_task, 
-                          utilization=utilisation)
+    taskset = []
+    # Generate task sets
+    for _ in range(0, taskset_number):
+        taskset += gen_taskset(periods=(period_min, period_max),
+                               period_distribution=period_distribution, 
+                               tasks_n=num_task, 
+                               utilization=utilisation)
     
     # Write taskset in file
     file = open(taskset_file, "w")
