@@ -2,7 +2,7 @@
 set -e 
 
 # Basic git pull
-git pull
+git pull origin analysis
 
 # Go to each submodule and pull
 (cd bao-hypervisor && git switch main && git pull)
