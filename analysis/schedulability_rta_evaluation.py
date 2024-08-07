@@ -7,8 +7,8 @@ from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
 # Constants
-system_number = 1
-cpu_numbers = [4, 8, 16]
+system_number = 10
+cpu_numbers = [4]
 task_number_per_cpu = 8
 period_interval = interval(10, 100)
 period_distribution = 'logunif'
@@ -17,7 +17,7 @@ utilisation = 0.6
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
 interference_mode_global = inter_processor_interference_mode(get_global_task_inter_processor_interference)
-interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference)
+interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, batch_number=2)
 
 log_classic_filename = 'schedulability_rta_evaluation_prem.log'
 log_global_filename = 'schedulability_rta_evaluation_global.log'
@@ -53,15 +53,15 @@ def main():
                                                bandwidth_utilisation_interval=bandwidth_utilisation_interval)
             
             # Analyse system classic
-            set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
-            get_response_time_system(system=prem_system, interference_mode=interference_mode_classic)
-            log_classic_file.write(system=prem_system)
+            # set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
+            # get_response_time_system(system=prem_system, interference_mode=interference_mode_classic)
+            # log_classic_file.write(system=prem_system)
             
-            # Analyse system with global tasks (but first reset system)
-            prem_system.reset()
-            set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
-            get_response_time_system(system=prem_system, interference_mode=interference_mode_global)
-            log_global_file.write(system=prem_system)
+            # # Analyse system with global tasks (but first reset system)
+            # prem_system.reset()
+            # set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
+            # get_response_time_system(system=prem_system, interference_mode=interference_mode_global)
+            # log_global_file.write(system=prem_system)
 
             # Analyse system with knapsack (but first reset system)
             prem_system.reset()

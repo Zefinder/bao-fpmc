@@ -8,24 +8,27 @@
 # Imports
 from typing import Callable
 from math import ceil
+from multiprocessing import Pool
 from utils.priority_queue import PriorityTaskQueue
 from utils.prem_utils import *
 
 # Classes
 # Just give this object with the desired modes in it
 class inter_processor_interference_mode():
-    _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task], int], ...]
+    _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task, int], int], ...]
+    _batch_number: int
     
     
-    def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int]) -> None:
+    def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task, int], int], batch_number: int = -1) -> None:
         self._interference_functions = interference_functions
+        self._batch_number = batch_number
     
     
     # Returns the inter-processor interference, which is the minimum of all functions
     def get_inter_processor_interference(self, system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
         interferences = []
         for interference_function in self._interference_functions:
-            interference = interference_function(system, cpu_prio, delta, task)
+            interference = interference_function(system, cpu_prio, delta, task, self._batch_number)
             
             if interference != -1:
                 interferences.append(interference)
@@ -41,11 +44,11 @@ class inter_processor_interference_mode():
 # Get the inter-processor interference, the paper version.
 # Takes the number of time a task can start (considering jitter) and multiply by its memory time
 # Also called alpha
-def get_classic_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
+def get_classic_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task, batch_number: int) -> int:
     interference = 0
     for Px in system.higher_processors(cpu_prio):
-        for task in Px.tasks():
-            interference += ceil((delta + task.R - task.e) / task.T) * task.M
+        for htask in Px.tasks():
+            interference += ceil((delta + htask.R - htask.e) / htask.T) * htask.M
             
     return interference
 
@@ -90,7 +93,7 @@ def get_global_task(system: PREM_system, cpu_prio: int) -> PREM_task:
 # The idea behind it is to approximate the multi-task multi-core system to a single-task multi-core with preemptive fixed-priority scheduling. 
 # To remember things, global tasks' periods are stored in processors when computed.
 # This is pessimistic when there is a task with a big M and one with a small C
-def get_global_task_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
+def get_global_task_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task, batch_number: int) -> int:
     # This equation has a stable solution if the utilisation of global tasks + of this task <= 1
     global_tasks = [get_global_task(system=system, cpu_prio=prio) for prio in range(0, cpu_prio)]
     global_utilisation = sum([gtask.M / gtask.T for gtask in global_tasks])
@@ -118,6 +121,13 @@ def get_global_task_inter_processor_interference(system: PREM_system, cpu_prio: 
 # ----------------------------------------------------
 # ----------------- Knapsack version -----------------
 # ----------------------------------------------------
+# This one is used to transform the problem into a knapsack problem and then
+# Solve the knapsack which gives the interference!
+# This is really long to get a good result with all processors.
+# When you will want to solve the knapsack, you can specify the number of processors
+# you want to mix. 
+# The best solution is when batch_number = system.length(), but this takes quite some time...
+# (1 min for 4 processors, around 20 min for 16 processors)
 class knapsack_object:
     def __init__(self, task: PREM_task) -> None:
         self.v = task.M
@@ -130,10 +140,11 @@ class knapsack_object:
 
 class knapsack_problem:
     _problem_solution: int
+    _W : int
 
-
-    def __init__(self) -> None:
+    def __init__(self, W) -> None:
         self._objects = []
+        self._W = W
 
 
     def add_object(self, obj: knapsack_object, n: int = 1) -> None:
@@ -141,24 +152,23 @@ class knapsack_problem:
         [self._objects.append(obj) for _ in range(0, n)]
 
 
-    def solve(self, W: int) -> None:
+    def solve(self) -> None:
         # Create matrix, add one row of 0!
-        m = [[0] * (W + 1) for _ in range(0, len(self._objects) + 1)]
+        m = [[0] * (self._W + 1) for _ in range(0, len(self._objects) + 1)]
 
         # Begin algorithm
         for i in range(0, len(self._objects)):
             # Get object to not call it for array each time
             obj = self._objects[i]
 
-            for j in range(1, W + 1):
+            for j in range(1, self._W + 1):
                 if obj.w > j:
                     m[i + 1][j] = max(m[i][j], min(obj.v, j))
                 else:
                     m[i + 1][j] = max(m[i][j], m[i][j - obj.w] + obj.v)
 
         # Set problem solution
-        # print(len(self._objects), W, len(m), len(m[0]))
-        self._problem_solution = m[len(self._objects)][W]
+        self._problem_solution = m[len(self._objects)][self._W]
 
 
     def get_solution(self) -> int:
@@ -173,37 +183,72 @@ class knapsack_problem:
         return res[:-1]
   
 
-def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int):
-    problem = knapsack_problem()
+def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int, batch_number: int) -> list[knapsack_problem]:
+    # We create the processors list for each batch
+    cpu_number_per_batch = ceil(system.length() / batch_number)
+    # print(cpu_number_per_batch)
+    processors = system.higher_processors(prio=cpu_prio)
+    processor_batches = []
+    current_batch = []
 
-    # Create the queue and sort it by memory impact (M/e)
-    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
+    for cpu_index in range(1, len(processors) + 1):
+        current_batch.append(processors[cpu_index - 1])
+        # If number of CPU is a multiple of the cpu number per batch, then add to processor batch
+        if cpu_index % cpu_number_per_batch == 0:
+            processor_batches.append(current_batch)
+            current_batch = []
+    
+    if len(processor_batches) != batch_number:
+        # print(len(current_batch))
+        processor_batches.append(current_batch)
 
-    # Add all tasks of higher priority processors to the priority queue
-    for Px in system.higher_processors(prio=cpu_prio):
-        for htask in Px.tasks():
-            queue.insert(htask)
+    problems = []
+    # For each batch create a queue, sort tasks and fill the problem
+    for processor_batch in processor_batches:
+        problem = knapsack_problem(W=delta)
 
-    # For each popped task, add knapsack objects to the problem
-    while not queue.isEmpty():
-        htask = queue.delete()
+        # Create the queue and sort it by memory impact (M/e)
+        queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
+
+        # Add all tasks of higher priority processors to the priority queue
+        for Px in processor_batch:
+            for htask in Px.tasks():
+                queue.insert(htask)
+
+        # For each popped task, add knapsack objects to the problem
+        while not queue.isEmpty():
+            htask = queue.delete()
+            
+            # Number of possible jobs: (delta + R - e) / T rounded up
+            n = ceil((delta + htask.R + htask.e) / htask.T)
+            problem.add_object(obj=knapsack_object(task=htask), n=n)
         
-        # Number of possible jobs: (delta + R - e) / T rounded up
-        n = ceil((delta + htask.R + htask.e) / htask.T)
-        problem.add_object(obj=knapsack_object(task=htask), n=n)
+        problems.append(problem)
+
+    # print(len(problems))
+    # print()
 
     # Return the problem
-    return problem
+    return problems
 
 
-def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
-    # Prepare the knapsack problem
-    problem = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta)
-
-    # Solve the problem with weight being delta
-    problem.solve(W=delta)
-
-    # print(problem.get_solution())
-
-    # Return the solution
+def solve_problem(problem: knapsack_problem) -> int:
+    problem.solve()
     return problem.get_solution()
+
+
+def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task, batch_number: int) -> int:
+    # Prepare the knapsack problems, there are batch_number CPU per problem
+    if batch_number == -1:
+        batch_number = 1
+
+    problems = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta, batch_number=batch_number)
+
+    # All problems will be solved after the map
+    with Pool(processes=batch_number) as pool:
+        problem_results = pool.map(solve_problem, problems)
+        pool.close()
+        pool.join()
+
+    # Return the sum of problems' solution
+    return sum(problem_results)
