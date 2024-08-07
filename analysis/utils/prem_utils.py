@@ -2,7 +2,7 @@
 
 # Represents the PREM object
 class PREM_task:
-    def __init__(self, M: int, C: int, T: int, D: int = -1, prio: int = 0) -> None:
+    def __init__(self, M: int, C: int, T: int, D: int = -1, prio: int = -1) -> None:
         # Add tests to see if values are greater than 0?
         self.M = M # Memory phase
         self.C = C # Computation phase
@@ -72,6 +72,7 @@ class processor:
     def get_global_task(self) -> PREM_task:
         return self.global_task
     
+    
     # Returns the tasks with higher priority
     def higher_tasks(self, prio: int) -> list[PREM_task]:
         return [task for task in self._tasks if task.prio < prio]
@@ -115,9 +116,22 @@ class processor:
         return utilisation
 
     
+    # Returns the number of tasks in the processor
     def length(self) -> int:
         return len(self._tasks)
     
+
+    # Resets the processor and all its tasks
+    def reset(self) -> None:
+        # Reset persistant values
+        self.max_interference = -1
+        self.global_task = PREM_task(M=-1, C=-1, T=-1)
+        
+        # Reset tasks' priority and response time
+        for task in self._tasks:
+            task.prio = -1
+            task.R = -1
+
     
     def __str__(self) -> str:
         string_result = ''
@@ -158,10 +172,18 @@ class PREM_system:
         return self._processors[:prio]
     
     
+    # Returns the number of processors in the system
     def length(self) -> int:
         return len(self._processors)
     
     
+    # Resets the system
+    def reset(self) -> None:
+        self.system_analysed = False
+        for Px in self._processors:
+            Px.reset()
+
+
     def __str__(self) -> str:
         string_result = ''
         index = 0

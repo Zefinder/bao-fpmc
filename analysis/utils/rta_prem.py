@@ -43,7 +43,8 @@ def get_max_interference(system: PREM_system, interference_mode: inter_processor
     prev_max_interference = -1
     while prev_max_interference != max_interference:
         prev_max_interference = max_interference
-        max_interference = interference_mode.get_inter_processor_interference(system=system, cpu_prio=cpu_prio, delta=max_interference)
+        max_interference = interference_mode.get_inter_processor_interference(system=system, cpu_prio=cpu_prio, delta=max_interference,
+                                                                                              task=PREM_task(M=0, C=0, T=1))
     
     # Save the value 
     Px.max_interference = max_interference
@@ -68,17 +69,27 @@ def get_memory_phase_start_time(system: PREM_system, interference_mode: inter_pr
     # As long as the solution is not stable, we repeat
     while prev_start_time != start_time:
         prev_start_time = start_time
-        start_time = B + get_classic_intra_processor_interference(Px=Px, 
-                                                                  delta=start_time, 
-                                                                  prio=task.prio) + (k - 1) * task.e + min(interference_mode.get_inter_processor_interference(system=system,
-                                                                                                                                                              cpu_prio=cpu_prio, 
-                                                                                                                                                              delta=start_time),
-                                                                                                           get_total_memory_interference(system=system, 
-                                                                                                                                         interference_mode=interference_mode,
-                                                                                                                                         cpu_prio=cpu_prio,
-                                                                                                                                         Px=Px, 
-                                                                                                                                         task=task,
-                                                                                                                                         delta=start_time))
+
+        intra_processor_interference = get_classic_intra_processor_interference(Px=Px, 
+                                                                                delta=start_time, 
+                                                                                prio=task.prio)
+
+        inter_processor_interference = min(interference_mode.get_inter_processor_interference(system=system,
+                                                                                              cpu_prio=cpu_prio, 
+                                                                                              delta=start_time,
+                                                                                              task=task),
+                                                                                              get_total_memory_interference(system=system, 
+                                                                                                                            interference_mode=interference_mode,
+                                                                                                                            cpu_prio=cpu_prio,
+                                                                                                                            Px=Px, 
+                                                                                                                            task=task,
+                                                                                                                            delta=start_time))
+
+        # If inter-processor interference returned -1, then it means that it can't be determined with this policy (e.g. no stable solution)
+        if inter_processor_interference == -1:
+            return -1
+
+        start_time = B + intra_processor_interference + (k - 1) * task.e + inter_processor_interference
         
     return start_time
 
@@ -87,6 +98,9 @@ def get_memory_phase_start_time(system: PREM_system, interference_mode: inter_pr
 def get_computation_phase_start_time(system: PREM_system, interference_mode: inter_processor_interference_mode, cpu_prio: int, Px: processor, task: PREM_task, k: int) -> int:
     # First step is to get the memory phase start time
     memory_start_time = get_memory_phase_start_time(system=system, interference_mode=interference_mode, cpu_prio=cpu_prio, Px=Px, task=task, k=k)
+
+    if memory_start_time == -1:
+        return -1
     
     # Save blocking time to go faster
     B = get_blocking_time(Px=Px, prio=task.prio)
@@ -100,19 +114,36 @@ def get_computation_phase_start_time(system: PREM_system, interference_mode: int
     # Constant part that does not change
     constant_blocking = B + I + task.M + (k - 1) * task.e
     
-    # Base values
-    start_time = constant_blocking
+    # Base values (start memory plus memory phase)
+    start_time = task.M + memory_start_time
     prev_start_time = -1
     
+    # print('get computation phase start time for task', task)
+    # print('CPU prio', cpu_prio)
+    # print()
+
     # As long as the solution is not stable we repeat
     while prev_start_time != start_time:
         prev_start_time = start_time
-        start_time = constant_blocking + min(interference_mode.get_inter_processor_interference(system=system, 
-                                                                                                cpu_prio=cpu_prio, 
-                                                                                                delta=start_time),
-                                             beta_memory_phase + interference_mode.get_inter_processor_interference(system=system, 
-                                                                                                                    cpu_prio=cpu_prio, 
-                                                                                                                    delta=start_time - memory_start_time))
+
+        # print('Computing inter-processor interference')
+        inter_processor_interference = interference_mode.get_inter_processor_interference(system=system, 
+                                                                                          cpu_prio=cpu_prio, 
+                                                                                          delta=start_time,
+                                                                                          task=task)
+        
+        # print('Computing inter-processor mid interference')
+        inter_processor_interference_mid = interference_mode.get_inter_processor_interference(system=system, 
+                                                                                              cpu_prio=cpu_prio, 
+                                                                                              delta=start_time - memory_start_time,
+                                                                                              task=task)
+        
+        # If one of them returns -1, it means that no solution have been found
+        if inter_processor_interference == -1 or inter_processor_interference_mid == -1:
+            return -1
+
+        start_time = constant_blocking + min(inter_processor_interference,
+                                             beta_memory_phase + inter_processor_interference_mid)
     
     return start_time
 
@@ -147,17 +178,24 @@ def get_longest_busy_period(system: PREM_system, interference_mode: inter_proces
     while prev_busy_period != busy_period:
         prev_busy_period = busy_period
         # We take into account this task, so we do as if we computed the interference for a lower priority task
+        inter_processor_interference = min(interference_mode.get_inter_processor_interference(system=system,
+                                                                                              cpu_prio=cpu_prio,
+                                                                                              delta=busy_period,
+                                                                                              task=task), 
+                                                                                              get_total_memory_interference(system=system,
+                                                                                                                            interference_mode=interference_mode,
+                                                                                                                            cpu_prio=cpu_prio,
+                                                                                                                            Px=Px,
+                                                                                                                            task=task,
+                                                                                                                            delta=busy_period) + Px.M_max)
+
+        # If it returns -1, then so solution found at all so unlimited busy period
+        if inter_processor_interference == -1:
+            return -1
+
         busy_period = B + get_classic_intra_processor_interference(Px=Px,
                                                            delta=busy_period, 
-                                                           prio=task.prio + 1) + min(interference_mode.get_inter_processor_interference(system=system,
-                                                                                                                                        cpu_prio=cpu_prio,
-                                                                                                                                        delta=busy_period), 
-                                                                                     get_total_memory_interference(system=system,
-                                                                                                                   interference_mode=interference_mode,
-                                                                                                                   cpu_prio=cpu_prio,
-                                                                                                                   Px=Px,
-                                                                                                                   task=task,
-                                                                                                                   delta=busy_period) + Px.M_max)
+                                                           prio=task.prio + 1) + inter_processor_interference
     
     return busy_period
 

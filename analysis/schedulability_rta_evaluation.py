@@ -1,12 +1,13 @@
 # Imports 
 import time
 from utils.generate_prem import interval, generate_prem_system
-from utils.rta_prem import get_response_time_system, is_system_schedulable_per_processor
+from utils.fixed_priority_sched import set_system_priority, rate_monotonic_scheduler
+from utils.rta_prem import get_response_time_system
 from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
 # Constants
-system_number = 100
+system_number = 1
 cpu_numbers = [4, 8, 16]
 task_number_per_cpu = 8
 period_interval = interval(10, 100)
@@ -20,7 +21,7 @@ interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inte
 
 log_classic_filename = 'schedulability_rta_evaluation_prem.log'
 log_global_filename = 'schedulability_rta_evaluation_global.log'
-log_knapsack_filename = 'schedulability_rta_evaluation_global.log'
+log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
 
 
 # Functions
@@ -36,8 +37,8 @@ def main():
     log_global_file = log_file_class()
     log_global_file.create(log_global_filename)
     
-    # log_knapsack_file = log_file_class()
-    # log_knapsack_file.create(log_knapsack_filename)
+    log_knapsack_file = log_file_class()
+    log_knapsack_file.create(log_knapsack_filename)
     
     # Generate systems
     start_time = time.time()
@@ -52,15 +53,25 @@ def main():
                                                bandwidth_utilisation_interval=bandwidth_utilisation_interval)
             
             # Analyse system classic
+            set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
             get_response_time_system(system=prem_system, interference_mode=interference_mode_classic)
             log_classic_file.write(system=prem_system)
             
+            # Analyse system with global tasks (but first reset system)
+            prem_system.reset()
+            set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
             get_response_time_system(system=prem_system, interference_mode=interference_mode_global)
             log_global_file.write(system=prem_system)
+
+            # Analyse system with knapsack (but first reset system)
+            prem_system.reset()
+            set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
+            get_response_time_system(system=prem_system, interference_mode=interference_mode_knapsack)
+            log_knapsack_file.write(system=prem_system)
             
             # Just an indicator to help to know where we are in generation
-            if (system_index + 1) % 50 == 0:
-                print(f'Number of generated and analysed systems: {system_index + 1:d}')
+            # if (system_index + 1) % 50 == 0:
+            print(f'Number of generated and analysed systems: {system_index + 1:d}')
         
         print()
         
