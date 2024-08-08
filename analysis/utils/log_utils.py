@@ -49,6 +49,7 @@ class log_file_class():
 
         # Write string representation of array but without []
         self.log_file.write(log_line.__str__()[1:-1] + '\n')
+        self.log_file.flush()
     
 
     # Closes the log file
