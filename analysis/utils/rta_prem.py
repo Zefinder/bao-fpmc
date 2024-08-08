@@ -43,8 +43,7 @@ def get_max_interference(system: PREM_system, interference_mode: inter_processor
     prev_max_interference = -1
     while prev_max_interference != max_interference:
         prev_max_interference = max_interference
-        max_interference = interference_mode.get_inter_processor_interference(system=system, cpu_prio=cpu_prio, delta=max_interference,
-                                                                                              task=PREM_task(M=0, C=0, T=1))
+        max_interference = interference_mode.get_inter_processor_interference(system=system, cpu_prio=cpu_prio, delta=max_interference, task=PREM_task(M=0, C=0, T=1))
     
     # Save the value 
     Px.max_interference = max_interference

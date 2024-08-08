@@ -234,6 +234,9 @@ class TaskSystem(list):
 
     def max_density_q(self):
         return max([t.density_q() for t in self])
+    
+    def min_cost(self):
+        return min([t.cost for t in self])
 
     def max_cost(self):
         return max([t.cost for t in self])

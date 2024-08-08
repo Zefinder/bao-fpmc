@@ -186,7 +186,6 @@ class knapsack_problem:
 def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int, batch_number: int) -> list[knapsack_problem]:
     # We create the processors list for each batch
     cpu_number_per_batch = ceil(system.length() / batch_number)
-    # print(cpu_number_per_batch)
     processors = system.higher_processors(prio=cpu_prio)
     processor_batches = []
     current_batch = []
@@ -224,9 +223,6 @@ def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int, bat
             problem.add_object(obj=knapsack_object(task=htask), n=n)
         
         problems.append(problem)
-
-    # print(len(problems))
-    # print()
 
     # Return the problem
     return problems

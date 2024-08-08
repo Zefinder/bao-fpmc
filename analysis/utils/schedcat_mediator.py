@@ -10,6 +10,10 @@ import sys
 taskset_file = './utils/schedcat_log.log'
 
 # Functions
+def times_ten(ms):
+    return ms*10
+
+
 def main():
     # First argument is the number of sets to generate
     taskset_number = int(sys.argv[1])
@@ -32,10 +36,17 @@ def main():
     taskset = []
     # Generate task sets
     for _ in range(0, taskset_number):
-        taskset += gen_taskset(periods=(period_min, period_max),
+        cost = 0
+        while cost < 10:
+            tmp_task = gen_taskset(periods=(period_min, period_max),
                                period_distribution=period_distribution, 
                                tasks_n=num_task, 
-                               utilization=utilisation)
+                               utilization=utilisation,
+                               scale=times_ten)
+            
+            cost = tmp_task.min_cost()
+        
+        taskset += tmp_task
     
     # Write taskset in file
     file = open(taskset_file, "w")
