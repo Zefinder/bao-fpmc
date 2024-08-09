@@ -212,10 +212,13 @@ def solve_problem(problem: knapsack_problem) -> int:
 
 def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
     # Prepare the problem
-    problems = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta)
+    problem = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta)
+    print(cpu_prio, delta)
 
     # Solve the problem
-    problems.solve()
+    problem.solve()
+    
+    print(problem.get_solution())
     
     # Return the problem solution
-    return problems.get_solution()
+    return problem.get_solution()

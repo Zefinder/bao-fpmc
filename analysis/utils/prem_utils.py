@@ -32,6 +32,7 @@ class PREM_task:
 # Represents a CPU
 class processor:
     # Class attributes
+    _tasks: list[PREM_task]
     M_max = -1
     C_min = -1
     max_interference = -1
@@ -98,6 +99,15 @@ class processor:
         return prio == self.get_lowest_prio()
     
     
+    # Returns true is the processor is schedulable
+    def is_schedulable(self) -> bool:
+        schedulable = True
+        for task in self._tasks:
+            schedulable &= task.is_schedulable()
+        
+        return schedulable
+                
+    
     # Returns the memory utilisation of all tasks in the processor
     def get_memory_utilisation(self) -> float:
         utilisation = 0
@@ -148,8 +158,9 @@ class PREM_system:
     
     # Inits the system with a CPU list (or not)
     # The first CPU to enter has higher priority 
-    def __init__(self, processors: list[processor] = []) -> None:
+    def __init__(self, processors: list[processor] = [], utilisation: float = 0) -> None:
         self._processors = [cpu for cpu in processors]
+        self._utilisation = utilisation
         
     
     # Adds a processor
@@ -175,6 +186,20 @@ class PREM_system:
     # Returns the number of processors in the system
     def length(self) -> int:
         return len(self._processors)
+    
+    
+    # Returns the system's utilisation, given during creation
+    def utilisation(self) -> float:
+        return self._utilisation
+    
+    
+    # Returns true is the system is schedulable
+    def is_schedulable(self) -> bool:
+        schedulable = True
+        for Px in self._processors:
+            schedulable &= Px.is_schedulable()
+            
+        return schedulable
     
     
     # Resets the system

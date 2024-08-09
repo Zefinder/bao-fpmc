@@ -26,6 +26,9 @@ class interval():
     
     def choose_random(self, random_function: Callable[[int, int], float]) -> float:
         return floor(random_function(self.min, self.max + 1))
+    
+    def __str__(self) -> str:
+        return f'[{self.min:d};{self.max:d}]'
 
 
 # Generates a PREM taskset with a specified task number, period interval and distribution (for random), CPU utilisation and memory bandwidth utilisation.
@@ -78,6 +81,6 @@ def generate_prem_system(processor_number: int, task_number: int, period_interva
                                                           period_interval=period_interval,
                                                           period_distribution=period_distribution,
                                                           utilisation=utilisation,
-                                                          bandwidth_utilisation_interval=bandwidth_utilisation_interval))
+                                                          bandwidth_utilisation_interval=bandwidth_utilisation_interval), utilisation=utilisation)
         
     return system

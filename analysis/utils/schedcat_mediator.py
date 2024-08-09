@@ -14,6 +14,10 @@ def times_ten(ms):
     return ms*10
 
 
+def times_hundred(ms):
+    return ms*100
+
+
 def main():
     # First argument is the number of sets to generate
     taskset_number = int(sys.argv[1])
@@ -32,17 +36,22 @@ def main():
     
     # Sixth argument is utilisation
     utilisation = float(sys.argv[6])
+    
+    if utilisation < 0.3:
+        scale = times_hundred
+    else:
+        scale = times_ten
 
     taskset = []
     # Generate task sets
     for _ in range(0, taskset_number):
-        cost = 0
+        cost = 0        
         while cost < 10:
             tmp_task = gen_taskset(periods=(period_min, period_max),
                                period_distribution=period_distribution, 
                                tasks_n=num_task, 
                                utilization=utilisation,
-                               scale=times_ten)
+                               scale=scale)
             
             cost = tmp_task.min_cost()
         
