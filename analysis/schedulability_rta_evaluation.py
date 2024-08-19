@@ -16,11 +16,9 @@ bandwidth_utilisation_interval = interval(5, 20)
 utilisation = 0.6
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
-# interference_mode_global = inter_processor_interference_mode(get_global_task_inter_processor_interference)
 interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference)
 
 log_classic_filename = 'schedulability_rta_evaluation_prem.log'
-# log_global_filename = 'schedulability_rta_evaluation_global.log'
 log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
 
 knapsack_problem_accesses = 0
@@ -33,9 +31,6 @@ def main():
     
     log_classic_file = log_file_class()
     log_classic_file.create(log_classic_filename)
-    
-    # log_global_file = log_file_class()
-    # log_global_file.create(log_global_filename)
     
     log_knapsack_file = log_file_class()
     log_knapsack_file.create(log_knapsack_filename)
@@ -59,12 +54,6 @@ def main():
             get_response_time_system(system=prem_system, interference_mode=interference_mode_classic)
             log_classic_file.write(system=prem_system)
             
-            # Analyse system with global tasks (but first reset system)
-            # prem_system.reset()
-            # set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)
-            # get_response_time_system(system=prem_system, interference_mode=interference_mode_global)
-            # log_global_file.write(system=prem_system)
-
             # Analyse system with knapsack (but first reset system)
             prem_system.reset()
             set_system_priority(system=prem_system, fp_scheduler=rate_monotonic_scheduler)

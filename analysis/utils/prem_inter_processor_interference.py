@@ -186,7 +186,7 @@ def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int) -> 
     problem = knapsack_problem(W=delta)
 
     # Create the queue and sort it by memory impact (M/e)
-    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
+    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M) > (task2.M) else (1 if (task1.M) == (task2.M) and (task1.T) < (task2.T) else 0))
 
     # Add all tasks of higher priority processors to the priority queue
     for Px in system.higher_processors(prio=cpu_prio):
