@@ -11,7 +11,7 @@ from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
 # Constants
-system_number = 100
+system_number = 5000
 cpu_numbers = [4, 8, 16]
 task_number_per_cpu = 8
 period_interval = interval(10, 100)
@@ -84,7 +84,7 @@ def system_analysis(_):
     log_knapsack_file.write(system=prem_system_knapsack)
     # Just an indicator to help to know where we are in generation
     system_index_value.value += 1
-    if system_index_value.value % 10 == 0:
+    if system_index_value.value % 100 == 0:
         print(f'Number of generated and analysed systems: {system_index_value.value:d}')
     log_lock.release()    
 
