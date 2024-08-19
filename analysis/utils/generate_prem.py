@@ -35,7 +35,12 @@ class interval():
 # Returns a processor!
 def generate_prem_taskset(task_number: int, period_interval: interval, period_distribution: str, utilisation: float, bandwidth_utilisation_interval: interval, taskset_number: int = 1) -> list[processor]:
     # Call python 2.7 to generate a taskset with schedcat, result in schedcat_log.log
-    os.system(f'python2.7 {schedcat_mediator:s} {taskset_number:d} {period_interval.min:d} {period_interval.max:d} {period_distribution:s} {task_number:d} {utilisation:.04f}')
+    if os.name == 'nt':
+        python_file = 'python2.7.exe'
+    else:
+        python_file = 'python2.7'
+
+    os.system(f'{python_file:s} {schedcat_mediator:s} {taskset_number:d} {period_interval.min:d} {period_interval.max:d} {period_distribution:s} {task_number:d} {utilisation:.04f}')
     
     # Get result in file and create a processor object for it
     schedcat_log = open(taskset_file, 'r')

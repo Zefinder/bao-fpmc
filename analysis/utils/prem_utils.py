@@ -1,4 +1,6 @@
 # Everything that can be useful to PREM will be in here!
+# Imports
+import copy
 
 # Represents the PREM object
 class PREM_task:
@@ -25,8 +27,14 @@ class PREM_task:
         return self.R != -1 and self.R <= self.D
     
 
+    def __deepcopy__(self, memo) -> 'PREM_task':
+        new_task = PREM_task(M=self.M, C=self.C, T=self.T, D=self.D, prio=self.prio)
+        new_task.R = self.R
+        return new_task 
+
+
     def __str__(self) -> str:
-        return f'M={self.M:d},C={self.C:d},T={self.T:d},prio={self.prio:d}'
+        return f'M={self.M:d},C={self.C:d},T={self.T:d},prio={self.prio:d},R={self.R:d}'
     
 
 # Represents a CPU
@@ -143,6 +151,15 @@ class processor:
             task.R = -1
 
     
+    def __deepcopy__(self, memo) -> 'processor':
+        tasks = [copy.deepcopy(task) for task in self._tasks]
+        new_processor = processor(tasks=tasks)
+        new_processor.max_interference = self.max_interference
+        new_processor.global_task = self.global_task
+
+        return new_processor
+
+
     def __str__(self) -> str:
         string_result = ''
         for task in self._tasks:
@@ -207,6 +224,16 @@ class PREM_system:
         self.system_analysed = False
         for Px in self._processors:
             Px.reset()
+
+    
+    # Clones the system
+    def __deepcopy__(self, memo) -> 'PREM_system':
+        processors = [copy.deepcopy(Px) for Px in self._processors]
+        new_system = PREM_system(processors=processors, utilisation=self._utilisation)
+        new_system.system_analysed = self.system_analysed
+
+        return new_system
+
 
 
     def __str__(self) -> str:

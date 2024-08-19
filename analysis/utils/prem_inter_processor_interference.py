@@ -136,10 +136,12 @@ class knapsack_object:
 
 class knapsack_problem:
     _problem_solution: int
+    _problem_solution_path: list[knapsack_object]
+    _shift: int = 0
     _W : int
 
     def __init__(self, W) -> None:
-        self._objects = []
+        self._objects: list[knapsack_object] = []
         self._W = W
 
 
@@ -163,13 +165,43 @@ class knapsack_problem:
                 else:
                     m[i + 1][j] = max(m[i][j], m[i][j - obj.w] + obj.v)
 
-        # Set problem solution
+        # Set temporary problem solution (probably needs shift)
         self._problem_solution = m[len(self._objects)][self._W]
+
+        # Set solution path
+        W = self._W
+        i = len(self._objects) - 1
+        previous_value = self._problem_solution
+        self._problem_solution_path = []
+        while W > 0 and i >= 0:
+            current_value = m[i][W]
+            # If result different then item in knapsack, modify W
+            if current_value != previous_value:
+                obj = self._objects[i]
+                W = W - obj.w
+
+                # If W < 0 then it is a cut object! If current value is not the object value, a shift is needed!
+                # The shift is greater if it's the maximal object
+                if W < 0 and current_value != obj.v: # If equal, then cut in computation phase
+                    object_value = obj.v
+                    self._shift = object_value - previous_value
+
+                if W > 0:
+                    previous_value = m[i][W]
+    
+                self._problem_solution_path.append(obj)
+            i -= 1
+        
+        # We know that items are sorted by decreasing value, so before last item is the greatest non cut item
+        # If shift greater than value of second last item value, then we add to the solution, else 0
+        # If there is more than one task in the knapsack of course
+        if len(self._problem_solution_path) > 1:
+            self._problem_solution += max(0, self._shift - self._problem_solution_path[-2].v)
 
 
     def get_solution(self) -> int:
         return self._problem_solution
-
+    
 
     def __str__(self):
         res = ''
