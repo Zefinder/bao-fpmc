@@ -117,21 +117,15 @@ def get_computation_phase_start_time(system: PREM_system, interference_mode: int
     start_time = task.M + memory_start_time
     prev_start_time = -1
     
-    # print('get computation phase start time for task', task)
-    # print('CPU prio', cpu_prio)
-    # print()
-
     # As long as the solution is not stable we repeat
     while prev_start_time != start_time:
         prev_start_time = start_time
 
-        # print('Computing inter-processor interference')
         inter_processor_interference = interference_mode.get_inter_processor_interference(system=system, 
                                                                                           cpu_prio=cpu_prio, 
                                                                                           delta=start_time,
                                                                                           task=task)
         
-        # print('Computing inter-processor mid interference')
         inter_processor_interference_mid = interference_mode.get_inter_processor_interference(system=system, 
                                                                                               cpu_prio=cpu_prio, 
                                                                                               delta=start_time - memory_start_time,
@@ -172,19 +166,11 @@ def get_longest_busy_period(system: PREM_system, interference_mode: inter_proces
     # Base values
     busy_period = B + sum(htask.e for htask in Px.higher_tasks(task.prio)) + task.e
     prev_busy_period = -1
-    
-    if cpu_prio == 1 and task.prio == 4:
-        # busy_period = 44699
-        return 1
-
-    
+        
     # As long as the solution is not stable we repeat
     while prev_busy_period != busy_period:
         prev_busy_period = busy_period
-        print('aaa', busy_period, B, get_intra_processor_interference(Px=Px,
-                                                           delta=busy_period, 
-                                                           prio=task.prio + 1))
-        print(task)
+
         # We take into account this task, so we do as if we computed the interference for a lower priority task
         inter_processor_interference = min(interference_mode.get_inter_processor_interference(system=system,
                                                                                               cpu_prio=cpu_prio,
@@ -257,7 +243,6 @@ def get_response_time_system(system: PREM_system, interference_mode: inter_proce
             
             response_time_processor.append(response_time)
         
-        print(response_time_processor)
         response_time_system.append(response_time_processor)
     
     system.system_analysed = True

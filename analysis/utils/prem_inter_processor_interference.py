@@ -105,12 +105,10 @@ def get_global_task_inter_processor_interference(system: PREM_system, cpu_prio: 
     try:
         for prio in range(0, cpu_prio):
             global_task = get_global_task(system=system, cpu_prio=prio)
-            # print('delta:', delta)
             interference += ceil(delta / global_task.T) * global_task.M
 
     except:
         # TODO Find why utilisation <= 1 and still impossible
-        # print(global_utilisation + (task.M / task.T))
         interference = -1
     
     return interference
@@ -213,12 +211,9 @@ def solve_problem(problem: knapsack_problem) -> int:
 def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
     # Prepare the problem
     problem = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta)
-    print(cpu_prio, delta)
 
     # Solve the problem
     problem.solve()
-    
-    print(problem.get_solution())
-    
+        
     # Return the problem solution
     return problem.get_solution()
