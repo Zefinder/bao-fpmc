@@ -241,6 +241,10 @@ def solve_problem(problem: knapsack_problem) -> int:
 
 
 def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
+    # If delta is 0, no memory interference since no memory time
+    if delta == 0:
+        return 0
+
     # Prepare the problem
     problem = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta)
 

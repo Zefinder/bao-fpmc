@@ -16,7 +16,7 @@ log_dir = './results/'
 
 # Classes
 class log_results():
-    log_file: TextIOWrapper
+    _log_file: TextIOWrapper
     
     
     def __init__(self, log_name: str) -> None:
@@ -24,14 +24,14 @@ class log_results():
             raise Exception(f"Log file doesn't exist: {log_name:s}")
         
         # Keep the file open to read it when asked...
-        self.log_file = open(log_dir + log_name, 'r')
+        self._log_file = open(log_dir + log_name, 'r')
     
     
     def read_entry(self) -> PREM_system:
-        line = self.log_file.readline()
+        line = self._log_file.readline()
         if not line: 
             # Close file and return an empty system if no more lines
-            self.log_file.close()
+            self._log_file.close()
             return PREM_system()
         
         system_components = line.strip().split(',')
@@ -62,6 +62,10 @@ class log_results():
         system.system_analysed = True
         
         return system
+    
+
+    def close(self) -> None:
+        self._log_file.close()
 
 
 class log_file_class():
