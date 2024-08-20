@@ -114,6 +114,11 @@ class processor:
             schedulable &= task.is_schedulable()
         
         return schedulable
+    
+
+    # Returns a list of schedulable tasks
+    def get_schedulable_tasks(self) -> list[PREM_task]:
+        return [task for task in self._tasks if task.is_schedulable()]
                 
     
     # Returns the memory utilisation of all tasks in the processor
@@ -218,6 +223,20 @@ class PREM_system:
             
         return schedulable
     
+    
+    # Returns the number of schedulable tasks if the system was analysed, -1 otherwise
+    def get_number_schedulable_tasks(self) -> int:
+        if not self.system_analysed:
+            return -1
+
+        else:
+            schedulable_tasks = [Px.get_schedulable_tasks() for Px in self._processors]
+            return sum([len(task_list) for task_list in schedulable_tasks])
+        
+
+    def get_total_number_of_tasks(self) -> int:
+        return sum(Px.length() for Px in self._processors)
+
     
     # Resets the system
     def reset(self) -> None:

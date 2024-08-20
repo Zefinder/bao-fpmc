@@ -11,24 +11,27 @@ from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
 # Constants
-system_number = 5000
-cpu_numbers = [4, 8, 16]
-task_number_per_cpu = 8
+system_number = 550
+cpu_number = 4
+task_number_per_cpu = 4
 period_interval = interval(10, 100)
 period_distribution = 'logunif'
-bandwidth_utilisation_interval = interval(5, 20)
-utilisation = 0.6
+bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
+utilisations = [round(0.05 * i, 2) for i in range(1, 20)]
 process_number = 8
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
-interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference)
+# Use both so if knapsack crashes (as long as the condition is not met), the classic interference mehod will take the lead
+interference_mode_knapsack = inter_processor_interference_mode(get_classic_inter_processor_interference, get_knapsack_inter_processor_interference)
 
-log_classic_filename = 'schedulability_rta_evaluation_prem.log'
-log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
+log_classic_filename = 'schedulability_utilisation_evaluation_prem.log'
+log_knapsack_filename = 'schedulability_utilisation_evaluation_knapsack.log'
 
 # Functions
 def init_thread(system_index_value_local: ValueProxy,
                 cpu_number_local: int,
+                utilisation_local: float,
+                bandwidth_utilisation_interval_local: interval,
                 log_classic_filename_local: str,
                 log_knapsack_filename_local: str,
                 creation_lock_local: Lock,
@@ -41,6 +44,12 @@ def init_thread(system_index_value_local: ValueProxy,
 
     global cpu_number
     cpu_number = cpu_number_local
+
+    global utilisation
+    utilisation = utilisation_local
+
+    global bandwidth_utilisation_interval
+    bandwidth_utilisation_interval = bandwidth_utilisation_interval_local    
 
     global log_classic_file
     log_classic_file = log_file_class()
@@ -82,16 +91,16 @@ def system_analysis(_):
     log_knapsack_file.write(system=prem_system_knapsack)
     # Just an indicator to help to know where we are in generation
     system_index_value.value += 1
-    if system_index_value.value % 100 == 0:
+    if system_index_value.value % 1 == 0:
         print(f'Number of generated and analysed systems: {system_index_value.value:d}')
     log_lock.release()    
 
 
 def main():
-    # Tests from Fixed-Priority Memory-Centric scheduler for COTS based multiprocessor (Gero Schwäricke) p. 17 
-    # Generate tests with period between 10 and 100 ms, log uniform, memory stal between 0.05 and 0.20, scheduled with
-    # Rate Monotonic. We change the number of generated tasksets, here we generate 5000 tasksets with utilisation 0.6, 
-    # and 4, 8, 16 processors. There are 8 tasks per processor.
+    # Tests from Fixed-Priority Memory-Centric scheduler for COTS based multiprocessor (Gero Schwäricke) p. 18
+    # Generate tests with period between 10 and 100 ms, log uniform, memory stal varies, (0, 0), (0, 0.05), etc...
+    # , scheduled with Rate Monotonic. We change the number of generated tasksets, here we generate 550 tasksets
+    # with utilisation from 0.05 to 1 with a 0.05 step and 4 processors. There are 4 tasks per processor.
 
     # Reset log files
     log_classic_file = log_file_class()
@@ -104,17 +113,18 @@ def main():
 
     # Generate systems
     start_time = time.time()
-    for cpu_number in cpu_numbers:
-        print(f'Generating systems for N={cpu_number:d}')
-        
-        creation_lock = multiprocessing.Lock()
-        log_lock = multiprocessing.Lock()
-        manager = multiprocessing.Manager()
-        system_index_value = manager.Value('system_index', 0)
-        with Pool(processes=process_number, initializer=init_thread, initargs=(system_index_value, cpu_number, log_classic_filename, log_knapsack_filename, creation_lock, log_lock,)) as pool:
-            pool.map(system_analysis, [*range(1, system_number + 1)])
-            pool.close()
-            pool.join()
+    for bandwidth_utilisation_interval in bandwidth_utilisation_intervals:
+        print(f'Generating systems for memory stall={bandwidth_utilisation_interval.__str__():s}')
+        for utilisation in utilisations:
+            print(f'Generating systems for utilisation={utilisation:f}')
+            creation_lock = multiprocessing.Lock()
+            log_lock = multiprocessing.Lock()
+            manager = multiprocessing.Manager()
+            system_index_value = manager.Value('system_index', 0)
+            with Pool(processes=process_number, initializer=init_thread, initargs=(system_index_value, cpu_number, utilisation, bandwidth_utilisation_interval, log_classic_filename, log_knapsack_filename, creation_lock, log_lock,)) as pool:
+                pool.map(system_analysis, [*range(1, system_number + 1)])
+                pool.close()
+                pool.join()
 
         print()
         
