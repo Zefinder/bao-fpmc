@@ -26,8 +26,6 @@ interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inte
 log_classic_filename = 'schedulability_rta_evaluation_prem.log'
 log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
 
-knapsack_problem_accesses = 0
-
 # Functions
 def init_thread(system_index_value_local: ValueProxy,
                 cpu_number_local: int,
