@@ -46,11 +46,11 @@ def init_thread(system_index_value_local: ValueProxy,
 
     global log_classic_file
     log_classic_file = log_file_class()
-    log_classic_file.create(log_classic_filename_local)
+    log_classic_file.resume_log(log_classic_filename_local)
 
     global log_knapsack_file
     log_knapsack_file = log_file_class()
-    log_knapsack_file.create(log_knapsack_filename_local)
+    log_knapsack_file.resume_log(log_knapsack_filename_local)
 
     global system_index_value
     system_index_value = system_index_value_local
@@ -96,7 +96,16 @@ def main():
     # Generate tests with period between 10 and 100 ms, log uniform, memory stal between 0.05 and 0.20, scheduled with
     # Rate Monotonic. We change the number of generated tasksets, here we generate 5000 tasksets with utilisation 0.6, 
     # and 4, 8, 16 processors. There are 8 tasks per processor.
-        
+
+    # Reset log files
+    log_classic_file = log_file_class()
+    log_classic_file.create(log_classic_filename)
+    log_classic_file.close()
+
+    log_knapsack_file = log_file_class()
+    log_knapsack_file.create(log_knapsack_filename)
+    log_knapsack_file.close()
+
     # Generate systems
     start_time = time.time()
     for cpu_number in cpu_numbers:

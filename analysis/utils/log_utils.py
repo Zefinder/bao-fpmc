@@ -77,6 +77,10 @@ class log_file_class():
     # Creates a new log file 
     def create(self, log_name: str) -> None:
         self._log_file = open(log_dir + log_name, 'w')
+
+
+    def resume_log(self, log_name: str) -> None:
+        self._log_file = open(log_dir + log_name, 'a')
         
         
     def create_result_file(self, log_name: str) -> log_results:
