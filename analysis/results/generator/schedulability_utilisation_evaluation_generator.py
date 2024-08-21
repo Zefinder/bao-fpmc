@@ -7,8 +7,9 @@ from utils.log_utils import *
 from utils.generate_prem import interval
 
 # Constants
-task_sets_per_utilisation = 550
-bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
+task_sets_per_utilisation = 50
+# bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
+bandwidth_utilisation_intervals = [interval(0, 0)]
 utilisations = [round(0.05 * i, 2) for i in range(1, 20)]
 markers = ['-o', '-s', '-x', '-*', '-d']
 

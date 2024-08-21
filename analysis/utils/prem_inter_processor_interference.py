@@ -221,7 +221,8 @@ def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int) -> 
     # Add all tasks of higher priority processors to the priority queue
     for Px in system.higher_processors(prio=cpu_prio):
         for htask in Px.tasks():
-            queue.insert(htask)
+            if htask.M != 0:
+                queue.insert(htask)
 
     # For each popped task, add knapsack objects to the problem
     while not queue.isEmpty():

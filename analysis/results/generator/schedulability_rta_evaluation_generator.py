@@ -6,7 +6,7 @@ from results.generator.generator_utils import *
 from utils.log_utils import *
 
 # Constants
-task_sets_per_cpu = 5000
+task_sets_per_cpu = 16
 processor_numbers = [4, 8, 16]
 utilisation = 0.6
 
@@ -24,36 +24,29 @@ def generate_schedulability_improvement_graph(classic_results: log_results, knap
     # As long as we are under 15000 tests, we can continue
     # Analyse schedulability of each processor, according to its priority
     # Array of number of CPU for classic and knapsack, if schedulable +1 else +0
-    # Analyse total schedulability
-    classic_total_array = [0] * processor_number
-    classic_schedulable_array = [0] * processor_number
-    knapsack_total_array = [0] * processor_number
-    knapsack_schedulable_array = [0] * processor_number
-    
+    # Analyse total schedulability    
+    classic_total_array = []
+    classic_schedulable_array = []
+    knapsack_total_array = []
+    knapsack_schedulable_array = []
     for _ in range(0, task_sets_per_cpu):
         # Get system from classic and knapsack results
         classic_system_result = classic_results.read_entry()
         knapsack_system_result = knapsack_results.read_entry()
 
-        classic_processors = classic_system_result.processors()
-        for processor_index in range(0, processor_number):
-            classic_total_array[processor_index] += 1
-            if classic_processors[processor_index].is_schedulable():
-                classic_schedulable_array[processor_index] += 1
-
-        knapsack_processors = knapsack_system_result.processors()
-        for processor_index in range(0, processor_number):
-            knapsack_total_array[processor_index] += 1
-            if knapsack_processors[processor_index].is_schedulable():
-                knapsack_schedulable_array[processor_index] += 1
+        classic_total_array.append([len(Px.tasks()) for Px in classic_system_result.processors()])
+        classic_schedulable_array.append([len(Px.get_schedulable_tasks()) for Px in classic_system_result.processors()])
+        knapsack_total_array.append([len(Px.tasks()) for Px in knapsack_system_result.processors()])
+        knapsack_schedulable_array.append([len(Px.get_schedulable_tasks()) for Px in knapsack_system_result.processors()])
 
     # Make ratio between schedulable and total
-    schedulability_results_system_classic = []
-    schedulability_results_system_knapsack = []
+    schedulability_results_system_classic = [0.] * processor_number
+    schedulability_results_system_knapsack = [0.] * processor_number
     for processor_index in range(0, processor_number):
-        schedulability_results_system_classic.append(classic_schedulable_array[processor_index] / classic_total_array[processor_index])
-        schedulability_results_system_knapsack.append(knapsack_schedulable_array[processor_index] / knapsack_total_array[processor_index])
+        schedulability_results_system_classic[processor_index] = sum([classic_schedulable_array[system_index][processor_index] for system_index in range(0, len(classic_schedulable_array))]) / sum([classic_total_array[system_index][processor_index] for system_index in range(0, len(classic_total_array))])
+        schedulability_results_system_knapsack[processor_index] = sum([knapsack_schedulable_array[system_index][processor_index] for system_index in range(0, len(classic_schedulable_array))]) / sum([knapsack_total_array[system_index][processor_index] for system_index in range(0, len(knapsack_total_array))])
     
+    print(schedulability_results_system_knapsack[15])
     # Prepare for drawing graph
     plt.figure(figsize=(12, 12))
     x = [*range(1, processor_number + 1)]
@@ -63,24 +56,10 @@ def generate_schedulability_improvement_graph(classic_results: log_results, knap
     plt.title('Processor schedulability for N=16 and 8 tasks per processor')
     plt.xticks(x)  
     plt.xlabel('Processor priority')  
-    plt.ylabel('Schedulable processors')
+    plt.ylabel('Schedulable tasks')
     plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
     plt.legend()
     plt.savefig(results_directory + 'schedulability_per_priority.png')
-
-    plt.figure(figsize=(12, 12))
-    improved_schedulability = []
-    for processor_index in range(0, processor_number):
-        improved_schedulability.append((knapsack_schedulable_array[processor_index] / knapsack_total_array[processor_index]) - (classic_schedulable_array[processor_index] / classic_total_array[processor_index]))
-    
-    plt.plot(x, improved_schedulability, '-o')
-
-    plt.title('Schedulability improvement per processor for N=16 and 8 tasks per processor')
-    plt.xticks(x)  
-    plt.xlabel('Processor priority')  
-    plt.ylabel('Schedulability')
-    plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
-    plt.savefig(results_directory + 'schedulability_improvement.png')
 
 
 def generate() -> None:
