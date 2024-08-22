@@ -47,6 +47,8 @@ def get_max_interference(system: PREM_system, interference_mode: inter_processor
     
     # Save the value 
     Px.max_interference = max_interference
+
+    interference_mode.reset_count()
     return max_interference
 
 
@@ -89,7 +91,8 @@ def get_memory_phase_start_time(system: PREM_system, interference_mode: inter_pr
             return -1
 
         start_time = B + intra_processor_interference + (k - 1) * task.e + inter_processor_interference
-        
+    
+    interference_mode.reset_count()
     return start_time
 
 
@@ -138,6 +141,7 @@ def get_computation_phase_start_time(system: PREM_system, interference_mode: int
         start_time = constant_blocking + min(inter_processor_interference,
                                              beta_memory_phase + inter_processor_interference_mid)
     
+    interference_mode.reset_count()
     return start_time
 
 
@@ -191,6 +195,8 @@ def get_longest_busy_period(system: PREM_system, interference_mode: inter_proces
                                                            delta=busy_period, 
                                                            prio=task.prio + 1) + inter_processor_interference
     
+    interference_mode.reset_count()
+
     return busy_period
 
 

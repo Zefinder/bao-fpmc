@@ -16,10 +16,20 @@ from utils.prem_utils import *
 # Just give this object with the desired modes in it
 class inter_processor_interference_mode():
     _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task], int], ...]
+    _interference_calculated: int = 0
+    _interference_max_computation : int = 150
+    _interference_results: list[int] = []
+    _max_value: int = 0
     
     
     def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int]) -> None:
         self._interference_functions = interference_functions
+    
+
+    def reset_count(self):
+        self._interference_results = []
+        self._max_value = 0
+        self._interference_calculated = 0
     
     
     # Returns the inter-processor interference, which is the minimum of all functions
@@ -30,8 +40,24 @@ class inter_processor_interference_mode():
             
             if interference != -1:
                 interferences.append(interference)
-            
-        return min(interferences) if len(interferences) != 0 else -1
+        
+        result = min(interferences) if len(interferences) != 0 else -1
+        
+        # Save max to not have to search
+        if result > self._max_value:
+            self._max_value = result
+        
+        # If result has already appeared, then take max of interferences 
+        if result in self._interference_results:
+            result = self._max_value
+        
+        # If calculated interference is greater than the max computed, return -1
+        if self._interference_calculated > self._interference_max_computation:
+            result = -1
+
+        self._interference_calculated += 1
+
+        return result
     
     
 # Functions
