@@ -12,6 +12,8 @@ from multiprocessing import Pool
 from utils.priority_queue import PriorityTaskQueue
 from utils.prem_utils import *
 
+import traceback
+
 # Classes
 # Just give this object with the desired modes in it
 class inter_processor_interference_mode():
@@ -199,7 +201,9 @@ class knapsack_problem:
             print('len objects:', len(self._objects))
             print('len m[.]:', len(m[0]))
             print('W:', self._W)
+            print(traceback.format_exc())
             exit(-1)
+
 
         # Set solution path
         W = self._W
