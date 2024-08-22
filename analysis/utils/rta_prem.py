@@ -44,7 +44,11 @@ def get_max_interference(system: PREM_system, interference_mode: inter_processor
     while prev_max_interference != max_interference:
         prev_max_interference = max_interference
         max_interference = interference_mode.get_inter_processor_interference(system=system, cpu_prio=cpu_prio, delta=max_interference, task=PREM_task(M=0, C=0, T=1))
-    
+
+        # If a problem occurs in max interference, return -1 (computed in busy period check)
+        if max_interference == -1:
+            return -1
+
     # Save the value 
     Px.max_interference = max_interference
 
@@ -149,6 +153,8 @@ def get_computation_phase_start_time(system: PREM_system, interference_mode: int
 def is_busy_period_equation_convergent(system: PREM_system, interference_mode: inter_processor_interference_mode, Px: processor, cpu_prio: int) -> bool:
     # Compute max interference
     max_interference = get_max_interference(system=system, interference_mode=interference_mode, cpu_prio=cpu_prio, Px=Px)
+    if max_interference == -1:
+        return False
     
     higher_cpu_memory_utilisation = sum([Ph.get_memory_utilisation() for Ph in system.higher_processors(prio=cpu_prio)])
     max_interference_on_period = sum([max_interference / task.T for task in Px.tasks()])

@@ -19,7 +19,7 @@ import traceback
 class inter_processor_interference_mode():
     _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task], int], ...]
     _interference_calculated: int = 0
-    _interference_max_computation : int = 150
+    _interference_max_computation : int = 200
     _interference_results: list[int] = []
     _max_value: int = 0
     
