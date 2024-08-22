@@ -201,8 +201,9 @@ class knapsack_problem:
             print('len objects:', len(self._objects))
             print('len m[.]:', len(m[0]))
             print('W:', self._W)
-            print(traceback.format_exc())
-            exit(-1)
+            print(traceback.print_stack())
+            self._problem_solution = -2
+            return
 
 
         # Set solution path
@@ -273,12 +274,7 @@ def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int) -> 
     return problem
 
 
-def solve_problem(problem: knapsack_problem) -> int:
-    problem.solve()
-    return problem.get_solution()
-
-
-def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
+def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
     # If delta is 0, no memory interference since no memory time
     if delta == 0:
         return 0
@@ -288,6 +284,9 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
 
     # Solve the problem
     problem.solve()
+
+    if problem.get_solution() == -2:
+        print(system)
         
     # Return the problem solution
     return problem.get_solution()
