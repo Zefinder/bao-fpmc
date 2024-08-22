@@ -192,7 +192,14 @@ class knapsack_problem:
                     m[i + 1][j] = max(m[i][j], m[i][j - obj.w] + obj.v)
 
         # Set temporary problem solution (probably needs shift)
-        self._problem_solution = m[len(self._objects)][self._W]
+        try:
+            self._problem_solution = m[len(self._objects)][self._W]
+        except:
+            print('len m:', len(m))
+            print('len objects:', len(self._objects))
+            print('len m[.]:', len(m[0]))
+            print('W:', self._W)
+            exit(-1)
 
         # Set solution path
         W = self._W
