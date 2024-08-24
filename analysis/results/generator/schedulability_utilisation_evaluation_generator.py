@@ -7,11 +7,11 @@ from utils.log_utils import *
 from utils.generate_prem import interval
 
 # Constants
-task_sets_per_utilisation = 50
-# bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
-bandwidth_utilisation_intervals = [interval(0, 0)]
+task_sets_per_utilisation = 550
+bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
 utilisations = [round(0.05 * i, 2) for i in range(1, 20)]
 markers = ['-o', '-s', '-x', '-*', '-d']
+legend = ['none', 'light', 'medium', 'high', 'extreme']
 
 # Functions
 def generate_schedulability_utilisation_graph(results: log_results, method: str) -> None:
@@ -41,7 +41,7 @@ def generate_schedulability_utilisation_graph(results: log_results, method: str)
 
     marker_index = 0
     for utilisation_results in utilisations_results:
-        plt.plot(utilisations, utilisation_results, markers[marker_index])
+        plt.plot(utilisations, utilisation_results, markers[marker_index], label=legend[marker_index])
         marker_index += 1
     
     plt.title('Task schedulability per utilisation for N=4 and 4 task per processor')
@@ -50,6 +50,7 @@ def generate_schedulability_utilisation_graph(results: log_results, method: str)
     plt.ylabel('Schedulable tasks')
     plt.ylim(bottom=-0.05, top=1.05)
     plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
+    plt.legend()
     plt.savefig(results_directory + f'task_schedulability_utilisation_{method:s}.png')
 
 

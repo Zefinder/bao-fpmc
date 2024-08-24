@@ -11,19 +11,18 @@ from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
 # Constants
-system_number = 50
+system_number = 550
 cpu_number = 4
 task_number_per_cpu = 4
 period_interval = interval(10, 100)
 period_distribution = 'logunif'
-# bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
-bandwidth_utilisation_intervals = [interval(0, 0)]
+bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
 utilisations = [round(0.05 * i, 2) for i in range(1, 20)]
 process_number = 2
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
 # Use both so if knapsack crashes (as long as the condition is not met), the classic interference mehod will take the lead
-interference_mode_knapsack = inter_processor_interference_mode(get_classic_inter_processor_interference, get_knapsack_inter_processor_interference)
+interference_mode_knapsack = inter_processor_interference_mode(get_classic_inter_processor_interference, get_knapsack_inter_processor_interference, interference_max_computation=200)
 
 log_classic_filename = 'schedulability_utilisation_evaluation_prem.log'
 log_knapsack_filename = 'schedulability_utilisation_evaluation_knapsack.log'

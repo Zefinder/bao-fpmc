@@ -18,14 +18,15 @@ import traceback
 # Just give this object with the desired modes in it
 class inter_processor_interference_mode():
     _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task], int], ...]
+    _interference_max_computation : int
     _interference_calculated: int = 0
-    _interference_max_computation : int = 200
     _interference_results: list[int] = []
     _max_value: int = 0
     
     
-    def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int]) -> None:
+    def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int], interference_max_computation: int = -1) -> None:
         self._interference_functions = interference_functions
+        self._interference_max_computation = interference_max_computation
     
 
     def reset_count(self):
@@ -54,7 +55,7 @@ class inter_processor_interference_mode():
             result = self._max_value
         
         # If calculated interference is greater than the max computed, return -1
-        if self._interference_calculated > self._interference_max_computation:
+        if self._interference_max_computation != -1 and self._interference_calculated > self._interference_max_computation:
             result = -1
 
         self._interference_calculated += 1

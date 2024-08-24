@@ -6,7 +6,7 @@ from results.generator.generator_utils import *
 from utils.log_utils import *
 
 # Constants
-task_sets_per_cpu = 16
+task_sets_per_cpu = 5000
 processor_numbers = [4, 8, 16]
 utilisation = 0.6
 
@@ -44,7 +44,7 @@ def generate_schedulability_improvement_graph(classic_results: log_results, knap
     schedulability_results_system_knapsack = [0.] * processor_number
     for processor_index in range(0, processor_number):
         schedulability_results_system_classic[processor_index] = sum([classic_schedulable_array[system_index][processor_index] for system_index in range(0, len(classic_schedulable_array))]) / sum([classic_total_array[system_index][processor_index] for system_index in range(0, len(classic_total_array))])
-        schedulability_results_system_knapsack[processor_index] = sum([knapsack_schedulable_array[system_index][processor_index] for system_index in range(0, len(classic_schedulable_array))]) / sum([knapsack_total_array[system_index][processor_index] for system_index in range(0, len(knapsack_total_array))])
+        schedulability_results_system_knapsack[processor_index] = sum([knapsack_schedulable_array[system_index][processor_index] for system_index in range(0, len(knapsack_schedulable_array))]) / sum([knapsack_total_array[system_index][processor_index] for system_index in range(0, len(knapsack_total_array))])
     
     print(schedulability_results_system_knapsack[15])
     # Prepare for drawing graph

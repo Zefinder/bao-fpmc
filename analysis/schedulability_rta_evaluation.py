@@ -21,7 +21,7 @@ utilisation = 0.6
 process_number = 8
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
-interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference)
+interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, interference_max_computation=200)
 
 log_classic_filename = 'schedulability_rta_evaluation_prem.log'
 log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
@@ -65,7 +65,7 @@ def system_analysis(_):
                                                period_distribution=period_distribution,
                                                utilisation=utilisation, 
                                                bandwidth_utilisation_interval=bandwidth_utilisation_interval)
-    prem_system_knapsack = copy.deepcopy(prem_system_classic)
+    # prem_system_knapsack = copy.deepcopy(prem_system_classic)
     creation_lock.release()
 
     # Analyse system classic
@@ -73,13 +73,13 @@ def system_analysis(_):
     get_response_time_system(system=prem_system_classic, interference_mode=interference_mode_classic)
     
     # Analyse system with knapsack
-    set_system_priority(system=prem_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
-    get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
+    # set_system_priority(system=prem_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
+    # get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
 
     # Write in logs
     log_lock.acquire()
     log_classic_file.write(system=prem_system_classic)
-    log_knapsack_file.write(system=prem_system_knapsack)
+    # log_knapsack_file.write(system=prem_system_knapsack)
     # Just an indicator to help to know where we are in generation
     system_index_value.value += 1
     if system_index_value.value % 100 == 0:
