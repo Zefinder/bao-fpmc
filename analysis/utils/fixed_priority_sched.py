@@ -4,6 +4,7 @@
 # That means that functions will modify the PREM objects that are in the CPU 
 
 # Imports
+from __future__ import annotations
 from typing import Callable
 from utils.priority_queue import PriorityTaskQueue
 from utils.prem_utils import *

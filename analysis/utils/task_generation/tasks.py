@@ -1,4 +1,4 @@
-from math import lcm, ceil, floor, sqrt
+from math import ceil, floor, sqrt, gcd
 from itertools import count, takewhile, dropwhile
 from heapq import merge
 import copy
@@ -12,6 +12,18 @@ def uniq(seq):
         if x != last:
             last = x
             yield x
+            
+
+def lcm(*args):
+    if not args:
+        return 0
+    a = args[0]
+    for b in args[1:]:
+        if type(a) != int or type(b) != int:
+            # only well-defined for integers
+            raise Exception (f"LCM is only well-defined for integers (got: {type(a)}, {type(b)})")
+        a = (a // gcd(a,b)) * b
+    return a
 
 class SporadicTask(object):
     response_time: int

@@ -1,4 +1,5 @@
 # Imports
+from __future__ import annotations
 from typing import Callable
 from utils.prem_utils import PREM_task
 

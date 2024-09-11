@@ -1,5 +1,6 @@
 # Everything that can be useful to PREM will be in here!
 # Imports
+from __future__ import annotations
 import copy
 
 # Represents the PREM object

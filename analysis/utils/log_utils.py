@@ -7,6 +7,7 @@
 # - Memory phase, Computation phase, Period, Response time for task j on CPU i
 
 # Imports 
+from __future__ import annotations
 from io import TextIOWrapper
 import os
 from utils.prem_utils import *

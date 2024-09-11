@@ -6,9 +6,9 @@
 # Use the class to choose which ones you want for your computations
 
 # Imports
+from __future__ import annotations
 from typing import Callable
 from math import ceil
-from multiprocessing import Pool
 from utils.priority_queue import PriorityTaskQueue
 from utils.prem_utils import *
 

@@ -43,7 +43,7 @@ any questions regarding this software.
 import numpy
 
 from utils.task_generation.tasks import *
-from math import lcm, ceil, floor
+from math import ceil, floor
 
 import random
 

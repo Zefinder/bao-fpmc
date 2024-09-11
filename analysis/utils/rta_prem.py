@@ -1,8 +1,6 @@
 # Imports
-import matplotlib.pyplot as plt
+from __future__ import annotations
 from math import ceil, floor
-import numpy as np
-from typing import Callable
 from utils.prem_utils import *
 from utils.fixed_priority_sched import *
 from utils.prem_inter_processor_interference import inter_processor_interference_mode, get_classic_inter_processor_interference

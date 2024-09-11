@@ -1,14 +1,15 @@
 # Imports 
 import time
 import multiprocessing
+from multiprocessing import Pool
 from multiprocessing.managers import ValueProxy
-import copy
 from multiprocessing.synchronize import Lock
 from utils.generate_prem import interval, generate_prem_system
 from utils.fixed_priority_sched import set_system_priority, rate_monotonic_scheduler
 from utils.rta_prem import get_response_time_system
 from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
+import copy
 
 # Constants
 system_number = 5000
@@ -65,7 +66,7 @@ def system_analysis(_):
                                                period_distribution=period_distribution,
                                                utilisation=utilisation, 
                                                bandwidth_utilisation_interval=bandwidth_utilisation_interval)
-    # prem_system_knapsack = copy.deepcopy(prem_system_classic)
+    prem_system_knapsack = copy.deepcopy(prem_system_classic)
     creation_lock.release()
 
     # Analyse system classic
@@ -73,13 +74,14 @@ def system_analysis(_):
     get_response_time_system(system=prem_system_classic, interference_mode=interference_mode_classic)
     
     # Analyse system with knapsack
-    # set_system_priority(system=prem_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
-    # get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
+    set_system_priority(system=prem_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
+    get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
 
     # Write in logs
     log_lock.acquire()
     log_classic_file.write(system=prem_system_classic)
-    # log_knapsack_file.write(system=prem_system_knapsack)
+    log_knapsack_file.write(system=prem_system_knapsack)
+    
     # Just an indicator to help to know where we are in generation
     system_index_value.value += 1
     if system_index_value.value % 100 == 0:
