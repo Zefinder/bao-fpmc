@@ -4,6 +4,7 @@ from math import ceil, floor
 from random import uniform
 from typing import Callable
 from utils.prem_utils import *
+from utils.task_generation.generator_emstada import gen_taskset
 
 # Constants
 schedcat_mediator = './utils/schedcat_mediator.py'
@@ -29,46 +30,38 @@ class interval():
     
     def __str__(self) -> str:
         return f'[{self.min:d};{self.max:d}]'
-
+    
 
 # Generates a PREM taskset with a specified task number, period interval and distribution (for random), CPU utilisation and memory bandwidth utilisation.
 # Returns a processor!
 def generate_prem_taskset(task_number: int, period_interval: interval, period_distribution: str, utilisation: float, bandwidth_utilisation_interval: interval, taskset_number: int = 1) -> list[processor]:
-    # Call python 2.7 to generate a taskset with schedcat, result in schedcat_log.log
-    if os.name == 'nt':
-        python_file = 'python2.7.exe'
-    else:
-        python_file = 'python2.7'
-
-    os.system(f'{python_file:s} {schedcat_mediator:s} {taskset_number:d} {period_interval.min:d} {period_interval.max:d} {period_distribution:s} {task_number:d} {utilisation:.04f}')
-    
-    # Get result in file and create a processor object for it
-    schedcat_log = open(taskset_file, 'r')
-    
     # We create the CPU list
     processor_list = []
     
     # For each taskset we create a processor and we read the right amount of lines
-    for _ in range(0, taskset_number):
+    for _ in range(0, taskset_number):    
+        # Regenerate if cost is 0 (means that the task has no execution)
+        min_cost = 0
+        while min_cost == 0:
+            taskset = gen_taskset(periods=(period_interval.min, period_interval.max),
+                                period_distribution=period_distribution, 
+                                tasks_n=task_number, 
+                                utilization=utilisation)
+            min_cost = taskset.min_cost()
+        
         # Prepare processor
         Px = processor()
 
-        for _ in range(0, task_number):
-            # We read the line
-            line = schedcat_log.readline()
-            
-            # We read the task and split wcet and period
-            task_data = line.replace('\n', '').split(',')
-            wcet = int(task_data[0])
-            period = int(task_data[1])
-            
+        for generated_task in taskset:
             # Compute memory phase and computation phase
             bandwidth_utilisation = bandwidth_utilisation_interval.choose_random(uniform) / 100 # Interval is only int, so need to divide by 100 to get a percentage
-            mem_phase = ceil(wcet * bandwidth_utilisation)
-            comp_phase = wcet - mem_phase
+            
+            # Memory phase can be 0, computation phase cannot
+            mem_phase = floor(generated_task.cost * bandwidth_utilisation)
+            comp_phase = generated_task.cost - mem_phase
             
             # Create PREM task
-            task = PREM_task(M=mem_phase, C=comp_phase, T=period)
+            task = PREM_task(M=mem_phase, C=comp_phase, T=generated_task.period)
             Px.add_task(task=task)
         
         processor_list.append(Px)

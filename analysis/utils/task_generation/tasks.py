@@ -1,17 +1,21 @@
-from __future__ import division # use sane division semantics
-
-import copy
-
+from math import lcm, ceil, floor, sqrt
 from itertools import count, takewhile, dropwhile
-from schedcat.util.iter import uniq
 from heapq import merge
-
-from math   import floor, ceil, sqrt
-from schedcat.util.math    import lcm
-
+import copy
 from fractions import Fraction
 
+def uniq(seq):
+    it = iter(seq)
+    last = it.next()
+    yield last
+    for x in it:
+        if x != last:
+            last = x
+            yield x
+
 class SporadicTask(object):
+    response_time: int
+    
     def __init__(self, exec_cost, period, deadline=None, id=None):
         """By default, the construct only creates the bare minimum
         attributes. Other code (or subclasses) can add additional
@@ -24,6 +28,7 @@ class SporadicTask(object):
         self.cost       = exec_cost
         self.deadline   = deadline
         self.id         = id
+        
 
     def implicit_deadline(self):
         return self.deadline == self.period
