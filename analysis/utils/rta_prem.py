@@ -12,7 +12,7 @@ from utils.prem_inter_processor_interference import inter_processor_interference
 # Get the blocking time of a task with lower prio on the same CPU
 def get_blocking_time(Px: processor, prio: int) -> int:
     lower_priority_executions = [ltask.e for ltask in Px.lower_tasks(prio)]
-    return min(lower_priority_executions) if lower_priority_executions else 0
+    return max(lower_priority_executions) if lower_priority_executions else 0
 
 
 # Get the intra-processor interference time of a task with higher prio on the same CPU

@@ -11,8 +11,7 @@ from typing import Callable
 from math import ceil
 from utils.priority_queue import PriorityTaskQueue
 from utils.prem_utils import *
-
-import traceback
+import copy
 
 # Classes
 # Just give this object with the desired modes in it
@@ -149,10 +148,6 @@ def get_global_task_inter_processor_interference(system: PREM_system, cpu_prio: 
 # This one is used to transform the problem into a knapsack problem and then
 # Solve the knapsack which gives the interference!
 # This is really long to get a good result with all processors.
-# When you will want to solve the knapsack, you can specify the number of processors
-# you want to mix. 
-# The best solution is when batch_number = system.length(), but this takes quite some time...
-# (1 min for 4 processors, around 20 min for 16 processors)
 class knapsack_object:
     def __init__(self, task: PREM_task) -> None:
         self.v = task.M
@@ -161,81 +156,104 @@ class knapsack_object:
 
     def __str__(self) -> str:
         return f'v={self.v:d},w={self.w:d}'
+    
+    
+    def __deepcopy__(self, memo) -> "knapsack_object":
+        # Need to create a dummy task with the object values
+        new_object = knapsack_object(PREM_task(M=self.v,
+                                               C=self.w - self.v,
+                                               T=0))
+        return new_object
   
 
 class knapsack_problem:
+    _objects: list[knapsack_object]
+    _unique_objects: list[tuple[knapsack_object, int]]
     _problem_solution: int
-    _problem_solution_path: list[knapsack_object]
-    _shift: int = 0
     _W : int
 
     def __init__(self, W) -> None:
-        self._objects: list[knapsack_object] = []
+        self._objects = []
+        self._unique_objects = []
         self._W = W
 
 
     def add_object(self, obj: knapsack_object, n: int = 1) -> None:
-        # Add n times the object
+        # Add n times the object to the list
         [self._objects.append(obj) for _ in range(0, n)]
+        
+        # Add to the unique list with index of the last item in the object list
+        if len(self._unique_objects) == 0:
+            index = -1
+        else:
+            index = self._unique_objects[-1][1]
+            
+        self._unique_objects.append((obj, index + n))
 
 
     def solve(self) -> None:
-        # Create matrix, add one row of 0!
-        m = [[0] * (self._W + 1) for _ in range(0, len(self._objects) + 1)]
-
-        # Begin algorithm
-        for i in range(0, len(self._objects)):
-            # Get object to not call it for array each time
-            obj = self._objects[i]
-
-            for j in range(1, self._W + 1):
-                if obj.w > j:
-                    m[i + 1][j] = max(m[i][j], min(obj.v, j))
-                else:
-                    m[i + 1][j] = max(m[i][j], m[i][j - obj.w] + obj.v)
-
-        # Set temporary problem solution (probably needs shift)
-        try:
-            self._problem_solution = m[len(self._objects)][self._W]
-        except:
-            print('len m:', len(m))
-            print('len objects:', len(self._objects))
-            print('len m[.]:', len(m[0]))
-            print('W:', self._W)
-            print(traceback.print_stack())
-            self._problem_solution = -2
-            return
-
-
-        # Set solution path
-        W = self._W
-        i = len(self._objects) - 1
-        previous_value = self._problem_solution
-        self._problem_solution_path = []
-        while W > 0 and i >= 0:
-            current_value = m[i][W]
-            # If result different then item in knapsack, modify W
-            if current_value != previous_value:
-                obj = self._objects[i]
-                W = W - obj.w
-
-                # If W < 0 then it is a cut object! If current value is not the object value, a shift is needed!
-                # The shift is greater if it's the maximal object
-                if W < 0 and current_value != obj.v: # If equal, then cut in computation phase
-                    object_value = obj.v
-                    self._shift = object_value - previous_value
-
-                if W > 0:
-                    previous_value = m[i][W]
-    
-                self._problem_solution_path.append(obj)
-            i -= 1
+        # Save maximum interference
+        max_interference = 0
         
-        # We know that items are sorted by decreasing value, so before last item is the greatest non cut item
-        # If shift greater than value of second last item value, then we add to the solution, else 0
-        # If there is more than one task in the knapsack of course
-        if len(self._problem_solution_path) > 1:
-            self._problem_solution += max(0, self._shift - self._problem_solution_path[-2].v)
+        # The knapsack is solved n times, where n is the number of unique objects
+        # For each iteration, we remove one object that is in the unique object list
+        for unique_index in range(0, len(self._unique_objects)):
+            # Get the value of the object to remove
+            cut_object_value = self._unique_objects[unique_index][0].v
+            
+            # Get the index of the object to remove
+            cut_objet_index = self._unique_objects[unique_index][1]
+            
+            # Copy the list so no data loss
+            object_list = copy.deepcopy(self._objects)
+            
+            # Remove the object from the copied list
+            del object_list[cut_objet_index]
+        
+            # Create matrix, add one row of 0!
+            m = [[0] * (self._W + 1) for _ in range(0, len(object_list) + 1)]
+            
+            # Begin algorithm
+            for i in range(0, len(object_list)):
+                # Get object to not call it for array each time
+                obj = object_list[i]
+
+                for j in range(1, self._W + 1):
+                    # Normal knapsack problem
+                    if obj.w > j:
+                        m[i + 1][j] = m[i][j]
+                    else:
+                        m[i + 1][j] = max(m[i][j], m[i][j - obj.w] + obj.v)
+                        
+                    # If last object placed, then compute max interference for this j placing the cut object
+                    if i == len(object_list) - 1:
+                        # Backtrack solution to see free space
+                        index = i
+                        W = j
+                        
+                        # While still in objects with a positive weight and if there is something left in the knapsack
+                        while W > 0 and index >= 0 and m[index + 1][W] != 0:
+                            current_value = m[index + 1][W]
+                            previous_value = m[index][W]
+                            
+                            # If different values, then object is placed
+                            if current_value != previous_value:
+                                W = W - object_list[index].w
+                            
+                            # Change object
+                            index = index - 1
+                        
+                        # W contains the free space left in the knapsack of weight j
+                        # To get the total free space, add the difference between j and the final weight
+                        W += self._W - j
+                        
+                        # The cut object has a max value of the original object
+                        interference_value = m[i + 1][j] + min(W, cut_object_value)
+                        if interference_value > max_interference:
+                            max_interference = interference_value
+
+        # Solution is the maximum of the interference values computed
+        self._problem_solution = max_interference
 
 
     def get_solution(self) -> int:

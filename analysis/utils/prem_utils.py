@@ -5,7 +5,7 @@ import copy
 
 # Represents the PREM object
 class PREM_task:
-    def __init__(self, M: int, C: int, T: int, D: int = -1, prio: int = -1) -> None:
+    def __init__(self, M: int, C: int, T: int, *, D: int = -1, prio: int = -1) -> None:
         # Add tests to see if values are greater than 0?
         self.M = M # Memory phase
         self.C = C # Computation phase
