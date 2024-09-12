@@ -19,7 +19,7 @@ period_interval = interval(10, 100)
 period_distribution = 'logunif'
 bandwidth_utilisation_interval = interval(5, 20)
 utilisation = 0.6
-process_number = 8
+process_number = 16
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
 interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, interference_max_computation=200)

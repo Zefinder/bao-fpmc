@@ -19,7 +19,7 @@ period_interval = interval(10, 100)
 period_distribution = 'logunif'
 bandwidth_utilisation_intervals = [interval(0, 0), interval(0, 5), interval(5, 20), interval(20, 40), interval(40, 65)]
 utilisations = [round(0.05 * i, 2) for i in range(1, 20)]
-process_number = 2
+process_number = 16
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
 # Use both so if knapsack crashes (as long as the condition is not met), the classic interference mehod will take the lead
