@@ -23,7 +23,7 @@ process_number = 16
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
 # Use both so if knapsack crashes (as long as the condition is not met), the classic interference mehod will take the lead
-interference_mode_knapsack = inter_processor_interference_mode(get_classic_inter_processor_interference, get_knapsack_inter_processor_interference, interference_max_computation=200)
+interference_mode_knapsack = inter_processor_interference_mode(get_classic_inter_processor_interference, get_knapsack_inter_processor_interference)
 
 log_classic_filename = 'schedulability_utilisation_evaluation_prem.log'
 log_knapsack_filename = 'schedulability_utilisation_evaluation_knapsack.log'

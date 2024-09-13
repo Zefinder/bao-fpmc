@@ -22,7 +22,7 @@ utilisation = 0.6
 process_number = 16
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
-interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, interference_max_computation=200)
+interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference)
 
 log_classic_filename = 'schedulability_rta_evaluation_prem.log'
 log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
