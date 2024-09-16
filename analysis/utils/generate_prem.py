@@ -32,6 +32,10 @@ class interval():
         return f'[{self.min:d};{self.max:d}]'
     
 
+def times100(time):
+    return time * 100
+
+
 # Generates a PREM taskset with a specified task number, period interval and distribution (for random), CPU utilisation and memory bandwidth utilisation.
 # Returns a processor!
 def generate_prem_taskset(task_number: int, period_interval: interval, period_distribution: str, utilisation: float, bandwidth_utilisation_interval: interval, taskset_number: int = 1) -> list[processor]:
@@ -46,7 +50,8 @@ def generate_prem_taskset(task_number: int, period_interval: interval, period_di
             taskset = gen_taskset(periods=(period_interval.min, period_interval.max),
                                 period_distribution=period_distribution, 
                                 tasks_n=task_number, 
-                                utilization=utilisation)
+                                utilization=utilisation,
+                                scale=times100)
             min_cost = taskset.min_cost()
         
         # Prepare processor
