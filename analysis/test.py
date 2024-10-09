@@ -11,7 +11,7 @@ from utils.rta_prem import get_response_time_system
 from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
-interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
+interference_mode_classic = inter_processor_interference_mode(get_greedy_knapsack_inter_processor_interference)
 
 system = PREM_system([processor([PREM_task(4, 5, 20), PREM_task(4, 5, 20)]), processor([PREM_task(4, 5, 16)])])
 set_system_priority(system, rate_monotonic_scheduler)

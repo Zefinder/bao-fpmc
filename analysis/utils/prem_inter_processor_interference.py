@@ -336,7 +336,7 @@ class greedy_knapsack_problem(knapsack_problem):
 
         # Put objects greedily in the bag
         for obj in self._objects:
-            if w + obj.w < self._W:
+            if w + obj.w <= self._W:
                 m1 += obj.v
                 w += obj.w
             else:
@@ -389,7 +389,7 @@ def prepare_greedy_knapsack(system: PREM_system, cpu_prio: int, delta: int) -> g
     return problem
 
 
-def get_knapsack_glouton_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
+def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
     # If delta is 0, no memory interference since no memory time
     if delta == 0:
         return 0
