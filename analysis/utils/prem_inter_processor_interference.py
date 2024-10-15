@@ -312,23 +312,44 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
 
 
 class greedy_knapsack_problem(knapsack_problem):
-    _sum: int = 0
     _max_M: int = 0
+    _density_dict: dict[float, list[int]] = {}
 
     def __init__(self, W) -> None:
-        self._objects = []
-        self._unique_objects = []
-        self._W = W
+        super().__init__(W=W)
+        
 
-
+    # Add the sum increment in the add_object method
     def add_object(self, obj: knapsack_object, n: int = 1) -> None:
-        super().add_object(obj=obj, n=n)
-        self._sum += n * obj.v
+        density = obj.v / obj.w
+        if density in self._density_dict:
+            self._density_dict[density][0] += n * obj.v
+            self._density_dict[density][1] += n * obj.w
+        else:
+            self._density_dict[density] = [n * obj.v, n * obj.w]
 
         if (self._max_M < obj.v):
             self._max_M = obj.v
 
 
+    def prepare_solving(self):
+        queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
+
+        # Add all tasks of higher priority processors to the priority queue
+        for (M, e) in self._density_dict.values():
+            htask = PREM_task(M=M, C=e-M, T=0)
+            queue.insert(htask)
+
+        # For each popped task, add knapsack objects to the problem
+        while not queue.isEmpty():
+            htask = queue.delete()
+
+        print(htask)
+
+        # Number of possible jobs: (delta + R - e) / T rounded up
+        super().add_object(obj=knapsack_object(task=htask), n=1)
+
+    # Redefine the solve method
     def solve(self) -> None:
         m1 = 0
         m2 = 0
@@ -349,41 +370,16 @@ class greedy_knapsack_problem(knapsack_problem):
 
         self._problem_solution = min(self._W, knapsack_solution)
 
+
 def prepare_greedy_knapsack(system: PREM_system, cpu_prio: int, delta: int) -> greedy_knapsack_problem:
     # Create the problem
     problem = greedy_knapsack_problem(W=delta)
 
-    # Dict that contain merged items (list has 2 items!)
-    density_dict: dict[float, list[int]] = {}
     for Px in system.higher_processors(prio=cpu_prio):
         for htask in Px.tasks():
             if htask.M != 0:
-                M = 0
-                e = 0
-                n = ceil((delta + htask.R + htask.e) / htask.T)
-                # Merging items with same density
-                if (htask.M / htask.e) in density_dict:
-                    density_dict[(htask.M / htask.e)][0] += n * htask.M
-                    density_dict[(htask.M / htask.e)][1] += n * htask.e
-                else:
-                    density_dict[(htask.M / htask.e)] = [n * htask.M, n * htask.e]
-
-
-    # Create the queue and sort it by density (M/e)
-    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
-
-    # Add all tasks of higher priority processors to the priority queue
-    for (M, e) in density_dict.values():
-        # Create dummy task for the queue
-        htask = PREM_task(M=M, C=e - M, T=0)
-        queue.insert(htask)
-
-    # For each popped task, add knapsack objects to the problem
-    while not queue.isEmpty():
-        htask = queue.delete()
-
-        # Add object only once since it has been merged!
-        problem.add_object(obj=knapsack_object(task=htask))
+                n = ceil((delta + htask.R - htask.e) / htask.T)
+                problem.add_object(obj=knapsack_object(task=htask), n=n)
 
     # Return the problem
     return problem

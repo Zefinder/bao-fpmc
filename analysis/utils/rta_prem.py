@@ -66,8 +66,6 @@ def get_memory_phase_start_time(system: PREM_system, interference_mode: inter_pr
     
     # Base values
     start_time = B + sum(htask.e for htask in Px.higher_tasks(task.prio)) + (k - 1) * task.e
-    if (cpu_prio == 1):
-        print('Base mem start time:', start_time, 'k:', k)
     prev_start_time = -1
     
     # As long as the solution is not stable, we repeat
@@ -120,11 +118,9 @@ def get_computation_phase_start_time(system: PREM_system, interference_mode: int
     constant_blocking = B + I + task.M + (k - 1) * task.e
     
     # Base values (start memory plus memory phase)
-    if (cpu_prio == 1):
-        print('Mem start time:', memory_start_time, '\n')
     start_time = task.M + memory_start_time
     prev_start_time = -1
-    
+
     # As long as the solution is not stable we repeat
     while prev_start_time != start_time:
         prev_start_time = start_time
@@ -146,13 +142,6 @@ def get_computation_phase_start_time(system: PREM_system, interference_mode: int
 
         start_time = constant_blocking + min(inter_processor_interference,
                                              beta_memory_phase + inter_processor_interference_mid)
-        if (cpu_prio == 1):
-            print("alpha(s_cmp):", inter_processor_interference)
-            print("alpha(s_cmp - s_mem):", inter_processor_interference_mid)
-            print("beta(s_mem):", beta_memory_phase)
-            print("B + I + M:", constant_blocking)
-            print("s_cmp:", start_time)
-            print()
     
     interference_mode.reset_count()
     return start_time
@@ -205,22 +194,6 @@ def get_longest_busy_period(system: PREM_system, interference_mode: inter_proces
                                                                          Px=Px,
                                                                          task=task,
                                                                          delta=busy_period) + Px.M_max)
-        
-        if (cpu_prio == 1):
-            print("I:", intra_processor_interference)
-            print("alpha:", interference_mode.get_inter_processor_interference(system=system,
-                                                                     cpu_prio=cpu_prio,
-                                                                     delta=busy_period,
-                                                                     task=task))
-            print("beta:", get_total_memory_interference(system=system,
-                                                interference_mode=interference_mode,
-                                                cpu_prio=cpu_prio,
-                                                Px=Px,
-                                                task=task,
-                                                delta=busy_period))
-            print("M_max:", Px.M_max)
-            print("L:", busy_period)
-            print()
 
         # If it returns -1, then so solution found at all so unlimited busy period
         if inter_processor_interference == -1:
