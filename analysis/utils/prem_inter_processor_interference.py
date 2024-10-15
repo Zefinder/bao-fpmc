@@ -354,15 +354,25 @@ class greedy_knapsack_problem(knapsack_problem):
         m1 = 0
         m2 = 0
         w = 0
-
+        obj_index = 0
+        
         # Put objects greedily in the bag
         for obj in self._objects:
             if w + obj.w <= self._W:
                 m1 += obj.v
                 w += obj.w
+                obj_index += 1 
             else:
                 # When the item can't fit in the bag, then it's the critical item 
-                m2 = floor(((self._W - w) / obj.w) * obj.v)
+                # If it is the last item: Dantzig bound!
+                if obj is self._objects[-1] or obj is self._objects[0]:
+                    m2 = floor(((self._W - w) / obj.w) * obj.v)
+                
+                # Else it is the Martello and Toth bound
+                else:
+                    obj_before = self._objects[obj_index - 1]
+                    obj_after = self._objects[obj_index + 1]
+                    m2 = max(floor(((self._W - w) / obj_after.w) * obj_after.v), obj.v - floor(((obj.w + w - self._W) / obj_before.w) * obj_before.v))
                 break
 
         # Approximated solution and adding the cut object

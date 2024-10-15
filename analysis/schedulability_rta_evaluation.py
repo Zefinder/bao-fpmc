@@ -12,14 +12,14 @@ from utils.log_utils import *
 import copy
 
 # Constants
-system_number = 5000
+system_number = 1
 cpu_numbers = [4, 8, 16]
-task_number_per_cpu = 8
+task_number_per_cpu = 4
 period_interval = interval(10, 100)
 period_distribution = 'logunif'
 bandwidth_utilisation_interval = interval(5, 20)
 utilisation = 0.6
-process_number = 16
+process_number = 1
 minimum_cost = floor(100 / (1 - (bandwidth_utilisation_interval.max / 100)))
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
@@ -67,10 +67,6 @@ def scale1000(time: int) -> int:
     return time * 1000
 
 
-def factor10(time: int) -> int:
-    return floor(time / 10)
-
-
 def factor100(time: int) -> int:
     return floor(time // 100)
 
@@ -98,9 +94,12 @@ def system_analysis(_):
     
     # Analyse system with knapsack (rescale so calculations are not too long)
     set_system_priority(system=prem_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
-    factor = factor10 if utilisation < 0.3 else factor100
-    rescale_system(system=prem_system_knapsack, factor=factor)        
+    rescale_system(system=prem_system_knapsack, factor=factor100)        
     get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
+
+    # Analyse system with greedy knapsack
+    set_system_priority(system=prem_system_greedy_knapsack, fp_scheduler=rate_monotonic_scheduler)
+    get_response_time_system(system=prem_system_greedy_knapsack, interference_mode=interference_mode_greedy_knapsack)
 
     # Write in logs
     log_lock.acquire()
@@ -116,11 +115,6 @@ def system_analysis(_):
 
 
 def main():
-    system = generate_prem_system(1, 4, interval(10, 100), 'logunif', 0.6, interval(5, 20), lambda x: x * 1000, 125)
-    print(system)
-    rescale_system(system=system, factor=factor100)
-    print(system)
-    exit()
     # Tests from Fixed-Priority Memory-Centric scheduler for COTS based multiprocessor (Gero Schwäricke) p. 17 
     # Generate tests with period between 10 and 100 ms, log uniform, memory stal between 0.05 and 0.20, scheduled with
     # Rate Monotonic. We change the number of generated tasksets, here we generate 5000 tasksets with utilisation 0.6, 

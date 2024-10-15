@@ -28,14 +28,11 @@ class interval():
     def choose_random(self, random_function: Callable[[int, int], float]) -> float:
         return floor(random_function(self.min, self.max + 1))
     
+
     def __str__(self) -> str:
         return f'[{self.min:d};{self.max:d}]'
     
-
-def times100(time):
-    return time * 100
-
-
+    
 # Generates a PREM taskset with a specified task number, period interval and distribution (for random), CPU utilisation and memory bandwidth utilisation.
 # Returns a processor!
 def generate_prem_taskset(task_number: int,
