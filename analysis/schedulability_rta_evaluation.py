@@ -12,9 +12,9 @@ from utils.log_utils import *
 import copy
 
 # Constants
-system_number = 1
+system_number = 5000 # Per CPU number
 cpu_numbers = [4, 8, 16]
-task_number_per_cpu = 4
+task_number_per_cpu = 8
 period_interval = interval(10, 100)
 period_distribution = 'logunif'
 bandwidth_utilisation_interval = interval(5, 20)

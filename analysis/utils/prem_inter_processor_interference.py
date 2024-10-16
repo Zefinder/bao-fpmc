@@ -18,14 +18,17 @@ import copy
 class inter_processor_interference_mode():
     _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task], int], ...]
     _interference_max_computation : int
-    _interference_calculated: int = 0
-    _interference_results: list[int] = []
-    _max_value: int = 0
+    _interference_calculated: int
+    _interference_results: list[int]
+    _max_value: int
     
     
     def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int], interference_max_computation: int = -1) -> None:
         self._interference_functions = interference_functions
         self._interference_max_computation = interference_max_computation
+        self._interference_calculated = -1
+        self._interference_results = []
+        self._max_value = 0
     
 
     def reset_count(self):
@@ -175,6 +178,7 @@ class knapsack_problem:
     def __init__(self, W) -> None:
         self._objects = []
         self._unique_objects = []
+        self._problem_solution = -1
         self._W = W
 
 
@@ -312,11 +316,13 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
 
 
 class greedy_knapsack_problem(knapsack_problem):
-    _max_M: int = 0
-    _density_dict: dict[float, list[int]] = {}
+    _max_M: int
+    _density_dict: dict[float, list[int]]
 
     def __init__(self, W) -> None:
         super().__init__(W=W)
+        self._max_M = 0
+        self._density_dict = {}
         
 
     # Add the sum increment in the add_object method
@@ -332,7 +338,7 @@ class greedy_knapsack_problem(knapsack_problem):
             self._max_M = obj.v
 
 
-    def prepare_solving(self):
+    def __prepare_solving(self):
         queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
 
         # Add all tasks of higher priority processors to the priority queue
@@ -343,14 +349,14 @@ class greedy_knapsack_problem(knapsack_problem):
         # For each popped task, add knapsack objects to the problem
         while not queue.isEmpty():
             htask = queue.delete()
-
-        print(htask)
-
-        # Number of possible jobs: (delta + R - e) / T rounded up
-        super().add_object(obj=knapsack_object(task=htask), n=1)
+            super().add_object(obj=knapsack_object(task=htask), n=1)
+        
 
     # Redefine the solve method
     def solve(self) -> None:
+        # Sort items and add objects to list 
+        self.__prepare_solving()
+        
         m1 = 0
         m2 = 0
         w = 0
@@ -384,7 +390,7 @@ class greedy_knapsack_problem(knapsack_problem):
 def prepare_greedy_knapsack(system: PREM_system, cpu_prio: int, delta: int) -> greedy_knapsack_problem:
     # Create the problem
     problem = greedy_knapsack_problem(W=delta)
-
+    
     for Px in system.higher_processors(prio=cpu_prio):
         for htask in Px.tasks():
             if htask.M != 0:
@@ -402,6 +408,7 @@ def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_pr
 
     # Prepare the problem
     problem = prepare_greedy_knapsack(system=system, cpu_prio=cpu_prio, delta=delta)
+    
 
     # Solve the problem
     problem.solve()

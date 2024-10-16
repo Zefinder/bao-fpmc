@@ -11,7 +11,11 @@ schedcat_mediator = './utils/schedcat_mediator.py'
 taskset_file = './utils/schedcat_log.log'
 
 # Interval class
-class interval():    
+class interval():
+    min: int
+    max: int
+    
+    
     def __init__(self, interval_min: int, interval_max: int) -> None:
         self.min = interval_min
         self.max = interval_max
