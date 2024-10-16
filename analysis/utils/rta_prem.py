@@ -9,28 +9,68 @@ from utils.prem_inter_processor_interference import inter_processor_interference
 # ----------------------------------------------------
 # -------------- Intermediate functions --------------
 # ----------------------------------------------------
-# Get the blocking time of a task with lower prio on the same CPU
 def get_blocking_time(Px: processor, prio: int) -> int:
+    """
+    Computes the blocking time for a specified priority. Also called B<sub>prio</sub>
+    
+    Args:
+        Px (processor): Processor on which the task to analyse is
+        prio (int): Task priority
+        
+    Returns:
+        int: Blocking time  
+    """
+    
     lower_priority_executions = [ltask.e for ltask in Px.lower_tasks(prio)]
     return max(lower_priority_executions) if lower_priority_executions else 0
 
 
-# Get the intra-processor interference time of a task with higher prio on the same CPU
-# Also called I
-def get_intra_processor_interference(Px: processor, delta: int, prio: int) -> int:    
+def get_intra_processor_interference(Px: processor, delta: int, prio: int) -> int:
+    """
+    Computes the intra-processor interference for a specified priority. Also called I<sub>prio</sub>(Δ)
+    
+    Args:
+        Px (processor): Processor on which the task to analyse is
+        delta (int): Task execution time
+        prio (int): Task priority
+        
+    Returns:
+        int: Intra-processor interference  
+    """
     higher_priority_interference = [ceil(delta / htask.T) * htask.e for htask in Px.higher_tasks(prio)]
     return sum(higher_priority_interference) if higher_priority_interference else 0
 
 
-# Get the number of memory phases possible in delta
-# Also called N
 def get_number_memory_phase(Px: processor, task: PREM_task, delta: int) -> int:
+    """
+    Computes the number of memory phases released on a processor during the busy period of a task with length
+    Δ > 0, such that there is a pending instance of that task. Also called N<sub>task</sub>(Δ)
+    
+    Args:
+        Px (processor): Processor on which the task to analyse is
+        task (PREM_task): Task to analyse 
+        delta (int): Length of the busy period of the task
+        
+    Returns:
+        int: Number of memory phases released
+    """
     return sum([ceil(delta / htask.T) for htask in Px.higher_tasks(task.prio)]) + floor(delta / task.T) + (1 if not Px.is_lowest_prio(task.prio) else 0)
     
 
-# Get the max interference possible
-# Also called epsilon
 def get_max_interference(system: PREM_system, interference_mode: inter_processor_interference_mode, cpu_prio: int, Px: processor) -> int:
+    """
+    Computes the maximum interference that can affect a processor. It is described by a recurrent equation. 
+    Also called ε<sub>P</sub>
+
+    Args:
+        system (PREM_system): System to analyse
+        interference_mode (inter_processor_interference_mode): Inter-processor interference chosen mode
+        cpu_prio (int): Priority of the processor to analyse
+        Px (processor): Processor to analyse
+
+    Returns:
+        int: Value of the maximum interference
+    """
     # This is a value that doesn't change, so saved in the processor if already computed
     if Px.max_interference != -1:
         return Px.max_interference
@@ -53,14 +93,41 @@ def get_max_interference(system: PREM_system, interference_mode: inter_processor
     return max_interference
 
 
-# Get the total memory interference in an interval delta
-# Also called beta
 def get_total_memory_interference(system: PREM_system, interference_mode: inter_processor_interference_mode, cpu_prio: int, Px: processor, task: PREM_task, delta: int) -> int:
+    """
+    Comutes the total memory interference during the busy period of a task with length Δ > 0. Also called 
+    β<sub>task</sub>(Δ)
+
+    Args:
+        system (PREM_system): System to analyse
+        interference_mode (inter_processor_interference_mode): Inter-processor interference chosen mode
+        cpu_prio (int): Priority of the processor to analyse
+        Px (processor): Processor to analyse
+        task (PREM_task): Task to analyse
+        delta (int): Length of the busy period of the task
+
+    Returns:
+        int: The total memory interference
+    """
     return get_number_memory_phase(Px=Px, task=task, delta=delta) * get_max_interference(system=system, cpu_prio=cpu_prio, Px=Px, interference_mode=interference_mode)
 
 
 # Get the memory phase start time for the k-th instance 
 def get_memory_phase_start_time(system: PREM_system, interference_mode: inter_processor_interference_mode, cpu_prio: int, Px: processor, task: PREM_task, k: int) -> int:
+    """
+    The latest start time of the memory phase of the k-th instance of the task. It is represented by a recurrent equation. Also called s<sup>mem</sup><sub>task, k</sub>
+
+    Args:
+        system (PREM_system): _description_
+        interference_mode (inter_processor_interference_mode): _description_
+        cpu_prio (int): _description_
+        Px (processor): _description_
+        task (PREM_task): _description_
+        k (int): _description_
+
+    Returns:
+        int: _description_
+    """
     # This is a recurrent equation where the initial start time is the blocking time B + all tasks that can all start before it
     B = get_blocking_time(Px=Px, prio=task.prio)
     

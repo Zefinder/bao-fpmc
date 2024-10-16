@@ -113,7 +113,7 @@ class log_file_class():
                 log_line.append(task.T)
                 log_line.append(task.R)
 
-        # Write string representation of array but without []
+        # Write log line
         self._log_file.write(', '.join(str(element) for element in log_line) + '\n')
         self._log_file.flush()
     
