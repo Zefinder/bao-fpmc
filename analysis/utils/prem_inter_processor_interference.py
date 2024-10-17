@@ -408,7 +408,6 @@ def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_pr
 
     # Prepare the problem
     problem = prepare_greedy_knapsack(system=system, cpu_prio=cpu_prio, delta=delta)
-    
 
     # Solve the problem
     problem.solve()
