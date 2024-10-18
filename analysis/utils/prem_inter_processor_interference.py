@@ -8,7 +8,7 @@
 # Imports
 from __future__ import annotations
 from typing import Callable
-from math import ceil
+from math import ceil, floor
 from utils.priority_queue import PriorityTaskQueue
 from utils.prem_utils import *
 import copy
@@ -18,14 +18,17 @@ import copy
 class inter_processor_interference_mode():
     _interference_functions: tuple[Callable[[PREM_system, int, int, PREM_task], int], ...]
     _interference_max_computation : int
-    _interference_calculated: int = 0
-    _interference_results: list[int] = []
-    _max_value: int = 0
+    _interference_calculated: int
+    _interference_results: list[int]
+    _max_value: int
     
     
     def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int], interference_max_computation: int = -1) -> None:
         self._interference_functions = interference_functions
         self._interference_max_computation = interference_max_computation
+        self._interference_calculated = -1
+        self._interference_results = []
+        self._max_value = 0
     
 
     def reset_count(self):
@@ -175,6 +178,7 @@ class knapsack_problem:
     def __init__(self, W) -> None:
         self._objects = []
         self._unique_objects = []
+        self._problem_solution = -1
         self._W = W
 
 
@@ -307,5 +311,106 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
     if problem.get_solution() == -2:
         print(system)
         
+    # Return the problem solution
+    return problem.get_solution()
+
+
+class greedy_knapsack_problem(knapsack_problem):
+    _max_M: int
+    _density_dict: dict[float, list[int]]
+
+    def __init__(self, W) -> None:
+        super().__init__(W=W)
+        self._max_M = 0
+        self._density_dict = {}
+        
+
+    # Add the sum increment in the add_object method
+    def add_object(self, obj: knapsack_object, n: int = 1) -> None:
+        density = obj.v / obj.w
+        if density in self._density_dict:
+            self._density_dict[density][0] += n * obj.v
+            self._density_dict[density][1] += n * obj.w
+        else:
+            self._density_dict[density] = [n * obj.v, n * obj.w]
+
+        if (self._max_M < obj.v):
+            self._max_M = obj.v
+
+
+    def __prepare_solving(self):
+        queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
+
+        # Add all tasks of higher priority processors to the priority queue
+        for (M, e) in self._density_dict.values():
+            htask = PREM_task(M=M, C=e-M, T=0)
+            queue.insert(htask)
+
+        # For each popped task, add knapsack objects to the problem
+        while not queue.isEmpty():
+            htask = queue.delete()
+            super().add_object(obj=knapsack_object(task=htask), n=1)
+        
+
+    # Redefine the solve method
+    def solve(self) -> None:
+        # Sort items and add objects to list 
+        self.__prepare_solving()
+        
+        m1 = 0
+        m2 = 0
+        w = 0
+        obj_index = 0
+        
+        # Put objects greedily in the bag
+        for obj in self._objects:
+            if w + obj.w <= self._W:
+                m1 += obj.v
+                w += obj.w
+                obj_index += 1 
+            else:
+                # When the item can't fit in the bag, then it's the critical item 
+                # If it is the last item: Dantzig bound!
+                if obj is self._objects[-1] or obj is self._objects[0]:
+                    m2 = floor(((self._W - w) / obj.w) * obj.v)
+                
+                # Else it is the Martello and Toth bound
+                else:
+                    obj_before = self._objects[obj_index - 1]
+                    obj_after = self._objects[obj_index + 1]
+                    m2 = max(floor(((self._W - w) / obj_after.w) * obj_after.v), obj.v - floor(((obj.w + w - self._W) / obj_before.w) * obj_before.v))
+                break
+
+        # Approximated solution and adding the cut object
+        knapsack_solution = min(m1 + m2, 2 * max(m1, m2)) + self._max_M
+
+        self._problem_solution = min(self._W, knapsack_solution)
+
+
+def prepare_greedy_knapsack(system: PREM_system, cpu_prio: int, delta: int) -> greedy_knapsack_problem:
+    # Create the problem
+    problem = greedy_knapsack_problem(W=delta)
+    
+    for Px in system.higher_processors(prio=cpu_prio):
+        for htask in Px.tasks():
+            if htask.M != 0:
+                n = ceil((delta + htask.R - htask.e) / htask.T)
+                problem.add_object(obj=knapsack_object(task=htask), n=n)
+
+    # Return the problem
+    return problem
+
+
+def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
+    # If delta is 0, no memory interference since no memory time
+    if delta == 0:
+        return 0
+
+    # Prepare the problem
+    problem = prepare_greedy_knapsack(system=system, cpu_prio=cpu_prio, delta=delta)
+
+    # Solve the problem
+    problem.solve()
+
     # Return the problem solution
     return problem.get_solution()

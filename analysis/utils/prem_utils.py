@@ -3,8 +3,18 @@
 from __future__ import annotations
 import copy
 
-# Represents the PREM object
 class PREM_task:
+    """
+    Represents a PREM task with all its characteristics
+    """
+    
+    M: int
+    C: int
+    T: int
+    D: int
+    R: int
+    prio: int
+    
     def __init__(self, M: int, C: int, T: int, *, D: int = -1, prio: int = -1) -> None:
         # Add tests to see if values are greater than 0?
         self.M = M # Memory phase
@@ -40,17 +50,25 @@ class PREM_task:
 
 # Represents a CPU
 class processor:
-    # Class attributes
+    """
+    Represents a processor with all its caracteristics
+    """
+    
     _tasks: list[PREM_task]
-    M_max = -1
-    C_min = -1
-    max_interference = -1
-    global_task = PREM_task(M=-1, C=-1, T=-1)
+    M_max: int
+    C_min: int
+    max_interference: int
+    global_task: PREM_task
     
 
     # Inits the processor with a task list (or not) 
     def __init__(self, tasks: list[PREM_task] = []) -> None:
         self._tasks = []
+        self.M_max = -1
+        self.C_min = -1
+        self.max_interference = -1
+        self.global_task = PREM_task(M=-1, C=-1, T=-1)
+        
         for task in tasks:
             self._tasks.append(task)
             
@@ -174,14 +192,19 @@ class processor:
         return f'[{string_result:s}]'
     
     
-# Represents a PREM system, that means CPU with tasks
 class PREM_system:
-    # Variable to remember if tasks were analysed
-    system_analysed = False
+    """
+    Represents a PREM system, that means CPU with tasks
+    """
+
+    system_analysed: bool
+    _processors: list[processor]
+    _utilisation: float
     
     # Inits the system with a CPU list (or not)
     # The first CPU to enter has higher priority 
     def __init__(self, processors: list[processor] = [], utilisation: float = 0) -> None:
+        self.system_analysed = False
         self._processors = [cpu for cpu in processors]
         self._utilisation = utilisation
         
