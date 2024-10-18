@@ -19,7 +19,7 @@ period_interval = interval(10, 100)
 period_distribution = 'logunif'
 bandwidth_utilisation_interval = interval(5, 20)
 utilisation = 0.6
-process_number = 1
+process_number = 16
 minimum_cost = floor(100 / (1 - (bandwidth_utilisation_interval.max / 100)))
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)

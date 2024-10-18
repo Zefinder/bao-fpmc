@@ -337,11 +337,10 @@ def get_response_time_k_occurence(system: PREM_system, interference_mode: inter_
 # ----------------------------------------------------
 # ----------------- Usable functions -----------------
 # ----------------------------------------------------
-# Get the response time of a task 
 def get_response_time(system: PREM_system, interference_mode: inter_processor_interference_mode, cpu_prio: int, Px: processor, task: PREM_task) -> int:
     """
     Computes the response time of the task. It will compute the longest busy period and check for 
-    all instances of the task during its busy period. Also called R<sub>task, k</sub>.
+    all instances of the task during its busy period. Also called R<sub>task</sub>.
 
     Args:
         system (PREM_system): System to analyse
@@ -372,8 +371,17 @@ def get_response_time(system: PREM_system, interference_mode: inter_processor_in
     return response_time
 
 
-# Get the response time of all tasks in a system
 def get_response_time_system(system: PREM_system, interference_mode: inter_processor_interference_mode = inter_processor_interference_mode(get_classic_inter_processor_interference)) -> list[list[int]]:
+    """
+    Computes the response time of the system.
+
+    Args:
+        system (PREM_system): System to analyse
+        interference_mode (inter_processor_interference_mode, optional): Inter-processor interference chosen mode. Defaults to inter_processor_interference_mode(get_classic_inter_processor_interference).
+
+    Returns:
+        list[list[int]]: Response time of processors all gathered in a list
+    """
     # Get processors from system
     processors = system.processors()
     response_time_system = []
@@ -398,6 +406,16 @@ def get_response_time_system(system: PREM_system, interference_mode: inter_proce
 
 # Returns if system schedulable per processor
 def is_system_schedulable_per_processor(system: PREM_system, interference_mode: inter_processor_interference_mode = inter_processor_interference_mode(get_classic_inter_processor_interference)) -> list[bool]:
+    """
+    Checks whether the system is schedulable per procesor
+
+    Args:
+        system (PREM_system): System to analyse
+        interference_mode (inter_processor_interference_mode, optional): Inter-processor interference chosen mode. Defaults to inter_processor_interference_mode(get_classic_inter_processor_interference).
+
+    Returns:
+        list[bool]: Schedulability per processor (True if processor is schedulable else False)
+    """
     if not system.system_analysed:
         get_response_time_system(system=system, interference_mode=interference_mode)
     
