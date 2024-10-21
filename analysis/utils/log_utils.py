@@ -11,6 +11,8 @@ from __future__ import annotations
 from io import TextIOWrapper
 import os
 from utils.prem_utils import *
+import multiprocessing
+from multiprocessing.synchronize import Lock
 
 # Constants
 log_dir = './results/'
@@ -18,7 +20,7 @@ log_dir = './results/'
 # Classes
 class log_results():
     _log_file: TextIOWrapper
-    
+
     
     def __init__(self, log_name: str) -> None:
         if (not os.path.isfile(log_dir + log_name)):        
@@ -29,7 +31,9 @@ class log_results():
     
     
     def read_entry(self) -> PREM_system:
+        # Read line with lock to be sure nothing is writing
         line = self._log_file.readline()
+            
         if not line: 
             # Close file and return an empty system if no more lines
             self._log_file.close()
@@ -59,9 +63,7 @@ class log_results():
                 offset += 4
                 Px.add_task(task=task)
             system.add_processor(cpu=Px)
-        
-        system.system_analysed = True
-        
+            
         return system
     
 
@@ -71,7 +73,7 @@ class log_results():
 
 class log_file_class():
     _log_file: TextIOWrapper
-    
+    write_lock: Lock = multiprocessing.Lock()
     
     def __init__(self) -> None:
         # Create the result dir if doesn't exist
@@ -113,9 +115,10 @@ class log_file_class():
                 log_line.append(task.T)
                 log_line.append(task.R)
 
-        # Write log line
-        self._log_file.write(', '.join(str(element) for element in log_line) + '\n')
-        self._log_file.flush()
+        # Write log line (Thread-safe)
+        with self.write_lock:
+            self._log_file.write(', '.join(str(element) for element in log_line) + '\n')
+            self._log_file.flush()
     
 
     # Closes the log file

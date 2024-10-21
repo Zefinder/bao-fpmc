@@ -4,6 +4,7 @@ import multiprocessing
 from multiprocessing import Pool
 from multiprocessing.managers import ValueProxy
 from multiprocessing.synchronize import Lock
+import traceback
 from utils.generate_prem import interval, generate_prem_system, rescale_system
 from utils.fixed_priority_sched import set_system_priority, rate_monotonic_scheduler
 from utils.rta_prem import get_response_time_system
@@ -12,14 +13,16 @@ from utils.log_utils import *
 import copy
 
 # Constants
-system_number = 5000 # Per CPU number
+system_number = 100 # Per CPU number
 cpu_numbers = [4, 8, 16]
 task_number_per_cpu = 8
 period_interval = interval(10, 100)
 period_distribution = 'logunif'
 bandwidth_utilisation_interval = interval(5, 20)
 utilisation = 0.6
-process_number = 16
+prem_process_number = 2
+knapsack_process_number = 14
+greedy_knapsack_process_number = 4
 minimum_cost = floor(100 / (1 - (bandwidth_utilisation_interval.max / 100)))
 
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
@@ -30,39 +33,10 @@ log_classic_filename = 'schedulability_rta_evaluation_prem.log'
 log_knapsack_filename = 'schedulability_rta_evaluation_knapsack.log'
 log_greedy_knapsack_filename = 'schedulability_rta_evaluation_greedy_knapsack.log'
 
+# Store all systems in a variable (Ugly but it works...)
+prem_systems: list[PREM_system] = []
+
 # Functions
-def init_thread(system_index_value_local: ValueProxy,
-                cpu_number_local: int,
-                log_classic_filename_local: str,
-                log_knapsack_filename_local: str,
-                log_greedy_knapsack_filename_local: str,
-                creation_lock_local: Lock,
-                log_lock_local: Lock):
-    global creation_lock
-    creation_lock = creation_lock_local
-
-    global log_lock
-    log_lock = log_lock_local
-
-    global cpu_number
-    cpu_number = cpu_number_local
-
-    global log_classic_file
-    log_classic_file = log_file_class()
-    log_classic_file.resume_log(log_classic_filename_local)
-
-    global log_knapsack_file
-    log_knapsack_file = log_file_class()
-    log_knapsack_file.resume_log(log_knapsack_filename_local)
-    
-    global log_greedy_knapsack_file
-    log_greedy_knapsack_file = log_file_class()
-    log_greedy_knapsack_file.resume_log(log_greedy_knapsack_filename_local)
-
-    global system_index_value
-    system_index_value = system_index_value_local
-
-
 def scale1000(time: int) -> int:
     return time * 1000
 
@@ -71,47 +45,90 @@ def factor100(time: int) -> int:
     return floor(time // 100)
 
 
-def system_analysis(_):
-    global system_index_value
-    # Generate system (uses a file so locking)
+def prem_init_thread(log_classic_filename_local: str,
+                     system_index_local: ValueProxy[int],
+                     prem_system_lock_local: Lock):
+    global prem_system_lock
+    prem_system_lock = prem_system_lock_local
 
-    creation_lock.acquire()
-    prem_system_classic = generate_prem_system(processor_number=cpu_number,
-                                               task_number=task_number_per_cpu, 
-                                               period_interval=period_interval,
-                                               period_distribution=period_distribution,
-                                               utilisation=utilisation, 
-                                               bandwidth_utilisation_interval=bandwidth_utilisation_interval,
-                                               scale=scale1000,
-                                               min_cost=minimum_cost)
-    prem_system_knapsack = copy.deepcopy(prem_system_classic)
-    prem_system_greedy_knapsack = copy.deepcopy(prem_system_classic)
-    creation_lock.release()
+    global log_classic_file
+    log_classic_file = log_file_class()
+    log_classic_file.resume_log(log_classic_filename_local)
+    
+    global classic_system_index
+    classic_system_index = system_index_local
 
+
+def knapsack_init_thread(log_knapsack_filename_local: str,
+                         system_index_local: ValueProxy[int],
+                         knapsack_system_lock_local: Lock):
+    global knapsack_system_lock
+    knapsack_system_lock = knapsack_system_lock_local
+    
+    global log_knapsack_file
+    log_knapsack_file = log_file_class()
+    log_knapsack_file.resume_log(log_knapsack_filename_local)
+    
+    global knapsack_system_index
+    knapsack_system_index = system_index_local
+    
+
+def greedy_init_thread(log_greedy_knapsack_filename_local: str,
+                       system_index_local: ValueProxy[int],
+                       greedy_system_lock_local: Lock):
+    global greedy_system_lock
+    greedy_system_lock = greedy_system_lock_local
+    
+    global log_greedy_knapsack_file
+    log_greedy_knapsack_file = log_file_class()
+    log_greedy_knapsack_file.resume_log(log_greedy_knapsack_filename_local)
+    
+    global greedy_system_index
+    greedy_system_index = system_index_local
+
+
+def prem_system_analysis(_):
+    # Read system from array
+    with prem_system_lock:
+        print('Classic:', classic_system_index.get())
+        prem_system_classic = copy.deepcopy(prem_systems[classic_system_index.get()])
+        classic_system_index.set(classic_system_index.get() + 1)
+        
     # Analyse system classic
     set_system_priority(system=prem_system_classic, fp_scheduler=rate_monotonic_scheduler)
     get_response_time_system(system=prem_system_classic, interference_mode=interference_mode_classic)
+
+    # Write in logs (thread-safe)
+    log_classic_file.write(system=prem_system_classic)
     
-    # Analyse system with knapsack (rescale so calculations are not too long)
+def knapsack_system_analysis(_):
+    # Read system from file (locking since threads)
+    with knapsack_system_lock:
+        prem_system_knapsack = copy.deepcopy(prem_systems[knapsack_system_index.get()])
+        knapsack_system_index.set(knapsack_system_index.get() + 1)
+
+    # Analyse system classic
+    rescale_system(system=prem_system_knapsack, factor=factor100)
     set_system_priority(system=prem_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
-    rescale_system(system=prem_system_knapsack, factor=factor100)        
     get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
 
-    # Analyse system with greedy knapsack
-    set_system_priority(system=prem_system_greedy_knapsack, fp_scheduler=rate_monotonic_scheduler)
-    get_response_time_system(system=prem_system_greedy_knapsack, interference_mode=interference_mode_greedy_knapsack)
-
-    # Write in logs
-    log_lock.acquire()
-    log_classic_file.write(system=prem_system_classic)
+    # Write in logs (thread-safe)
     log_knapsack_file.write(system=prem_system_knapsack)
-    log_greedy_knapsack_file.write(system=prem_system_greedy_knapsack)
     
-    # Just an indicator to help to know where we are in generation
-    system_index_value.value += 1
-    if system_index_value.value % 100 == 0:
-        print(f'Number of generated and analysed systems: {system_index_value.value:d}')
-    log_lock.release()    
+    
+def greedy_system_analysis(_):
+    # Read system from file (locking since threads)
+    with greedy_system_lock:
+        print('Greedy:', greedy_system_index.get())
+        greedy_system_knapsack = copy.deepcopy(prem_systems[greedy_system_index.get()])
+        greedy_system_index.set(greedy_system_index.get() + 1)
+
+    # Analyse system classic
+    set_system_priority(system=greedy_system_knapsack, fp_scheduler=rate_monotonic_scheduler)
+    get_response_time_system(system=greedy_system_knapsack, interference_mode=interference_mode_greedy_knapsack)
+
+    # Write in logs (thread-safe)
+    log_greedy_knapsack_file.write(system=greedy_system_knapsack)
 
 
 def main():
@@ -133,25 +150,50 @@ def main():
     log_greedy_knapsack_file.create(log_greedy_knapsack_filename)
     log_greedy_knapsack_file.close()
 
-    # Generate systems
-    start_time = time.time()
+    # Generate ALL systems
     for cpu_number in cpu_numbers:
-        print(f'Generating systems for N={cpu_number:d}')
+        for _ in range(0, system_number):
+            system = generate_prem_system(processor_number=cpu_number,
+                                          task_number=task_number_per_cpu, 
+                                          period_interval=period_interval,
+                                          period_distribution=period_distribution,
+                                          utilisation=utilisation, 
+                                          bandwidth_utilisation_interval=bandwidth_utilisation_interval,
+                                          scale=scale1000,
+                                          min_cost=minimum_cost)
+            prem_systems.append(system)
+    
+    # Start pools
+    start_time = time.time()
+    
+    manager = multiprocessing.Manager()
+    # Start PREM pool
+    prem_system_lock = multiprocessing.Lock()
+    classic_system_index = manager.Value('i', 0)
+    with Pool(processes=prem_process_number, initializer=prem_init_thread, initargs=(log_classic_filename, classic_system_index, prem_system_lock,)) as pool:
+        pool.map(prem_system_analysis, [*range(0, len(cpu_numbers) * system_number)])
+        # pool.close()
+        # pool.join()
         
-        creation_lock = multiprocessing.Lock()
-        log_lock = multiprocessing.Lock()
-        manager = multiprocessing.Manager()
-        system_index_value = manager.Value('system_index', 0)
-        with Pool(processes=process_number, initializer=init_thread, initargs=(system_index_value, cpu_number, log_classic_filename, log_knapsack_filename, log_greedy_knapsack_filename, creation_lock, log_lock,)) as pool:
-            pool.map(system_analysis, [*range(1, system_number + 1)])
-            pool.close()
-            pool.join()
-
-        print()
+    # # Start knapsack pool        
+    # knapsack_system_lock = multiprocessing.Lock()
+    # knapsack_system_index = manager.Value('i', 0)
+    # with Pool(processes=knapsack_process_number, initializer=knapsack_init_thread, initargs=(log_knapsack_filename, knapsack_system_index, knapsack_system_lock,)) as pool:
+    #     pool.map(knapsack_system_analysis, [*range(0, len(cpu_numbers) * system_number)])
+    #     pool.close()
+    #     pool.join()
+        
+    # Start greedy pool        
+    greedy_system_lock = multiprocessing.Lock()
+    greedy_system_index = manager.Value('i', 0)
+    with Pool(processes=greedy_knapsack_process_number, initializer=greedy_init_thread, initargs=(log_greedy_knapsack_filename, greedy_system_index, greedy_system_lock,)) as pool:
+        pool.map(greedy_system_analysis, [*range(0, len(cpu_numbers) * system_number)])
+        # pool.close()
+        # pool.join()
         
     execution_time = time.time() - start_time
     print("--- {:.04f} seconds ({:.04f} minutes) ---".format(execution_time, execution_time / 60))
-
+    
 
 if __name__ == '__main__':
     main()

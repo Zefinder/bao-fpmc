@@ -47,14 +47,16 @@ class inter_processor_interference_mode():
                 interferences.append(interference)
         
         result = min(interferences) if len(interferences) != 0 else -1
-        
         # Save max to not have to search
         if result > self._max_value:
             self._max_value = result
         
         # If result has already appeared, then take max of interferences 
+        # TODO get index of cycle start
         if result in self._interference_results:
             result = self._max_value
+        else:
+            self._interference_results.append(result)
         
         # If calculated interference is greater than the max computed, return -1
         if self._interference_max_computation != -1 and self._interference_calculated > self._interference_max_computation:
