@@ -282,10 +282,9 @@ def prepare_knapsack_problem(system: PREM_system, cpu_prio: int, delta: int) -> 
     queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M) > (task2.M) else (1 if (task1.M) == (task2.M) and (task1.T) < (task2.T) else 0))
 
     # Add all tasks of higher priority processors to the priority queue
-    for Px in system.higher_processors(prio=cpu_prio):
-        for htask in Px.tasks():
-            if htask.M != 0:
-                queue.insert(htask)
+    for htask in system.processors()[cpu_prio].tasks():
+        if htask.M != 0:
+            queue.insert(htask)
 
     # For each popped task, add knapsack objects to the problem
     while not queue.isEmpty():
@@ -304,17 +303,24 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
     if delta == 0:
         return 0
 
-    # Prepare the problem
-    problem = prepare_knapsack_problem(system=system, cpu_prio=cpu_prio, delta=delta)
+    # Run for all prio
+    delta_left = delta
+    for prio in range(0, cpu_prio):
+        # Prepare the problem
+        problem = prepare_knapsack_problem(system=system, cpu_prio=prio, delta=delta_left)
 
-    # Solve the problem
-    problem.solve()
+        # Solve the problem
+        problem.solve()
 
-    if problem.get_solution() == -2:
-        print(system)
+        # Get solution and remove from delta
+        delta_left -= problem.get_solution()
+
+        # If delta is 0, then there is no space left
+        if delta == 0:
+            break
         
-    # Return the problem solution
-    return problem.get_solution()
+    # Remove the remaining space to the total interval
+    return delta - delta_left
 
 
 class greedy_knapsack_problem(knapsack_problem):
@@ -393,11 +399,10 @@ def prepare_greedy_knapsack(system: PREM_system, cpu_prio: int, delta: int) -> g
     # Create the problem
     problem = greedy_knapsack_problem(W=delta)
     
-    for Px in system.higher_processors(prio=cpu_prio):
-        for htask in Px.tasks():
-            if htask.M != 0:
-                n = ceil((delta + htask.R - htask.e) / htask.T)
-                problem.add_object(obj=knapsack_object(task=htask), n=n)
+    for htask in system.processors()[cpu_prio].tasks():
+        if htask.M != 0:
+            n = ceil((delta + htask.R - htask.e) / htask.T)
+            problem.add_object(obj=knapsack_object(task=htask), n=n)
 
     # Return the problem
     return problem
@@ -408,11 +413,21 @@ def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_pr
     if delta == 0:
         return 0
 
-    # Prepare the problem
-    problem = prepare_greedy_knapsack(system=system, cpu_prio=cpu_prio, delta=delta)
+    # Run for all prio
+    delta_left = delta
+    for prio in range(0, cpu_prio):
+        # Prepare the problem
+        problem = prepare_greedy_knapsack(system=system, cpu_prio=prio, delta=delta_left)
 
-    # Solve the problem
-    problem.solve()
+        # Solve the problem
+        problem.solve()
 
-    # Return the problem solution
-    return problem.get_solution()
+        # Get solution and remove from delta
+        delta_left -= problem.get_solution()
+
+        # If delta is 0, then there is no space left
+        if delta == 0:
+            break
+
+    # Remove the remaining space to the total interval
+    return delta - delta_left

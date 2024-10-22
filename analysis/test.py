@@ -11,10 +11,23 @@ from utils.rta_prem import get_response_time_system
 from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
-interference_mode_classic = inter_processor_interference_mode(get_greedy_knapsack_inter_processor_interference)
+interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference)
+interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference)
+interference_mode_greedy = inter_processor_interference_mode(get_greedy_knapsack_inter_processor_interference)
 
-system = PREM_system([processor([PREM_task(4, 5, 20), PREM_task(4, 5, 20)]), processor([PREM_task(4, 5, 16)])])
+system = PREM_system([processor([PREM_task(4, 5, 20), PREM_task(4, 5, 20)]), processor([PREM_task(4, 5, 16)]), processor([PREM_task(4, 5, 30)])])
+
 set_system_priority(system, rate_monotonic_scheduler)
 result = get_response_time_system(system, interference_mode_classic)
+print('Classical PREM:', result)
 
-print(result)
+
+system.reset()
+set_system_priority(system, rate_monotonic_scheduler)
+result = get_response_time_system(system, interference_mode_knapsack)
+print('Knapsack:', result)
+
+system.reset()
+set_system_priority(system, rate_monotonic_scheduler)
+result = get_response_time_system(system, interference_mode_greedy)
+print('Greedy:', result)
