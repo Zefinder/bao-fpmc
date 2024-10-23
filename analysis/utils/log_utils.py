@@ -30,7 +30,7 @@ class log_results():
         self._log_file = open(log_dir + log_name, 'r')
     
     
-    def read_entry(self) -> PREM_system:
+    def read_system_entry(self) -> PREM_system:
         # Read line with lock to be sure nothing is writing
         line = self._log_file.readline()
             
@@ -66,6 +66,10 @@ class log_results():
             
         return system
     
+    
+    def read_line(self) -> str:
+        return self._log_file.readline()
+    
 
     def close(self) -> None:
         self._log_file.close()
@@ -96,7 +100,7 @@ class log_file_class():
         
         
     # Writes to the log file
-    def write(self, system: PREM_system) -> None:
+    def write_system(self, system: PREM_system) -> None:
         log_line = []
         
         log_line.append(system.utilisation())
@@ -118,6 +122,13 @@ class log_file_class():
         # Write log line (Thread-safe)
         with self.write_lock:
             self._log_file.write(', '.join(str(element) for element in log_line) + '\n')
+            self._log_file.flush()
+            
+    
+    # Will end the line with '\n'
+    def write(self, line: str) -> None:
+        with self.write_lock:
+            self._log_file.write(line + '\n')
             self._log_file.flush()
     
 

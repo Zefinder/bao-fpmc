@@ -18,8 +18,8 @@ def generate_schedulability_improvement_graph(classic_results: log_results, knap
 
     # Read entries that are not 16
     for _ in range(0, task_sets_per_cpu * (len(processor_numbers) - 1)):
-        classic_results.read_entry()
-        knapsack_results.read_entry()
+        classic_results.read_system_entry()
+        knapsack_results.read_system_entry()
 
     # As long as we are under 15000 tests, we can continue
     # Analyse schedulability of each processor, according to its priority
@@ -31,8 +31,8 @@ def generate_schedulability_improvement_graph(classic_results: log_results, knap
     knapsack_schedulable_array = []
     for _ in range(0, task_sets_per_cpu):
         # Get system from classic and knapsack results
-        classic_system_result = classic_results.read_entry()
-        knapsack_system_result = knapsack_results.read_entry()
+        classic_system_result = classic_results.read_system_entry()
+        knapsack_system_result = knapsack_results.read_system_entry()
 
         classic_total_array.append([len(Px.tasks()) for Px in classic_system_result.processors()])
         classic_schedulable_array.append([len(Px.get_schedulable_tasks()) for Px in classic_system_result.processors()])

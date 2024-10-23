@@ -117,9 +117,9 @@ def system_analysis(_):
 
     # Write in logs
     log_lock.acquire()
-    log_classic_file.write(system=prem_system_classic)
-    log_knapsack_file.write(system=prem_system_knapsack)
-    log_greedy_knapsack_file.write(system=prem_system_greedy_knapsack)
+    log_classic_file.write_system(system=prem_system_classic)
+    log_knapsack_file.write_system(system=prem_system_knapsack)
+    log_greedy_knapsack_file.write_system(system=prem_system_greedy_knapsack)
 
     # Just an indicator to help to know where we are in generation
     system_index_value.value += 1

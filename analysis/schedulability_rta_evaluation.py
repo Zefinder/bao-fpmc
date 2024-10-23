@@ -99,7 +99,7 @@ def prem_system_analysis(_):
     get_response_time_system(system=prem_system_classic, interference_mode=interference_mode_classic)
 
     # Write in logs (thread-safe)
-    log_classic_file.write(system=prem_system_classic)
+    log_classic_file.write_system(system=prem_system_classic)
     
 def knapsack_system_analysis(_):
     # Read system from file (locking since threads)
@@ -113,7 +113,7 @@ def knapsack_system_analysis(_):
     get_response_time_system(system=prem_system_knapsack, interference_mode=interference_mode_knapsack)
 
     # Write in logs (thread-safe)
-    log_knapsack_file.write(system=prem_system_knapsack)
+    log_knapsack_file.write_system(system=prem_system_knapsack)
     
     
 def greedy_system_analysis(_):
@@ -128,7 +128,7 @@ def greedy_system_analysis(_):
     get_response_time_system(system=greedy_system_knapsack, interference_mode=interference_mode_greedy_knapsack)
 
     # Write in logs (thread-safe)
-    log_greedy_knapsack_file.write(system=greedy_system_knapsack)
+    log_greedy_knapsack_file.write_system(system=greedy_system_knapsack)
 
 
 def main():

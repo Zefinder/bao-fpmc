@@ -25,7 +25,7 @@ def generate_schedulability_utilisation_graph(results: log_results, method: str)
             total_task_number = 0
 
             for _ in range(0, task_sets_per_utilisation):
-                system_result = results.read_entry()
+                system_result = results.read_system_entry()
                 
                 # We get the number of schedulable tasks and the total number of tasks
                 schedulable_tasks_number += system_result.get_number_schedulable_tasks()

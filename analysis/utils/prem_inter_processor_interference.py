@@ -7,6 +7,7 @@
 
 # Imports
 from __future__ import annotations
+from time import time
 from typing import Callable
 from math import ceil, floor
 from utils.priority_queue import PriorityTaskQueue
@@ -22,13 +23,19 @@ class inter_processor_interference_mode():
     _interference_results: list[int]
     _max_value: int
     
-    
-    def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int], interference_max_computation: int = -1) -> None:
+    # Just for measuring purposes
+    _measure_time: bool
+    measured_time_dict: dict[int, list[float]] # Associates delta to time taken
+        
+    def __init__(self, *interference_functions: Callable[[PREM_system, int, int, PREM_task], int], interference_max_computation: int = -1, measure_time: bool = False) -> None:
         self._interference_functions = interference_functions
         self._interference_max_computation = interference_max_computation
         self._interference_calculated = -1
         self._interference_results = []
         self._max_value = 0
+        self._measure_time = measure_time
+        if measure_time:
+            self.measured_time_dict = {}
     
 
     def reset_count(self):
@@ -39,7 +46,15 @@ class inter_processor_interference_mode():
     
     # Returns the inter-processor interference, which is the minimum of all functions
     def get_inter_processor_interference(self, system: PREM_system, cpu_prio: int, delta: int, task: PREM_task) -> int:
+        # No interval = no interference, highest prio = no interference
+        if delta == 0 or cpu_prio == 0:
+            return 0
+        
         interferences = []
+        
+        if self._measure_time:
+            start_time = time()
+            
         for interference_function in self._interference_functions:
             interference = interference_function(system, cpu_prio, delta, task)
             
@@ -47,6 +62,14 @@ class inter_processor_interference_mode():
                 interferences.append(interference)
         
         result = min(interferences) if len(interferences) != 0 else -1
+        
+        if self._measure_time:
+            total_time = time() - start_time
+            if delta in self.measured_time_dict:
+                self.measured_time_dict[delta].append(total_time)
+            else: 
+                self.measured_time_dict[delta] = [total_time]
+        
         # Save max to not have to search
         if result > self._max_value:
             self._max_value = result
@@ -429,5 +452,107 @@ def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_pr
         if delta == 0:
             break
 
+    # Remove the remaining space to the total interval
+    return delta - delta_left
+
+
+class knapsack_problem_v2(knapsack_problem):
+
+    def __classic_knapsack_solve(self, object_list: list[knapsack_object]) -> dict[int, int]:
+        solutions = {0: 0}
+        for obj in object_list:
+            new_solutions = solutions.copy()
+            
+            # Add weights to check iff <= max weight
+            checkweights = [obj.w + solution_weight for solution_weight in solutions.keys() if obj.w + solution_weight <= self._W]
+
+            # For each check, create a new value or update it
+            for delta in checkweights:
+                old_result = solutions[delta] if delta in solutions else 0
+                new_solutions[delta] = max(old_result, solutions[delta - obj.w] + obj.v)
+
+            # Replace old solutions
+            solutions = new_solutions
+
+        return solutions
+        
+    
+    def solve(self) -> None:
+        # Save maximum interference
+        max_interference = 0
+
+        # The knapsack is solved n times, where n is the number of unique objects
+        # For each iteration, we remove one object that is in the unique object list
+        for unique_index in range(0, len(self._unique_objects)):
+            # Get the value of the object to remove
+            cut_object_value = self._unique_objects[unique_index][0].v
+
+            # Get the index of the object to remove
+            cut_objet_index = self._unique_objects[unique_index][1]
+
+            # Copy the list so no data loss
+            object_list = copy.deepcopy(self._objects)
+
+            # Remove the object from the copied list
+            del object_list[cut_objet_index]
+
+            # Solve the knapsack with the object list
+            solutions = self.__classic_knapsack_solve(object_list=object_list)
+
+            # For each solution put the cut object and select the max
+            for solution_weight, solution_value in solutions.items():
+                interference_value = solution_value + min(self._W - solution_weight, cut_object_value)
+                if max_interference < interference_value:
+                    max_interference = interference_value
+
+        # Solution is the maximum of the interference values computed
+        self._problem_solution = max_interference
+        
+
+def prepare_knapsackv2_problem(system: PREM_system, cpu_prio: int, delta: int) -> knapsack_problem:
+    # Create the problem
+    problem = knapsack_problem_v2(W=delta)
+
+    # Create the queue and sort it by memory impact (M/e)
+    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M) > (task2.M) else (1 if (task1.M) == (task2.M) and (task1.T) < (task2.T) else 0))
+
+    # Add all tasks of higher priority processors to the priority queue
+    for htask in system.processors()[cpu_prio].tasks():
+        if htask.M != 0:
+            queue.insert(htask)
+
+    # For each popped task, add knapsack objects to the problem
+    while not queue.isEmpty():
+        htask = queue.delete()
+        
+        # Number of possible jobs: (delta + R - e) / T rounded up
+        n = ceil((delta + htask.R + htask.e) / htask.T)
+        problem.add_object(obj=knapsack_object(task=htask), n=n)
+
+    # Return the problem
+    return problem
+
+
+def get_knapsackv2_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
+    # If delta is 0, no memory interference since no memory time
+    if delta == 0:
+        return 0
+
+    # Run for all prio
+    delta_left = delta
+    for prio in range(0, cpu_prio):
+        # Prepare the problem
+        problem = prepare_knapsackv2_problem(system=system, cpu_prio=prio, delta=delta_left)
+
+        # Solve the problem
+        problem.solve()
+
+        # Get solution and remove from delta
+        delta_left -= problem.get_solution()
+
+        # If delta is 0, then there is no space left
+        if delta == 0:
+            break
+        
     # Remove the remaining space to the total interval
     return delta - delta_left
