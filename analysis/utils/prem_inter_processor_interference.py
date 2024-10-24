@@ -198,13 +198,17 @@ class knapsack_problem:
     _objects: list[knapsack_object]
     _unique_objects: list[tuple[knapsack_object, int]]
     _problem_solution: int
-    _W : int
+    _W: int
+    _max_M: int
+    _max_e: int
 
     def __init__(self, W) -> None:
         self._objects = []
         self._unique_objects = []
         self._problem_solution = -1
         self._W = W
+        self._max_M = 0
+        self._max_e = 0
 
 
     def add_object(self, obj: knapsack_object, n: int = 1) -> None:
@@ -218,6 +222,12 @@ class knapsack_problem:
             index = self._unique_objects[-1][1]
             
         self._unique_objects.append((obj, index + n))
+        
+        if (self._max_M < obj.v):
+            self._max_M = obj.v
+            
+        if (self._max_e < obj.w):
+            self._max_e = obj.w
 
 
     def solve(self) -> None:
@@ -347,12 +357,10 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
 
 
 class greedy_knapsack_problem(knapsack_problem):
-    _max_M: int
     _density_dict: dict[float, list[int]]
 
     def __init__(self, W) -> None:
         super().__init__(W=W)
-        self._max_M = 0
         self._density_dict = {}
         
 
@@ -364,9 +372,6 @@ class greedy_knapsack_problem(knapsack_problem):
             self._density_dict[density][1] += n * obj.w
         else:
             self._density_dict[density] = [n * obj.v, n * obj.w]
-
-        if (self._max_M < obj.v):
-            self._max_M = obj.v
 
 
     def __prepare_solving(self):
@@ -554,5 +559,117 @@ def get_knapsackv2_inter_processor_interference(system: PREM_system, cpu_prio: i
         if delta == 0:
             break
         
+    # Remove the remaining space to the total interval
+    return delta - delta_left
+
+
+class knapsack_problem_v3(knapsack_problem):
+
+    def __classic_knapsack_solve(self, object_list: list[knapsack_object]) -> dict[int, tuple[list[int], int]]:
+        admissible_solutions = {0: ([], 0)}
+        obj_index = 0
+        for obj in object_list:
+            new_solutions = admissible_solutions.copy()
+
+            # Add weights to check iff <= max weight
+            checkweights = [obj.w + solution_weight for solution_weight in admissible_solutions.keys() if obj.w + solution_weight <= self._W]
+
+            # For each check, create a new value or update it
+            for delta in checkweights:
+                lesser_items, lesser_value = admissible_solutions[delta - obj.w]
+                if delta in admissible_solutions: 
+                    old_solution_value = admissible_solutions[delta][1]
+                    # If the old value is not better, change it!
+                    if lesser_value + obj.v > old_solution_value:
+                        new_solutions[delta] = (lesser_items + [obj_index], lesser_value + obj.v)
+                else:
+                    new_solutions[delta] = (lesser_items + [obj_index], lesser_value + obj.v)
+
+            # Replace old solutions
+            admissible_solutions = new_solutions
+            obj_index += 1
+
+        # Only keep solutions that are in range [Delta - M_max; Delta]
+        solutions = {}
+        threshold = self._W - self._max_e
+        for solution_weight, solution_value in admissible_solutions.items():
+            if solution_weight >= threshold:
+                solutions[solution_weight] = solution_value
+
+        return solutions
+
+
+    def solve(self) -> None:
+        # Save maximum interference
+        max_interference = 0
+
+        # Compute the knapsack with all objects
+        solutions = self.__classic_knapsack_solve(object_list=self._objects)
+
+        # For each solution, take the not placed object with the greatest M value
+        for solution_weight, (solution_path, solution_value) in solutions.items():
+            remaining_space = self._W - solution_weight
+            
+            # Search for the greatest M in all unplaced objects
+            max_M = 0
+            for obj_index in range(0, len(self._objects)):
+                if obj_index not in solution_path:
+                    ending_object = self._objects[obj_index]
+                    if ending_object.v > max_M:
+                        max_M = ending_object.v
+            
+            # Check if max interference
+            interference_value = solution_value + min(remaining_space, max_M)
+            if max_interference < interference_value:
+                max_interference = interference_value
+
+        self._problem_solution = max_interference
+
+
+def prepare_knapsackv3_problem(system: PREM_system, cpu_prio: int, delta: int) -> knapsack_problem:
+    # Create the problem
+    problem = knapsack_problem_v3(W=delta)
+
+    # Create the queue and sort it by memory impact (M/e)
+    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M) > (task2.M) else (1 if (task1.M) == (task2.M) and (task1.T) < (task2.T) else 0))
+
+    # Add all tasks of higher priority processors to the priority queue
+    for htask in system.processors()[cpu_prio].tasks():
+        if htask.M != 0:
+            queue.insert(htask)
+
+    # For each popped task, add knapsack objects to the problem
+    while not queue.isEmpty():
+        htask = queue.delete()
+
+        # Number of possible jobs: (delta + R - e) / T rounded up
+        n = ceil((delta + htask.R + htask.e) / htask.T)
+        problem.add_object(obj=knapsack_object(task=htask), n=n)
+
+    # Return the problem
+    return problem
+
+
+def get_knapsackv3_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
+    # If delta is 0, no memory interference since no memory time
+    if delta == 0:
+        return 0
+
+    # Run for all prio
+    delta_left = delta
+    for prio in range(0, cpu_prio):
+      # Prepare the problem
+      problem = prepare_knapsackv3_problem(system=system, cpu_prio=prio, delta=delta_left)
+
+      # Solve the problem
+      problem.solve()
+
+      # Get solution and remove from delta
+      delta_left -= problem.get_solution()
+
+      # If delta is 0, then there is no space left
+      if delta == 0:
+        break
+
     # Remove the remaining space to the total interval
     return delta - delta_left

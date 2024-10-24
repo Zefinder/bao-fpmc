@@ -14,6 +14,7 @@ from utils.log_utils import *
 interference_mode_classic = inter_processor_interference_mode(get_classic_inter_processor_interference, measure_time=True)
 interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, measure_time=True)
 interference_mode_knapsackv2 = inter_processor_interference_mode(get_knapsackv2_inter_processor_interference, measure_time=True)
+interference_mode_knapsackv3 = inter_processor_interference_mode(get_knapsackv3_inter_processor_interference, measure_time=True)
 interference_mode_greedy = inter_processor_interference_mode(get_greedy_knapsack_inter_processor_interference, measure_time=True)
 
 system = PREM_system([processor([PREM_task(4, 5, 20), PREM_task(4, 5, 20)]), processor([PREM_task(4, 5, 16)]), processor([PREM_task(4, 5, 30)])])
@@ -36,6 +37,13 @@ set_system_priority(system, rate_monotonic_scheduler)
 result = get_response_time_system(system, interference_mode_knapsackv2)
 print('Knapsackv2:', result)
 print('Measured time:', interference_mode_knapsackv2.measured_time_dict)
+print()
+
+system.reset()
+set_system_priority(system, rate_monotonic_scheduler)
+result = get_response_time_system(system, interference_mode_knapsackv3)
+print('Knapsackv3:', result)
+print('Measured time:', interference_mode_knapsackv3.measured_time_dict)
 print()
 
 system.reset()

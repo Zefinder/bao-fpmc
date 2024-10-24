@@ -1,11 +1,7 @@
 import multiprocessing
-from multiprocessing import Pool
-from multiprocessing.managers import ValueProxy
-from multiprocessing.synchronize import Lock
 import random
 
-from numpy import number
-from utils.generate_prem import interval, generate_prem_system, rescale_system
+from utils.generate_prem import interval, generate_prem_system
 from utils.fixed_priority_sched import set_system_priority, rate_monotonic_scheduler
 from utils.rta_prem import get_response_time_system
 from utils.prem_inter_processor_interference import *
@@ -13,7 +9,7 @@ from utils.log_utils import *
 
 system_number = 10000
 processor_number = 1
-tasks_per_processor = [4, 8]
+tasks_per_processor = [4, 6, 8]
 period_interval = interval(100, 1000)
 period_distribution = 'logunif'
 utilisation = 0.6
@@ -24,9 +20,11 @@ random_delta_number = 5
 
 interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, measure_time=True)
 interference_mode_knapsackv2 = inter_processor_interference_mode(get_knapsackv2_inter_processor_interference, measure_time=True)
+interference_mode_knapsackv3 = inter_processor_interference_mode(get_knapsackv2_inter_processor_interference, measure_time=True)
 
 log_knapsack_filename = 'knapsack_perf_evaluation.log'
 log_knapsackv2_filename = 'knapsackv2_perf_evaluation.log'
+log_knapsackv3_filename = 'knapsackv3_perf_evaluation.log'
 
 
 def compare_knapsack_perf(name: str, log_name: str, mode: inter_processor_interference_mode):
@@ -82,14 +80,17 @@ def main():
     # Create processes
     knapsack_process = multiprocessing.Process(target=compare_knapsack_perf, args=('knapsack', log_knapsack_filename, interference_mode_knapsack,))
     knapsackv2_process = multiprocessing.Process(target=compare_knapsack_perf, args=('knaspackv2', log_knapsackv2_filename, interference_mode_knapsackv2,))
+    knapsackv3_process = multiprocessing.Process(target=compare_knapsack_perf, args=('knaspackv3', log_knapsackv3_filename, interference_mode_knapsackv3,))
     
     # Start!
     knapsack_process.start()
     knapsackv2_process.start()
+    knapsackv3_process.start()
     
     # And wait for both of them
     knapsack_process.join()
     knapsackv2_process.join()
+    knapsackv3_process.join()
     
 
 if __name__ == '__main__':
