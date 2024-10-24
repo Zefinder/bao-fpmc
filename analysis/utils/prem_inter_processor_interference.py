@@ -337,23 +337,19 @@ def get_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int
         return 0
 
     # Run for all prio
-    delta_left = delta
+    solution = 0
     for prio in range(0, cpu_prio):
         # Prepare the problem
-        problem = prepare_knapsack_problem(system=system, cpu_prio=prio, delta=delta_left)
+        problem = prepare_knapsack_problem(system=system, cpu_prio=prio, delta=delta)
 
         # Solve the problem
         problem.solve()
 
         # Get solution and remove from delta
-        delta_left -= problem.get_solution()
-
-        # If delta is 0, then there is no space left
-        if delta == 0:
-            break
+        solution += problem.get_solution()
         
     # Remove the remaining space to the total interval
-    return delta - delta_left
+    return min(delta, solution)
 
 
 class greedy_knapsack_problem(knapsack_problem):
@@ -442,23 +438,19 @@ def get_greedy_knapsack_inter_processor_interference(system: PREM_system, cpu_pr
         return 0
 
     # Run for all prio
-    delta_left = delta
+    solution = 0
     for prio in range(0, cpu_prio):
         # Prepare the problem
-        problem = prepare_greedy_knapsack(system=system, cpu_prio=prio, delta=delta_left)
+        problem = prepare_greedy_knapsack(system=system, cpu_prio=prio, delta=delta)
 
         # Solve the problem
         problem.solve()
 
         # Get solution and remove from delta
-        delta_left -= problem.get_solution()
-
-        # If delta is 0, then there is no space left
-        if delta == 0:
-            break
+        solution += problem.get_solution()
 
     # Remove the remaining space to the total interval
-    return delta - delta_left
+    return min(delta, solution)
 
 
 class knapsack_problem_v2(knapsack_problem):
@@ -544,25 +536,22 @@ def get_knapsackv2_inter_processor_interference(system: PREM_system, cpu_prio: i
         return 0
 
     # Run for all prio
-    delta_left = delta
+    solution = 0
     for prio in range(0, cpu_prio):
         # Prepare the problem
-        problem = prepare_knapsackv2_problem(system=system, cpu_prio=prio, delta=delta_left)
+        problem = prepare_knapsackv2_problem(system=system, cpu_prio=prio, delta=delta)
 
         # Solve the problem
         problem.solve()
 
         # Get solution and remove from delta
-        delta_left -= problem.get_solution()
-
-        # If delta is 0, then there is no space left
-        if delta == 0:
-            break
+        solution += problem.get_solution()
         
     # Remove the remaining space to the total interval
-    return delta - delta_left
+    return min(delta, solution)
 
 
+# Prototype, nothing concrete here...
 class knapsack_problem_v3(knapsack_problem):
 
     def __classic_knapsack_solve(self, object_list: list[knapsack_object]) -> dict[int, tuple[list[int], int]]:
@@ -656,20 +645,16 @@ def get_knapsackv3_inter_processor_interference(system: PREM_system, cpu_prio: i
         return 0
 
     # Run for all prio
-    delta_left = delta
+    solution = 0
     for prio in range(0, cpu_prio):
       # Prepare the problem
-      problem = prepare_knapsackv3_problem(system=system, cpu_prio=prio, delta=delta_left)
+      problem = prepare_knapsackv3_problem(system=system, cpu_prio=prio, delta=delta)
 
       # Solve the problem
       problem.solve()
 
       # Get solution and remove from delta
-      delta_left -= problem.get_solution()
-
-      # If delta is 0, then there is no space left
-      if delta == 0:
-        break
+      solution += problem.get_solution()
 
     # Remove the remaining space to the total interval
-    return delta - delta_left
+    return min(delta, solution)
