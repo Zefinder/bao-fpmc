@@ -7,7 +7,7 @@ from utils.rta_prem import get_response_time_system
 from utils.prem_inter_processor_interference import *
 from utils.log_utils import *
 
-system_number = 10
+system_number = 10000
 processor_number = 1
 tasks_per_processor = [4, 6, 8]
 period_interval = interval(100, 1000)
