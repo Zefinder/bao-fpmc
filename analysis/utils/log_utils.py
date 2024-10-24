@@ -20,6 +20,7 @@ log_dir = './results/'
 # Classes
 class log_results():
     _log_file: TextIOWrapper
+    is_closed: bool
 
     
     def __init__(self, log_name: str) -> None:
@@ -28,6 +29,7 @@ class log_results():
         
         # Keep the file open to read it when asked...
         self._log_file = open(log_dir + log_name, 'r')
+        self.is_closed = False
     
     
     def read_system_entry(self) -> PREM_system:
@@ -36,7 +38,7 @@ class log_results():
             
         if not line: 
             # Close file and return an empty system if no more lines
-            self._log_file.close()
+            self.close()
             return PREM_system()
         
         system_components = line.strip().split(',')
@@ -72,6 +74,7 @@ class log_results():
     
 
     def close(self) -> None:
+        self.is_closed = True
         self._log_file.close()
 
 
