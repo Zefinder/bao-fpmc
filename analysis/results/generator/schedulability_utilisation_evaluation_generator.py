@@ -55,16 +55,17 @@ def generate_schedulability_utilisation_graph(results: log_results, method: str)
 
 
 def generate() -> None:
-    # Read classic log
-    classic_log = log_file_class()
-    classic_results = classic_log.create_result_file('schedulability_utilisation_evaluation_prem.log')
+    if assert_existing_result_files('schedulability_utilisation_evaluation_prem.log', 'schedulability_utilisation_evaluation_knapsack.log'):
+        # Read classic log
+        classic_log = log_file_class()
+        classic_results = classic_log.create_result_file('schedulability_utilisation_evaluation_prem.log')
 
-    # Read knapsack log
-    knapsack_log = log_file_class()
-    knapsack_results = knapsack_log.create_result_file('schedulability_utilisation_evaluation_knapsack.log')
+        # Read knapsack log
+        knapsack_log = log_file_class()
+        knapsack_results = knapsack_log.create_result_file('schedulability_utilisation_evaluation_knapsack.log')
 
-    generate_schedulability_utilisation_graph(results=classic_results, method='classic')
-    generate_schedulability_utilisation_graph(results=knapsack_results, method='knapsack')
+        generate_schedulability_utilisation_graph(results=classic_results, method='classic')
+        generate_schedulability_utilisation_graph(results=knapsack_results, method='knapsack')
 
 
 if __name__ == '__main__':

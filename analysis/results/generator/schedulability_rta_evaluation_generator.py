@@ -63,15 +63,16 @@ def generate_schedulability_improvement_graph(classic_results: log_results, knap
 
 
 def generate() -> None:
-    # Read classic log
-    classic_log = log_file_class()
-    classic_results = classic_log.create_result_file('schedulability_rta_evaluation_prem.log')
+    if assert_existing_result_files('schedulability_rta_evaluation_prem.log', 'schedulability_rta_evaluation_knapsack.log'):    
+        # Read classic log
+        classic_log = log_file_class()
+        classic_results = classic_log.create_result_file('schedulability_rta_evaluation_prem.log')
 
-    # Read knapsack log
-    knapsack_log = log_file_class()
-    knapsack_results = knapsack_log.create_result_file('schedulability_rta_evaluation_knapsack.log')
+        # Read knapsack log
+        knapsack_log = log_file_class()
+        knapsack_results = knapsack_log.create_result_file('schedulability_rta_evaluation_knapsack.log')
 
-    generate_schedulability_improvement_graph(classic_results=classic_results, knapsack_results=knapsack_results)
+        generate_schedulability_improvement_graph(classic_results=classic_results, knapsack_results=knapsack_results)
 
 
 if __name__ == '__main__':
