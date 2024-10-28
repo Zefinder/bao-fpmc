@@ -9,11 +9,11 @@ from utils.log_utils import *
 
 system_number = 10000
 processor_number = 1
-tasks_per_processor = [4, 6, 8]
+tasks_per_processor = [4, 6, 8, 10, 12]
 period_interval = interval(100, 1000)
 period_distribution = 'logunif'
 utilisation = 0.6
-scale = lambda x: x
+scale = lambda x: 10*x
 bandwidth_utilisation_interval = interval(5, 20)
 min_cost = 20
 random_delta_number = 5
@@ -38,7 +38,7 @@ def compare_knapsack_perf(name: str, log_name: str, mode: inter_processor_interf
     # Open system files
     log_system_file = log_file_class()
     log_system_file = log_system_file.create_result_file(log_systems)
-    while system_analysed < system_number:
+    while system_analysed < system_number * len(tasks_per_processor):
         system = log_system_file.read_system_entry()        
         deltas = [int(delta) for delta in log_system_file.read_line().split(',')]
 
@@ -47,10 +47,7 @@ def compare_knapsack_perf(name: str, log_name: str, mode: inter_processor_interf
         set_system_priority(system=system, fp_scheduler=rate_monotonic_scheduler)
         get_response_time_system(system=system, interference_mode=mode)
         
-        for delta in deltas:
-            # Generate a random delta between 100 and 2000 (because...)
-            delta = random.randint(scale(100), scale(2000))
-            
+        for delta in deltas:            
             # Compute the number of items that will be put in the knapsack
             number_items = 0
             for htask in system.processors()[0].tasks():
@@ -59,9 +56,9 @@ def compare_knapsack_perf(name: str, log_name: str, mode: inter_processor_interf
             # Compute the interference
             mode.measured_time_dict = {}
             mode.get_inter_processor_interference(system=system,
-                                                cpu_prio=1,
-                                                delta=delta,
-                                                task=PREM_task(M=0, C=0, T=0))
+                                                  cpu_prio=1,
+                                                  delta=delta,
+                                                  task=PREM_task(M=0, C=0, T=0))
             
             # Write the result
             log_file.write(f'{number_items:d}, {delta:d}, {mode.measured_time_dict[delta][0]:f}')
@@ -90,7 +87,7 @@ def main():
                                           scale=scale,
                                           min_cost=min_cost)
             log_system_file.write_system(system=system)
-            log_system_file.write(','.join([str(random.randint(100, 2000)) for i in range(0, random_delta_number)]))
+            log_system_file.write(','.join([str(random.randint(scale(100), scale(2000))) for i in range(0, random_delta_number)]))
     
     log_system_file.close()
     
