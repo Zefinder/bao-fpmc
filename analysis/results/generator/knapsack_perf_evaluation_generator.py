@@ -10,7 +10,6 @@ from utils.generate_prem import interval
 system_number = 10000
 processor_number = 1
 tasks_per_processor = [4, 6, 8, 10, 12]
-period_interval = interval(100, 1000)
 random_delta_number = 5
 
 
@@ -71,7 +70,7 @@ def generate_knapsack_performance(title: str, resultsv1: dict[int, list[tuple[in
             for delta, time in resultsv1[job_number]:
                 x1.append(delta)
                 y1.append(time)
-            axs[plotx, ploty].plot(x1, y1, 'o', label='classic DP')
+            axs[plotx, ploty].plot(x1, y1, 'o', label='classic Dyn Prog')
         
         if job_number in resultsv2:
             x2 = []
@@ -79,9 +78,11 @@ def generate_knapsack_performance(title: str, resultsv1: dict[int, list[tuple[in
             for delta, time in resultsv2[job_number]:
                 x2.append(delta)
                 y2.append(time)
-            axs[plotx, ploty].plot(x2, y2, 'o', color='tab:orange', label='improved DP')
+            axs[plotx, ploty].plot(x2, y2, 'o', color='tab:orange', label='improved Dyn Prog')
         
         axs[plotx, ploty].legend(loc="upper left")
+        axs[plotx, ploty].set_xlabel('Interval size')
+        axs[plotx, ploty].set_ylabel('Solving time (in seconds)')
         
     
     plt.subplots_adjust(bottom=0.1, 
