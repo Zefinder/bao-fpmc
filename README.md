@@ -126,7 +126,7 @@ make build-image PLATFORM=rpi4 CONFIG=test_prem SELECTED_MAIN=test-fpsched BUILD
 
 There is also the memory offset after prefetch option that you can specify during build. This one will require `MEMORY_REQUEST_WAIT`. The best example is to compile `test-prem`:
 ```
-make build-image PLATFORM=rpi4 CONFIG=test_prem SELECTED_MAIN=test-prem BUILD=freertos DEFAULT_IPI=y MEMORY_REQUEST_WAIT=y
+make build-image PLATFORM=rpi4 CONFIG=test_prem SELECTED_MAIN=execution-solo BUILD=freertos DEFAULT_IPI=y MEMORY_REQUEST_WAIT=y
 ```
 
 ## How do I create a configuration file

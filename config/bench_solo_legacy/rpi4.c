@@ -15,6 +15,9 @@ struct config config = {
     .vmlist_size = 1,
     .vmlist = {
         {
+            // CPU affinity
+            .cpu_affinity = 0b0001,
+
             // Image description
             .image = {
                 .base_addr = 0x00000000,
