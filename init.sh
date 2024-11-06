@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Say that we will need sudo permissions
+echo "We will install a few things so we need sudo rights..."
+
 # Updating the package list
 sudo apt update
 
@@ -8,8 +11,9 @@ sudo apt install -y build-essential bison flex git libssl-dev ninja-build \
     u-boot-tools pandoc libslirp-dev pkg-config libglib2.0-dev libpixman-1-dev \
     gettext-base curl xterm cmake python3-pip xilinx-bootgen
 
-# Installing Python packages with pip3
-pip3 install pykwalify packaging pyelftools
+# Installing Python packages with apt install
+sudo apt install -y python3-pykwalify python3-packaging python3-pyelftools \
+    python3-numpy python3-matplotlib
 
 echo "Installation complete."
 
@@ -67,7 +71,7 @@ then
     if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
     then
         echo "Installing Qemu..."
-        sudo apt install qemu-system
+        sudo apt install -y qemu-system
     fi
 fi
 
@@ -86,9 +90,16 @@ then
     if [ -z "$confirmation" ] || [[ "$confirmation" == "y" ]]
     then
         echo "Installing minicom..."
-        sudo apt install minicom
+        sudo apt install -y minicom
     fi
 fi
+
+# Init submodules
+rm -rf baremetal-bao-fpmc/ bao-hypervisor/ freertos-bao-fpmc/
+git submodule update --init --recursive
+
+# Pull submodule changes
+./pull_changes.sh
 
 # Create the appdata file in FreeRTOS and baremetal
 mkdir -p "./freertos-bao-fpmc/src/inc/"
