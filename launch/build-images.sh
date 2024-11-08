@@ -4,9 +4,25 @@ set -e
 # Toolchains
 EXEC_DIRECTORY=$(realpath .)
 TOOLCHAIN_DIRECTORY="${EXEC_DIRECTORY}/../toolchains/"
-AARCH64_NONE_TOOLCHAIN="arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf/bin/aarch64-none-elf-"
-AARCH32_EABI_TOOLCHAIN="arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-"
-RISCV64_TOOLCHAIN="riscv64-unknown-elf-toolchain-10.2.0-2020.12.8-x86_64-linux-ubuntu14/bin/riscv64-unknown-elf-"
+
+# Find the toolchains
+for entry in "$TOOLCHAIN_DIRECTORY"/*
+do
+    if [[ $entry == *"aarch64-none-elf"* ]]
+    then
+        aarch64_none_dir=$entry
+    elif [[ $entry == *"arm-none-eabi"* ]]
+    then 
+        aarch32_eabi_dir=$entry
+    elif [[ $entry == *"riscv64"* ]]
+    then 
+        riscv64_dir=$entry
+    fi
+done
+
+AARCH64_NONE_TOOLCHAIN=$aarch64_none_dir"/bin/aarch64-none-elf-"
+AARCH32_EABI_TOOLCHAIN=$aarch32_eabi_dir"/bin/arm-none-eabi-"
+RISCV64_TOOLCHAIN=$riscv64_dir"/bin/riscv64-unknown-elf-"
 
 FREERTOS_DIRECTORY="../freertos-bao-fpmc/"
 BAREMETAL_DIRECTORY="../baremetal-bao-fpmc"
@@ -33,17 +49,16 @@ then
 fi
 
 # Choosing toolchain
-TOOLCHAIN=${TOOLCHAIN_DIRECTORY}
 if [[ "$architecture_value" == "qemu-riscv64-virt" ]]
 then
-    TOOLCHAIN=${TOOLCHAIN}${RISCV64_TOOLCHAIN}
+    TOOLCHAIN=${RISCV64_TOOLCHAIN}
     ARCH_SELECTED=riscv64
 elif [[ "$architecture_value" == "fvp-a-aarch32" ]] || [[ "$architecture_value" == "fvp-r-aarch32" ]]
 then
-    TOOLCHAIN=${TOOLCHAIN}${AARCH32_EABI_TOOLCHAIN}
+    TOOLCHAIN=${AARCH32_EABI_TOOLCHAIN}
     ARCH_SELECTED=aarch32
 else 
-    TOOLCHAIN=${TOOLCHAIN}${AARCH64_NONE_TOOLCHAIN}
+    TOOLCHAIN=${AARCH64_NONE_TOOLCHAIN}
     ARCH_SELECTED=aarch64
 fi
 
