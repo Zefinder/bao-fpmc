@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import ceil, floor
 from utils.prem_utils import *
 from utils.fixed_priority_sched import *
-from utils.prem_inter_processor_interference import inter_processor_interference_mode, get_classic_inter_processor_interference
+from fpmc_sched.prem_inter_processor_interference import inter_processor_interference_mode, get_classic_inter_processor_interference
 
 # Functions
 # ----------------------------------------------------
