@@ -55,8 +55,10 @@ class processor:
     """
     
     _tasks: list[PREM_task]
+    M_min: int
     M_max: int
     C_min: int
+    M_max: int
     max_interference: int
     global_task: PREM_task
     
@@ -64,8 +66,10 @@ class processor:
     # Inits the processor with a task list (or not) 
     def __init__(self, tasks: list[PREM_task] = []) -> None:
         self._tasks = []
+        self.M_min = -1
         self.M_max = -1
         self.C_min = -1
+        self.C_max = -1
         self.max_interference = -1
         self.global_task = PREM_task(M=-1, C=-1, T=-1)
         
@@ -84,11 +88,17 @@ class processor:
     # Adds a task to the processor
     def add_task(self, task: PREM_task) -> None:
         self._tasks.append(task)
+        if self.M_min == -1 or self.M_min > task.M:
+            self.M_min = task.M
+        
         if task.M > self.M_max:
             self.M_max = task.M
             
         if self.C_min == -1 or self.C_min > task.C:
             self.C_min = task.C
+            
+        if task.C > self.C_max:
+            self.C_max = task.C
             
     
     # Sets the global task for this processor (only used when useing global tasks)

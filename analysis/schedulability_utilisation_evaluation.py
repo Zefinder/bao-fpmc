@@ -1,12 +1,12 @@
 # Imports 
-import time
 import multiprocessing
+from time import time
 from multiprocessing import Pool
 from multiprocessing.managers import ValueProxy
 from multiprocessing.synchronize import Lock
 from utils.generate_prem import interval, generate_prem_system, rescale_system
 from utils.fixed_priority_sched import set_system_priority, rate_monotonic_scheduler
-from fpmc_sched.rta_prem import get_response_time_system
+from fpmc_sched.rta import get_response_time_system
 from fpmc_sched.prem_inter_processor_interference import *
 from utils.log_utils import *
 import copy
@@ -148,7 +148,7 @@ def main():
     log_greedy_knapsack_file.close()
 
     # Generate systems
-    start_time = time.time()
+    start_time = time()
     for bandwidth_utilisation_interval in bandwidth_utilisation_intervals:
         print(f'Generating systems for memory stall={bandwidth_utilisation_interval.__str__():s}')
         for utilisation in utilisations:
@@ -164,7 +164,7 @@ def main():
 
         print()
         
-    execution_time = time.time() - start_time
+    execution_time = time() - start_time
     print("--- {:.04f} seconds ({:.04f} minutes) ---".format(execution_time, execution_time / 60))
 
 

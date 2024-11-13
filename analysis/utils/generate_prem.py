@@ -49,6 +49,13 @@ def generate_prem_taskset(task_number: int,
 
     # Regenerate if cost is 0 (means that the task has no execution)
     curr_min_cost = 0
+    taskset = gen_taskset(periods=(period_interval.min, period_interval.max),
+                            period_distribution=period_distribution, 
+                            tasks_n=task_number, 
+                            utilization=utilisation,
+                            scale=scale)
+    curr_min_cost = taskset.min_cost()
+    
     while curr_min_cost < min_cost:
         taskset = gen_taskset(periods=(period_interval.min, period_interval.max),
                             period_distribution=period_distribution, 
