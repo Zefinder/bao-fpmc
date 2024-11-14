@@ -16,11 +16,11 @@ def main():
     # 1 -> Count negative
     # 2 -> Binary search
     # 3 -> Weight average
-    memory_phases = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-solo-24-06-03-2.py')
+    memory_phases = get_variables_from_big_file('max_', '../extract/bench_solo_legacy-execution-solo-24-11-13-1.py')
     
     results: dict[int, list[int]] = {}    
     results_start = 27
-    with open('../bench_solo_legacy-execution-tacle-measurement-24-11-12-2.log', 'r') as file: 
+    with open('../bench_solo_legacy-execution-tacle-measurement-24-11-14-1.log', 'r') as file: 
         for _ in range(0, results_start):
             file.readline()
         
