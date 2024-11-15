@@ -1,10 +1,11 @@
+from math import ceil
 from analyse_utils import get_variables_from_big_file
 
 # Constants
 task_to_info: dict[int, tuple[str, int]] = {
     0: ('MPEG2', 88),
     1: ('Count negative', 144),
-    2: ('Binary search', 200),
+    2: ('Binary search', 8),
     3: ('Weight average', 200)
 }
 
@@ -20,7 +21,7 @@ def main():
     
     results: dict[int, list[int]] = {}    
     results_start = 27
-    with open('../bench_solo_legacy-execution-tacle-measurement-24-11-14-1.log', 'r') as file: 
+    with open('../bench_solo_legacy-execution-tacle-measurement-24-11-15-1.log', 'r') as file: 
         for _ in range(0, results_start):
             file.readline()
         
@@ -49,7 +50,7 @@ def main():
             print(f'\tmax: {max_ns} ns ({max_ns / 1000} µs)')
             print(f'\tmin: {min_ns} ns ({min_ns / 1000} µs)')
             print(f'\tavg: {avg_ns} ns ({avg_ns / 1000} µs)')
-            print(f'\tTask characteristics: m={memory_phase_time} ns ({memory_phase_time / 1000} µs), c={max_ns - memory_phase_time} ns ({(max_ns - memory_phase_time) / 1000} µs)')
+            print(f'\tTask characteristics: m={memory_phase_time} ns ({ceil(memory_phase_time / 1000)} µs), c={max_ns - memory_phase_time} ns ({ceil((max_ns - memory_phase_time) / 1000)} µs)')
             print()
             
 
