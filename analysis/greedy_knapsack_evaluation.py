@@ -18,14 +18,14 @@ bandwidth_utilisation_interval = interval(5, 20)
 min_cost = 20
 random_delta_number = 5
 
-interference_mode_knapsack = inter_processor_interference_mode(get_knapsack_inter_processor_interference, measure_time=True)
-interference_mode_knapsackv2 = inter_processor_interference_mode(get_knapsackv2_inter_processor_interference, measure_time=True)
-# interference_mode_knapsackv3 = inter_processor_interference_mode(get_knapsackv2_inter_processor_interference, measure_time=True)
+interference_mode_knapsack = inter_processor_interference_mode(get_knapsackv2_inter_processor_interference)
+interference_mode_greedy = inter_processor_interference_mode(get_greedy_knapsack_inter_processor_interference)
+interference_mode_greedyv2 = inter_processor_interference_mode(get_greedyv2_knapsack_inter_processor_interference)
 
 log_systems = 'knapsack_perf_systems.log'
 log_knapsack_filename = 'knapsack_perf_evaluation.log'
-log_knapsackv2_filename = 'knapsackv2_perf_evaluation.log'
-# log_knapsackv3_filename = 'knapsackv3_perf_evaluation.log'
+log_greedy_filename = 'greedy_perf_evaluation.log'
+log_greedyv2_filename = 'greedyv2_perf_evaluation.log'
 
 
 def compare_knapsack_perf(name: str, log_name: str, mode: inter_processor_interference_mode):
@@ -55,13 +55,13 @@ def compare_knapsack_perf(name: str, log_name: str, mode: inter_processor_interf
             
             # Compute the interference
             mode.measured_time_dict = {}
-            mode.get_inter_processor_interference(system=system,
-                                                  cpu_prio=1,
-                                                  delta=delta,
-                                                  task=PREM_task(M=0, C=0, T=0))
+            result = mode.get_inter_processor_interference(system=system,
+                                                           cpu_prio=1,
+                                                           delta=delta,
+                                                           task=PREM_task(M=0, C=0, T=0))
             
             # Write the result
-            log_file.write(f'{number_items:d}, {delta:d}, {mode.measured_time_dict[delta][0]:f}')
+            log_file.write(f'{number_items:d}, {delta:d}, {result:d}')
     
         system_analysed += 1
         if system_analysed % 100 == 0:
@@ -93,18 +93,18 @@ def main():
     
     # Create processes
     knapsack_process = multiprocessing.Process(target=compare_knapsack_perf, args=('knapsack', log_knapsack_filename, interference_mode_knapsack,))
-    knapsackv2_process = multiprocessing.Process(target=compare_knapsack_perf, args=('knaspackv2', log_knapsackv2_filename, interference_mode_knapsackv2,))
-    # knapsackv3_process = multiprocessing.Process(target=compare_knapsack_perf, args=('knaspackv3', log_knapsackv3_filename, interference_mode_knapsackv3,))
+    greedy_process = multiprocessing.Process(target=compare_knapsack_perf, args=('greedy', log_greedy_filename, interference_mode_greedy,))
+    greedyv2_process = multiprocessing.Process(target=compare_knapsack_perf, args=('greedyv2', log_greedyv2_filename, interference_mode_greedyv2,))
     
     # Start!
     knapsack_process.start()
-    knapsackv2_process.start()
-    # knapsackv3_process.start()
+    greedy_process.start()
+    greedyv2_process.start()
     
     # And wait for both of them
     knapsack_process.join()
-    knapsackv2_process.join()
-    # knapsackv3_process.join()
+    greedy_process.join()
+    greedyv2_process.join()
     
 
 if __name__ == '__main__':
