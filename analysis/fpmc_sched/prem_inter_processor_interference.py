@@ -52,6 +52,7 @@ class inter_processor_interference_mode():
         
         interferences = []
         
+        start_time = 0
         if self._measure_time:
             start_time = time()
             
@@ -551,95 +552,81 @@ def get_knapsackv2_inter_processor_interference(system: PREM_system, cpu_prio: i
     return min(delta, solution)
 
 
-# Prototype, nothing concrete here...
-class knapsack_problem_v3(knapsack_problem):
+class greedy_knapsack_problem_v2(knapsack_problem):
+    _unsorted_items: dict[PREM_task, int]
 
-    def __classic_knapsack_solve(self, object_list: list[knapsack_object]) -> dict[int, tuple[list[int], int]]:
-        admissible_solutions = {0: ([], 0)}
-        obj_index = 0
-        for obj in object_list:
-            new_solutions = admissible_solutions.copy()
+    def __init__(self, W) -> None:
+        super().__init__(W=W)
+        self._unsorted_items = {}
+        
 
-            # Add weights to check iff <= max weight
-            checkweights = [obj.w + solution_weight for solution_weight in admissible_solutions.keys() if obj.w + solution_weight <= self._W]
-
-            # For each check, create a new value or update it
-            for delta in checkweights:
-                lesser_items, lesser_value = admissible_solutions[delta - obj.w]
-                if delta in admissible_solutions: 
-                    old_solution_value = admissible_solutions[delta][1]
-                    # If the old value is not better, change it!
-                    if lesser_value + obj.v > old_solution_value:
-                        new_solutions[delta] = (lesser_items + [obj_index], lesser_value + obj.v)
-                else:
-                    new_solutions[delta] = (lesser_items + [obj_index], lesser_value + obj.v)
-
-            # Replace old solutions
-            admissible_solutions = new_solutions
-            obj_index += 1
-
-        # Only keep solutions that are in range [Delta - M_max; Delta]
-        solutions = {}
-        threshold = self._W - self._max_e
-        for solution_weight, solution_value in admissible_solutions.items():
-            if solution_weight >= threshold:
-                solutions[solution_weight] = solution_value
-
-        return solutions
+    # Add the sum increment in the add_object method
+    def add_object(self, obj: knapsack_object, n: int = 1) -> None:
+        self._unsorted_items[PREM_task(M=obj.v, C=obj.w - obj.v, T=0)] = n
 
 
+    def __prepare_solving(self):
+        queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M / task1.e) > (task2.M / task2.e) else 0)
+
+        # Add all tasks of higher priority processors to the priority queue
+        for task in self._unsorted_items.keys():
+            queue.insert(task)
+
+        # For each popped task, add knapsack objects to the problem
+        while not queue.isEmpty():
+            htask = queue.delete()
+            n = self._unsorted_items[htask]
+            super().add_object(obj=knapsack_object(task=htask), n=n)
+        
+
+    # Redefine the solve method
     def solve(self) -> None:
-        # Save maximum interference
-        max_interference = 0
+        # Sort items and add objects to list 
+        self.__prepare_solving()
+        
+        solution = 0
+        for unique_index in range(0, len(self._unique_objects)):
+            cut_object_value = self._unique_objects[unique_index][0].v
+            cut_objet_index = self._unique_objects[unique_index][1]
 
-        # Compute the knapsack with all objects
-        solutions = self.__classic_knapsack_solve(object_list=self._objects)
+            # Copy object and remove index
+            object_list = copy.deepcopy(self._objects)
+            del object_list[cut_objet_index]
 
-        # For each solution, take the not placed object with the greatest M value
-        for solution_weight, (solution_path, solution_value) in solutions.items():
-            remaining_space = self._W - solution_weight
-            
-            # Search for the greatest M in all unplaced objects
-            max_M = 0
-            for obj_index in range(0, len(self._objects)):
-                if obj_index not in solution_path:
-                    ending_object = self._objects[obj_index]
-                    if ending_object.v > max_M:
-                        max_M = ending_object.v
-            
-            # Check if max interference
-            interference_value = solution_value + min(remaining_space, max_M)
-            if max_interference < interference_value:
-                max_interference = interference_value
+            m1 = 0
+            m2 = 0
+            w = 0
+            # Dantzig bound, search critical item
+            for obj in self._objects:
+                if w + obj.w <= self._W:
+                    m1 += obj.v
+                    w += obj.w
+                else:
+                    # When the item can't fit in the bag, then it's the critical item 
+                    # If it is the last item: Dantzig bound!
+                    m2 = floor(((self._W - w) / obj.w) * obj.v)
 
-        self._problem_solution = max_interference
+            current_solution = knapsack_solution = min(m1 + m2, 2 * max(m1, m2)) + cut_object_value
+            if current_solution > solution: 
+                solution = current_solution
+
+        self._problem_solution = min(self._W, solution)
 
 
-def prepare_knapsackv3_problem(system: PREM_system, cpu_prio: int, delta: int) -> knapsack_problem:
+def prepare_greedyv2_knapsack(system: PREM_system, cpu_prio: int, delta: int) -> greedy_knapsack_problem_v2:
     # Create the problem
-    problem = knapsack_problem_v3(W=delta)
-
-    # Create the queue and sort it by memory impact (M/e)
-    queue = PriorityTaskQueue(lambda task1, task2: 1 if (task1.M) > (task2.M) else (1 if (task1.M) == (task2.M) and (task1.T) < (task2.T) else 0))
-
-    # Add all tasks of higher priority processors to the priority queue
+    problem = greedy_knapsack_problem_v2(W=delta)
+    
     for htask in system.processors()[cpu_prio].tasks():
         if htask.M != 0:
-            queue.insert(htask)
-
-    # For each popped task, add knapsack objects to the problem
-    while not queue.isEmpty():
-        htask = queue.delete()
-
-        # Number of possible jobs: (delta + R - e) / T rounded up
-        n = ceil((delta + htask.R + htask.e) / htask.T)
-        problem.add_object(obj=knapsack_object(task=htask), n=n)
+            n = ceil((delta + htask.R - htask.e) / htask.T)
+            problem.add_object(obj=knapsack_object(task=htask), n=n)
 
     # Return the problem
     return problem
 
 
-def get_knapsackv3_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
+def get_greedyv2_knapsack_inter_processor_interference(system: PREM_system, cpu_prio: int, delta: int, _: PREM_task) -> int:
     # If delta is 0, no memory interference since no memory time
     if delta == 0:
         return 0
@@ -647,14 +634,14 @@ def get_knapsackv3_inter_processor_interference(system: PREM_system, cpu_prio: i
     # Run for all prio
     solution = 0
     for prio in range(0, cpu_prio):
-      # Prepare the problem
-      problem = prepare_knapsackv3_problem(system=system, cpu_prio=prio, delta=delta)
+        # Prepare the problem
+        problem = prepare_greedyv2_knapsack(system=system, cpu_prio=prio, delta=delta)
 
-      # Solve the problem
-      problem.solve()
+        # Solve the problem
+        problem.solve()
 
-      # Get solution and remove from delta
-      solution += problem.get_solution()
+        # Get solution and remove from delta
+        solution += problem.get_solution()
 
     # Remove the remaining space to the total interval
     return min(delta, solution)
