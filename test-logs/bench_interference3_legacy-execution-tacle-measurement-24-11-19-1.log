@@ -1,0 +1,40 @@
+NOTICE:  BL31: v2.9(release):8a3945e
+NOTICE:  BL31: Built : 10:53:54, Nov  8 2024
+
+
+U-Boot 2025.01-rc1-g56accc56b9aa (Nov 19 2024 - 15:37:38 +0100)
+
+DRAM:  948 MiB (effective 3.9 GiB)
+RPI 4 Model B (0xc03115)
+Core:  215 devices, 17 uclasses, devicetree: board
+MMC:   mmcnr@7e300000: 1, mmc@7e340000: 0
+Loading Environment from FAT... OK
+In:    serial,usbkbd
+Out:   serial,vidconsole
+Err:   serial,vidconsole
+Net:   eth0: ethernet@7d580000
+
+PCIe BRCM: link up, 5.0 Gbps x1 (SSC)
+starting USB...
+Bus xhci_pci: Register 5000420 NbrPorts 5
+Starting the controller
+USB XHCI 1.00
+scanning bus xhci_pci for devices... 2 USB Device(s) found
+       scanning usb for storage devices... 0 Storage Device(s) found
+Hit any key to stop autoboot:  2  1  0 
+2826240 bytes read in 131 ms (20.6 MiB/s)
+## Starting application at 0x00200000 ...
+Bao Hypervisor
+# Benchmark start
+min_mpeg2_ns = 1549851 # ns
+max_mpeg2_ns = 2088925 # ns
+int_average_mpeg2_ns = 1754240 # ns
+min_countnegative_ns = 2153574 # ns
+max_countnegative_ns = 2726666 # ns
+int_average_countnegative_ns = 2290018 # ns
+min_bubblesort_ns = 3575888 # ns
+max_bubblesort_ns = 3609574 # ns
+int_average_bubblesort_ns = 3588148 # ns
+min_weightavg_ns = 3719111 # ns
+max_weightavg_ns = 4332092 # ns
+int_average_weightavg_ns = 3933018 # ns
