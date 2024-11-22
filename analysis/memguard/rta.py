@@ -6,25 +6,29 @@ from utils.prem_utils import *
 
 # Functions
 def stall(cpu_number: int, M_hat: int, C_hat: int, budget: int, budget_period: int) -> int:
-    if (budget / budget_period) < (1 / cpu_number):
+    max_stall = budget_period - budget
+    b = budget / budget_period
+    interfering_cpu  = cpu_number - 1
+    e_hat = M_hat + C_hat
+    RBS = max_stall / (cpu_number - 1)
+    
+    # Regulation case
+    if b < (1 / cpu_number):
         if (M_hat % budget) == 0:
-            stall = int(M_hat / budget) * (budget_period - budget) + (cpu_number - 1) * budget
+            stall = int(M_hat / budget) * max_stall + interfering_cpu * budget
         else:
-            stall = ceil(M_hat / budget) * (budget_period - budget) + (cpu_number - 1) * (M_hat % budget)
+            stall = ceil(M_hat / budget) * max_stall + interfering_cpu * (M_hat % budget)
     else:
-        b = budget / budget_period
-        if (M_hat / (M_hat + C_hat)) <= ((1 - b) / (b * (cpu_number - 1))):
-            stall = (budget_period - budget) + M_hat * (cpu_number - 1)
+        if (M_hat / e_hat) <= ((1 - b) / (b * interfering_cpu)):
+            stall = max_stall + M_hat * interfering_cpu
         else:
-            RBS = (budget_period - budget) / (cpu_number - 1)
             K = floor(C_hat / (budget - RBS))
-            
-            if (M_hat + C_hat) < (1 + K) * budget:
-                r = min(budget_period - budget, int((cpu_number - 1) * (M_hat - (K * RBS))))
-                stall = (1 + K) * (budget_period - budget) + r
+            if e_hat < (1 + K) * budget:
+                r = min(max_stall, int(interfering_cpu * (M_hat - (K * RBS))))
+                stall = (1 + K) * max_stall + r
             else:
-                r = min(budget_period - budget, (cpu_number - 1) * ((M_hat + C_hat) % budget))
-                stall = (1 + floor((M_hat + C_hat) / budget)) * (budget_period - budget) + r
+                r = min(max_stall, interfering_cpu * (e_hat % budget))
+                stall = (1 + floor(e_hat / budget)) * max_stall + r
             
     return stall
 
