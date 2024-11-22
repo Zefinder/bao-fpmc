@@ -12,24 +12,24 @@ processor_number = 1
 tasks_per_processor = [4, 6, 8, 10, 12]
 random_delta_number = 5
 
-knapsack_file = 'knapsack_perf_evaluation/knapsack_perf_evaluation.log'
-knapsackv2_file = 'knapsack_perf_evaluation/knapsackv2_perf_evaluation.log'
+knapsack_file = 'greedy_perf_evaluation/knapsack_perf_evaluation.log'
+greedy_file = 'greedy_perf_evaluation/greedy_perf_evaluation.log'
+greedyv2_file = 'greedy_perf_evaluation/greedyv2_perf_evaluation.log'
 
 
 # Functions
-def analyse_data(result_log: log_results) -> list[tuple[int, int, float]]:
-    results: list[tuple[int, int, float]] = []
+def analyse_data(result_log: log_results) -> list[tuple[int, int, int]]:
+    results: list[tuple[int, int, int]] = []
     
     for task_number in tasks_per_processor:
         for _ in range(0, system_number * random_delta_number):
             line = result_log.read_line().split(',')
-            results.append((int(line[0]), int(line[1]), float(line[2]) / task_number))
+            results.append((int(line[0]), int(line[1]), int(line[2])))
     
     return results
 
 
-# {2, {100, 0.5}} for 2 tasks, one entry is delta = 100 with time 0.5
-def create_dict_t2d(results: list[tuple[int, int, float]]) -> dict[int, list[tuple[int, float]]]: # Task number to delta
+def create_dict_t2d(results: list[tuple[int, int, int]]) -> dict[int, list[tuple[int, float]]]: # Task number to delta
     result_dict: dict[int, list[tuple[int, float]]] = {}
     pre_results: dict[int, dict[int, list[float]]] = {}
     
@@ -96,7 +96,7 @@ def generate_knapsack_performance(title: str, resultsv1: dict[int, list[tuple[in
 
 
 def generate() -> None:
-    if assert_existing_result_files(knapsack_file, knapsackv2_file):
+    if assert_existing_result_files(knapsack_file, greedy_file, greedyv2_file):
         # Extract data from classical knapsack
         knapsack_log = log_file_class()
         knapsack_results = knapsack_log.create_result_file(knapsack_file)
@@ -104,12 +104,18 @@ def generate() -> None:
         knapsack_results.close()
         knapsackv1_data = create_dict_t2d(knapsack_data)
         
-        # Extract data from improved knapsack
-        knapsackv2_log = log_file_class()
-        knapsackv2_results = knapsackv2_log.create_result_file(knapsackv2_file)
-        knapsack_data = analyse_data(knapsackv2_results)
-        knapsackv2_results.close()
-        knapsackv2_data = create_dict_t2d(knapsack_data)
+        # Extract data from both greedy
+        greedy_log = log_file_class()
+        greedy_results = greedy_log.create_result_file(greedy_file)
+        knapsack_data = analyse_data(greedy_results)
+        knapsack_results.close()
+        greedyv1_data = create_dict_t2d(knapsack_data)
+        
+        greedyv2_log = log_file_class()
+        greedyv2_results = greedyv2_log.create_result_file(greedyv2_file)
+        knapsack_data = analyse_data(greedyv2_results)
+        knapsack_results.close()
+        greedyv2_data = create_dict_t2d(knapsack_data)
         
         # Generate graph
         generate_knapsack_performance('knapsack_perf_evaluation', knapsackv1_data, knapsackv2_data)
