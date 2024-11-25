@@ -1,10 +1,9 @@
 from math import ceil, floor
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-import numpy as np
 from results.generator.generator_utils import *
 from utils.log_utils import *
-from utils.generate_prem import interval
+
 
 # Constants
 system_number = 10000
@@ -29,32 +28,26 @@ def analyse_data(result_log: log_results) -> list[tuple[int, int, int]]:
     return results
 
 
-def create_dict_t2d(results: list[tuple[int, int, int]]) -> dict[int, list[tuple[int, float]]]: # Task number to delta
-    result_dict: dict[int, list[tuple[int, float]]] = {}
-    pre_results: dict[int, dict[int, list[float]]] = {}
+def create_dict_t2d(results: list[tuple[int, int, int]]) -> dict[int, dict[int, list[int]]]: # Task number to delta
+    result_dict: dict[int, dict[int, list[int]]] = {}
     
     for result in results:
         jobs_number = result[0]
         delta = result[1]
-        time = result[2]
+        result = result[2]
         
-        if jobs_number in pre_results:
-            if delta in pre_results[jobs_number]:
-                pre_results[jobs_number][delta].append(time)
+        if jobs_number in result_dict:
+            if delta in result_dict[jobs_number]:
+                result_dict[jobs_number][delta].append(result)
             else:
-                pre_results[jobs_number][delta] = [time]
+                result_dict[jobs_number][delta] = [result]
         else:
-            pre_results[jobs_number] = {delta: [time]}
-    
-    for jobs_number in pre_results:
-        result_dict[jobs_number] = []
-        for delta in pre_results[jobs_number]:
-            result_dict[jobs_number].append((delta, sum(pre_results[jobs_number][delta]) / len(pre_results[jobs_number][delta])))
+            result_dict[jobs_number] = {delta: [result]}
     
     return result_dict
 
 
-def generate_knapsack_performance(title: str, resultsv1: dict[int, list[tuple[int, float]]], resultsv2: dict[int, list[tuple[int, float]]]) -> None:
+def generate_knapsack_performance(title: str, base_results: dict[int, dict[int, list[int]]], resultsv1: dict[int, dict[int, list[int]]], resultsv2: dict[int, dict[int, list[int]]]) -> None:
     jobs_numbers = list(set(resultsv1.keys()) | set(resultsv2.keys()))
     jobs_numbers.sort()
     nb_lines = ceil(len(jobs_numbers) / 3)
@@ -66,26 +59,35 @@ def generate_knapsack_performance(title: str, resultsv1: dict[int, list[tuple[in
         ploty = index % 3
         axs[plotx, ploty].set_title(f'Job number: {job_number:d}')
         
-        # Only try to plot when job number is in the dict!
-        if job_number in resultsv1:
-            x1 = []
-            y1 = []
-            for delta, time in resultsv1[job_number]:
-                x1.append(delta)
-                y1.append(time)
-            axs[plotx, ploty].plot(x1, y1, 'o', label='classic Dyn Prog')
+        # Compute the accuracy of the result for both greedy
+        base = base_results[job_number]
+        greedy = resultsv1[job_number]
+        greedyv2 = resultsv2[job_number]
+        x1 = []
+        y1 = []
+        x2 = []
+        y2 = []
+        for delta in base.keys():
+            greedy_percentage = 0
+            greedyv2_percentage = 0
+            for result_index in range(0, len(base[delta])):
+                greedy_percentage += (abs(base[delta][result_index] - greedy[delta][result_index])) / ((base[delta][result_index] + greedy[delta][result_index]) / 2)
+                greedyv2_percentage += (abs(base[delta][result_index] - greedyv2[delta][result_index])) / ((base[delta][result_index] + greedyv2[delta][result_index]) / 2)
+                
+            greedy_percentage /= len(base[delta])
+            greedyv2_percentage /= len(base[delta])
+
+            x1.append(delta)
+            y1.append(greedy_percentage)
+            x2.append(delta)
+            y2.append(greedyv2_percentage)
         
-        if job_number in resultsv2:
-            x2 = []
-            y2 = []
-            for delta, time in resultsv2[job_number]:
-                x2.append(delta)
-                y2.append(time)
-            axs[plotx, ploty].plot(x2, y2, 'o', color='tab:orange', label='improved Dyn Prog')
-        
-        axs[plotx, ploty].legend(loc="upper left")
+        axs[plotx, ploty].plot(x1, y1, 'o', label='Greedy knapsack v1')
+        axs[plotx, ploty].plot(x2, y2, 'o', color='tab:orange', label='Greedy knapsack v2')
         axs[plotx, ploty].set_xlabel('Interval size')
-        axs[plotx, ploty].set_ylabel('Solving time (in seconds)')
+        axs[plotx, ploty].set_ylabel('Percentage difference with\nexact resolution')
+        axs[plotx, ploty].legend(loc="upper left")
+        axs[plotx, ploty].yaxis.set_major_formatter(mtick.PercentFormatter(1.00))
         
     
     plt.subplots_adjust(bottom=0.1, 
@@ -118,7 +120,7 @@ def generate() -> None:
         greedyv2_data = create_dict_t2d(knapsack_data)
         
         # Generate graph
-        generate_knapsack_performance('knapsack_perf_evaluation', knapsackv1_data, knapsackv2_data)
+        generate_knapsack_performance('greedy_perf_evaluation', knapsackv1_data, greedyv1_data, greedyv2_data)
         
         
 if __name__ == '__main__':

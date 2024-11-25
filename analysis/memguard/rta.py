@@ -18,6 +18,8 @@ def stall(cpu_number: int, M_hat: int, C_hat: int, budget: int, budget_period: i
             stall = int(M_hat / budget) * max_stall + interfering_cpu * budget
         else:
             stall = ceil(M_hat / budget) * max_stall + interfering_cpu * (M_hat % budget)
+            
+    # Contension case
     else:
         if (M_hat / e_hat) <= ((1 - b) / (b * interfering_cpu)):
             stall = max_stall + M_hat * interfering_cpu

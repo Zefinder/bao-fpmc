@@ -13,6 +13,7 @@ def main():
 
     # For each generator, import the module and generate using the generate() function
     for file in list_files:
+        print(f'Generating results for {file}')
         generator = importlib.import_module(generators_module + file[:-3])
         generator.generate()
 
