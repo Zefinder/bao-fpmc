@@ -74,6 +74,9 @@ struct config config = {
             }
         },
         {
+            // CPU affinity
+            .cpu_affinity = 0b0010,
+            
             // Colors used
             .colors = 0b1111111100000000,
 
@@ -128,6 +131,9 @@ struct config config = {
             }
         },
         {
+            // CPU affinity
+            .cpu_affinity = 0b0100,
+            
             // Colors used
             .colors = 0b1111111100000000,
 
