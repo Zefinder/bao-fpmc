@@ -17,6 +17,10 @@ struct config config = {
     .vmlist_size = 3,
     .vmlist = {
         {
+            // CPU affinity
+            .cpu_affinity = 0b0001,
+
+
             // Colors used
             .colors = 0b0000000000011111,
 
